@@ -3,8 +3,10 @@ package nu.ere.mooddiary;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
     public Database dbh;
     public static SQLiteDatabase db;
     public EntityPrimitives entityPrimitives;
-    public EventTypes eventTypes;
+    public static EventTypes eventTypes;
+    public static Reminders reminders;
+    SharedPreferences sharedPrefs;
     public long lastSave;
 
     @Override
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         lastSave = 0;
 
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Button saveButton = (Button) findViewById(R.id.saveButton);
         TextView thanksView = (TextView) findViewById(R.id.thanksTextView);
         saveButton.setOnClickListener(new SaveClickListener(this, thanksView));
@@ -62,10 +67,11 @@ public class MainActivity extends AppCompatActivity {
         dbh = new Database(this);
         db = dbh.getWritableDatabase();
 
-        //dbh.onUpgrade(db, 0, 0); // XXX Debugging - trash db to force creation
+        dbh.onUpgrade(db, 0, 0); // XXX Debugging - trash db to force creation
 
         entityPrimitives = new EntityPrimitives(db);
         eventTypes = new EventTypes(db);
+        reminders = new Reminders(db);
     }
 
     public void showNumberDialog(Activity activity, TextView view, EventType eventType){
@@ -255,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
             // Load the Settings screen ("Preferences")
             case R.id.action_settings:
                 i = new Intent(MainActivity.this, PreferencesActivity.class);
+                PreferencesActivity p = new PreferencesActivity();
                 startActivity(i);
                 return true;
             // Load the Export screen
@@ -279,4 +286,5 @@ public class MainActivity extends AppCompatActivity {
         // Fallthrough (do nothing - let super handle it)
         return super.onOptionsItemSelected(item);
     }
+
 }

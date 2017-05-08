@@ -23,6 +23,17 @@ public class Database extends SQLiteOpenHelper{
 
         /* Table Creation */
 
+        // Reminders (alarms)
+        db.execSQL(
+                "CREATE TABLE Reminders " +
+                    "(" +
+                        "id       INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "hh       INTEGER NOT NULL, " +
+                        "mm       INTEGER NOT NULL, " +
+                        "dd       INTEGER NOT NULL" +
+                    ")"
+        );
+
         // Primitives (overdesign much?)
         db.execSQL(
                 "CREATE TABLE EntityPrimitives " +
@@ -112,6 +123,7 @@ public class Database extends SQLiteOpenHelper{
         Log.d("Database", "Enter onUpgrade: Trashing everything" );
         // FIXME
         // Drop older tables if they existed
+        db.execSQL("DROP TABLE IF EXISTS Reminders");
         db.execSQL("DROP TABLE IF EXISTS EntityPrimitives");
         db.execSQL("DROP TABLE IF EXISTS EventTypes");
         db.execSQL("DROP TABLE IF EXISTS Events");
@@ -203,6 +215,27 @@ public class Database extends SQLiteOpenHelper{
 
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+
+    /**
+     * Insert a reminder
+     *
+     * @param db
+     * @param hh    Hour in 24-hour format
+     * @param mm    Hour in 24-hour format
+     * @param dd    Hour in 7-day format (0-indexed)
+     */
+    public void addReminder(SQLiteDatabase db, int hh, int mm, int dd) {
+        Log.d("Database", "Enter addReminder" );
+
+        String sql = "INSERT INTO Reminders (hh, mm, dd) VALUES (?, ?, ?)";
+        SQLiteStatement statement = db.compileStatement(sql);
+
+        statement.bindLong(0, (long) hh);
+        statement.bindLong(1, (long) mm);
+        statement.bindLong(2, (long) dd);
+
+        statement.executeInsert();
     }
 
 }
