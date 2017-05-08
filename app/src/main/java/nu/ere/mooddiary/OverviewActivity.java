@@ -42,7 +42,7 @@ public class OverviewActivity extends AppCompatActivity {
             long unixTime = cursor.getLong(0);
             String value  = cursor.getString(1);
             java.util.Date time = new java.util.Date((long) unixTime * 1000);
-            text += time.toString() + ": Mood: " + value + "\n";
+            text += time.toString() + ": " + value + "\n";
         }
 
         view.setText(text);
