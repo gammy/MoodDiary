@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stämningsdagbok</string>
+    <string name="action_save_csv">Spara</string>
+    <string name="action_save_sql">Spara</string>
+    <string name="cancel">Ångra</string>
+    <string name="submit">Ok</string>
+    <string name="summary_action_save_csv">Exportera till CSV</string>
+    <string name="summary_action_save_sql">Exportera databasen</string>
+    <string name="title_action_about">Om</string>
+    <string name="title_action_export">Exportera</string>
+    <string name="title_action_overview">Överblick</string>
+    <string name="title_action_settings">Egenskaper</string>
+</resources>
