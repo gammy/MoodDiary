@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceScreen
+        android:key="export_sql"
+        android:title="Export to SQL"
+        android:summary="Dump the entire SQLite database">
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="export_csv"
+        android:title="Export to CSV"
+        android:summary="CSV generation settings">
+
+        <PreferenceScreen
+            android:key="export_csv_event_types"
+            android:title="Event types"
+            android:summary="Select which event types to export">
+            <!-- TODO: Dynamically add a checkbox list of types from EventTypes.class) -->
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:key="export_csv_date_from"
+            android:title="Start date"
+            android:summary="Select earliest date to export">
+            <!-- TODO: Open a date select dialog -->
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:key="export_csv_date_to"
+            android:title="End date"
+            android:summary="Select the latest date to export">
+            <!-- TODO: Open a date select dialog -->
+        </PreferenceScreen>
+
+        <Preference android:title="Save"
+                    android:key="@string/action_save_csv"
+                    android:summary="@string/summary_action_save_csv"/>
+    </PreferenceScreen>
+</PreferenceScreen>

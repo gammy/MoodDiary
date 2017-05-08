@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceScreen
+        android:key="preference_select_event_types"
+        android:title="Event Types"
+        android:summary="Select which available event types to display">
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="preference_select_reminders"
+        android:title="Reminders"
+        android:summary="Add reminders (entry alerts)">
+        <!-- TODO:
+            ->
+                "Random time between time A and time B"
+                "Specific time"
+        -->
+    </PreferenceScreen>
+
+    <ListPreference
+        android:key="preference_select_theme"
+        android:title="Theme"
+        android:summary="Select which UI theme to use"
+        android:defaultValue="1"
+        android:entries="@array/preference_theme_keys"
+        android:entryValues="@array/preference_theme_values" />
+
+</PreferenceScreen>
