@@ -1,6 +1,7 @@
 <resources>
     <!-- Main -->
     <string name="app_name">Mood Diary</string>
+    <string name="header_view">How are you?</string>
 
     <!-- Main menu -->
     <string name="title_action_settings">Settings</string>

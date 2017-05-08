@@ -3,9 +3,26 @@
      android:shareInterpolator="false" >
 
     <alpha
-        android:duration="800"
+        android:duration="300"
         android:fromAlpha="1.0"
-        android:toAlpha="0.1" >
+        android:toAlpha="0.0" >
     </alpha>
+<!--
+    <scale
+        android:fromXScale="4.0"
+        android:fromYScale="4.0"
+        android:toXScale="1.0"
+        android:toYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:duration="700">
+    </scale>
 
+    <translate
+        android:fromXDelta="0.0"
+        android:toXDelta="0.0"
+        android:fromYDelta="-250.0"
+        android:toYDelta="0.0"
+        android:duration="700" />
+        -->
 </set>

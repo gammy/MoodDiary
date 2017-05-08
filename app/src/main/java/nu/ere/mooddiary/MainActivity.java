@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
         DialogNumberClickListener listener = new DialogNumberClickListener(view, numberPicker);
 
-        builder.setPositiveButton(R.string.submit, listener);
-        builder.setNegativeButton(R.string.cancel, listener);
+        builder.setPositiveButton(R.string.submit, listener); // FIXME hardcoded
+        builder.setNegativeButton(R.string.cancel, listener); // FIXME hardcoded
         builder.setView(numberPicker);
 
         AlertDialog dialog = builder.create();
