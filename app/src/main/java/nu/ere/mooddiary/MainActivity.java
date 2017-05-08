@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public Database dbh;
-    public SQLiteDatabase db;
+    public static SQLiteDatabase db;
     public EntityPrimitives entityPrimitives;
     public EventTypes eventTypes;
     public long lastSave;
@@ -260,6 +260,11 @@ public class MainActivity extends AppCompatActivity {
             // Load the Export screen
             case R.id.action_export:
                 i = new Intent(MainActivity.this, ExportActivity.class);
+                startActivity(i);
+                return true;
+            // Load the Overview screen
+            case R.id.action_overview:
+                i = new Intent(MainActivity.this, OverviewActivity.class);
                 startActivity(i);
                 return true;
             // Load the About screen

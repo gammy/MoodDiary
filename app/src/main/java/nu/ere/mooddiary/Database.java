@@ -201,6 +201,7 @@ public class Database extends SQLiteOpenHelper{
                     entry.value);
         }
 
+        db.setTransactionSuccessful();
         db.endTransaction();
     }
 
