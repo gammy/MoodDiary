@@ -27,7 +27,7 @@ import android.support.v4.widget.TextViewCompat;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ThemedActivity {
 
     public Database dbh;
     public static SQLiteDatabase db;
@@ -37,48 +37,16 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sharedPrefs;
     public long lastSave;
 
-    private void setTheme() {
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPrefs.getString("preference_select_theme", null);
-        // FIXME errorcheck
-
-        // I have unfortunately exhausted all efforts to obtain a global resource ID based on its
-        // name. I.e getFromString("R.style.foo"). It seems getResources().getIdentifier() is unable
-        // to get anything outside of the app's namespace. So, in an act of desperation, we do
-        // a classic switch.
-
-        //int themeID = R.style.getIdentifier("R.style.ThemeOverlay_AppCompat_Dark", null, null);
-        //int themeID = R.style.ThemeOverlay_AppCompat_Dark;
-        int styleID = 0;
-
-        switch(theme) {
-            default:
-            case "AppThemeLight":
-                styleID = R.style.AppThemeLight;
-                break;
-            case "AppTHemeDark":
-                styleID = R.style.AppThemeDark;
-                break;
-        }
-        Log.d("setTheme", "Theme: " + theme + " (rID " + Integer.toString(styleID) +")");
-        super.setTheme(styleID);
-        Log.d("setTheme", "Set by Android: " + super.getTheme());
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("Main", "Create");
         initDB();
-
-        setTheme();
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         initUI();
-
     }
 
     public void initUI() {

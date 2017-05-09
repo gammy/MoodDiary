@@ -10,7 +10,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 
-public class PreferencesActivity extends PreferenceActivity {
+public class PreferencesActivity extends ThemedPreferenceActivity {
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
 
