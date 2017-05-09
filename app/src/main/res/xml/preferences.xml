@@ -3,14 +3,14 @@
 
     <PreferenceScreen
         android:key="preference_select_event_types"
-        android:title="Event Types"
-        android:summary="Select which available event types to display">
+        android:title="@string/title_preference_select_event_types"
+        android:summary="@string/summary_preference_select_event_types">
     </PreferenceScreen>
 
     <PreferenceScreen
         android:key="preference_select_reminders"
-        android:title="Reminders"
-        android:summary="Add reminders (entry alerts)">
+        android:title="@string/title_preference_select_reminders"
+        android:summary="@string/summary_preference_select_reminders">
         <!-- TODO:
             ->
                 "Random time between time A and time B"
@@ -20,8 +20,8 @@
 
     <ListPreference
         android:key="preference_select_theme"
-        android:title="Theme"
-        android:summary="Select which UI theme to use"
+        android:title="@string/title_preference_select_theme"
+        android:summary="@string/summary_preference_select_theme"
         android:defaultValue="1"
         android:entries="@array/preference_theme_keys"
         android:entryValues="@array/preference_theme_values" />

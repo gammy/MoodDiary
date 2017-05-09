@@ -33,8 +33,8 @@ public class TimePreference extends DialogPreference {
         super(ctxt, attrs, defStyle);
 
         is24HourFormat = DateFormat.is24HourFormat(ctxt);
-        setPositiveButtonText("Set"); // FIXE hardcoded
-        setNegativeButtonText("Cancel"); // FIXME hardcoded
+        setPositiveButtonText(R.string.submit);
+        setNegativeButtonText(R.string.cancel);
     }
 
     @Override

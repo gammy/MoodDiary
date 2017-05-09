@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 
@@ -15,6 +16,7 @@ public class PreferencesActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         prefReminders =
                 (PreferenceScreen) findPreference("preference_select_reminders");
@@ -98,6 +100,7 @@ public class PreferencesActivity extends PreferenceActivity {
             new Preference.OnPreferenceChangeListener() {
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     // Code goes here
+                //    this.setTitle("lol");
                     return true;
                 }
             };

@@ -9,6 +9,16 @@
     <string name="title_action_export">Export</string>
     <string name="title_action_about">About</string>
 
+    <!-- Static preference strings -->
+    <string name="title_preference_select_event_types">Event types</string>
+    <string name="summary_preference_select_event_types">Select which available event types to display</string>
+
+    <string name="title_preference_select_reminders">Reminders</string>
+    <string name="summary_preference_select_reminders">Add a reminder</string>
+
+    <string name="title_preference_select_theme">Theme</string>
+    <string name="summary_preference_select_theme">Select theme</string>
+
     <string name="dialog_fire_missiles">Fire ze missiles</string>
     <!-- Dialog boxes -->
     <string name="submit">Ok</string>
@@ -21,7 +31,7 @@
     <string name="action_save_sql">Save</string>
     <string name="summary_action_save_sql">Export the database</string>
 
-    <string name="text_about">Copyright (C) Kristian Gunstone\n
+    <string name="text_about" translatable="false">Copyright (C) Kristian Gunstone\n
 Suck my dick!
     </string>
 </resources>

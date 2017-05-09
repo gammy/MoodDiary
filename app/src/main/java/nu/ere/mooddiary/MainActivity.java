@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Main", "Create");
 
         super.onCreate(savedInstanceState);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPrefs.getString("preference_theme_values", null);
+        Log.d("Main", "Theme:" + theme);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
         lastSave = 0;
 
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         Button saveButton = (Button) findViewById(R.id.saveButton);
         TextView thanksView = (TextView) findViewById(R.id.thanksTextView);
         saveButton.setOnClickListener(new SaveClickListener(this, thanksView));
