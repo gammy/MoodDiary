@@ -7,7 +7,7 @@
     </string-array>
 
     <string-array name="preference_theme_values">
-        <item>ThemeOverlay_AppCompat_Light</item>
-        <item>ThemeOverlay_AppCompat_Dark</item>
+        <item>AppThemeLight</item>
+        <item>AppThemeDark</item>
     </string-array>
 </resources>

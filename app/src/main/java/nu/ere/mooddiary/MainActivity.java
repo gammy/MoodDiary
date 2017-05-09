@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         // I have unfortunately exhausted all efforts to obtain a global resource ID based on its
         // name. I.e getFromString("R.style.foo"). It seems getResources().getIdentifier() is unable
         // to get anything outside of the app's namespace. So, in an act of desperation, we do
-        // a classic horrid switch.
+        // a classic switch.
 
         //int themeID = R.style.getIdentifier("R.style.ThemeOverlay_AppCompat_Dark", null, null);
         //int themeID = R.style.ThemeOverlay_AppCompat_Dark;
@@ -53,11 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
         switch(theme) {
             default:
-            case "ThemeOverlay_AppCompat_Light":
-                styleID = R.style.ThemeOverlay_AppCompat_Light;
+            case "AppThemeLight":
+                styleID = R.style.AppThemeLight;
                 break;
-            case "ThemeOverlay_AppCompat_Dark":
-                styleID = R.style.ThemeOverlay_AppCompat_Dark;
+            case "AppTHemeDark":
+                styleID = R.style.AppThemeDark;
                 break;
         }
         Log.d("setTheme", "Theme: " + theme + " (rID " + Integer.toString(styleID) +")");
