@@ -2,12 +2,12 @@
 
 <resources>
     <string-array name="preference_theme_keys">
-        <item>Light</item>
-        <item>Dark</item>
+        <item>@string/light_preference_theme_keys</item>
+        <item>@string/dark_preference_theme_keys</item>
     </string-array>
 
     <string-array name="preference_theme_values">
-        <item>ThemeOverlay.AppCompat.Light</item>
-        <item>ThemeOverlay.AppCompat.Dark</item>
+        <item>ThemeOverlay_AppCompat_Light</item>
+        <item>ThemeOverlay_AppCompat_Dark</item>
     </string-array>
 </resources>

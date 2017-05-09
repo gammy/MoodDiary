@@ -37,21 +37,48 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sharedPrefs;
     public long lastSave;
 
+    private void setTheme() {
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPrefs.getString("preference_select_theme", null);
+        // FIXME errorcheck
+
+        // I have unfortunately exhausted all efforts to obtain a global resource ID based on its
+        // name. I.e getFromString("R.style.foo"). It seems getResources().getIdentifier() is unable
+        // to get anything outside of the app's namespace. So, in an act of desperation, we do
+        // a classic horrid switch.
+
+        //int themeID = R.style.getIdentifier("R.style.ThemeOverlay_AppCompat_Dark", null, null);
+        //int themeID = R.style.ThemeOverlay_AppCompat_Dark;
+        int styleID = 0;
+
+        switch(theme) {
+            default:
+            case "ThemeOverlay_AppCompat_Light":
+                styleID = R.style.ThemeOverlay_AppCompat_Light;
+                break;
+            case "ThemeOverlay_AppCompat_Dark":
+                styleID = R.style.ThemeOverlay_AppCompat_Dark;
+                break;
+        }
+        Log.d("setTheme", "Theme: " + theme + " (rID " + Integer.toString(styleID) +")");
+        super.setTheme(styleID);
+        Log.d("setTheme", "Set by Android: " + super.getTheme());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("Main", "Create");
+        initDB();
 
+        setTheme();
         super.onCreate(savedInstanceState);
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPrefs.getString("preference_theme_values", null);
-        Log.d("Main", "Theme:" + theme);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        initDB();
         initUI();
+
     }
 
     public void initUI() {
@@ -152,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                     // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
                     // the database EntityPrimitive name.
                     int styleID = getResources().getIdentifier(primitive.name,
-                            "drawable", getApplicationContext().getPackageName());
+                            "drawable", this.getPackageName());
                     seekBar.setProgressDrawable(
                             ResourcesCompat.getDrawable(getResources(), styleID, null));
                     seekBar.setMax((int) etype.totalValues);

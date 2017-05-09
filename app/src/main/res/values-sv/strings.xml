@@ -13,9 +13,11 @@
     <string name="title_action_overview">Överblick</string>
     <string name="title_action_settings">Egenskaper</string>
     <string name="summary_preference_select_reminders">Lägg till påminnelse</string>
-    <string name="summary_preference_select_theme">Välj tema</string>
+    <string name="summary_preference_select_theme">%s</string>
     <string name="title_preference_select_event_types">Händelsetyper</string>
     <string name="title_preference_select_reminders">Påminnelser</string>
     <string name="title_preference_select_theme">Tema</string>
     <string name="summary_preference_select_event_types">Välj vilka händelsetyper som ska visas</string>
+    <string name="light_preference_theme_keys">Ljust</string>
+    <string name="dark_preference_theme_keys">Mörkt</string>
 </resources>

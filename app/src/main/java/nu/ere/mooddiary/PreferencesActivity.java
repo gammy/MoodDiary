@@ -1,5 +1,7 @@
 package nu.ere.mooddiary;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -9,11 +11,17 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 
 public class PreferencesActivity extends PreferenceActivity {
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+
     PreferenceScreen prefReminders,
                      prefEventTypes;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = prefs.edit();
 
         addPreferencesFromResource(R.xml.preferences);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
