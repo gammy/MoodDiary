@@ -2,6 +2,7 @@
     <!-- Main -->
     <string name="app_name">Mood Diary</string>
     <string name="header_view">How are you?</string>
+    <string name="fantastic_view">Fantastic!</string>
 
     <!-- Main menu -->
     <string name="title_action_settings">Settings</string>
@@ -22,7 +23,6 @@
     <string name="dark_preference_theme_keys">Dark</string>
     <string name="light_preference_theme_keys">Light</string>
 
-    <string name="dialog_fire_missiles">Fire ze missiles</string>
     <!-- Dialog boxes -->
     <string name="submit">Ok</string>
     <string name="cancel">Back</string>

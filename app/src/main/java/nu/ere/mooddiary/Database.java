@@ -81,12 +81,15 @@ public class Database extends SQLiteOpenHelper{
         int ID_RANGE_NORMAL = 1;
         int ID_RANGE_CENTER = 2;
         int ID_NUMBER       = 3;
+        int ID_TEXT         = 4;
         db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (" +
                 Integer.toString(ID_RANGE_NORMAL) + ", 'range_normal')");
         db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (" +
                 Integer.toString(ID_RANGE_CENTER) + ", 'range_center')");
         db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (" +
                 Integer.toString(ID_NUMBER) + ", 'number')");
+        db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (" +
+                Integer.toString(ID_TEXT) + ", 'text')");
         /*
         db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (2, 'radio')");
         db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (3, 'dropdown')");
@@ -114,6 +117,7 @@ public class Database extends SQLiteOpenHelper{
 
         addEventType(db, ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "");
         addEventType(db, ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "");
+        addEventType(db, ID_TEXT,          8, "Note",                -1,   -1, -1, "");
         // The idea here being that a user can add new types from the UI at some point
 
     }

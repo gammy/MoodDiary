@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
+import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -74,6 +78,7 @@ public class MainActivity extends ThemedActivity {
     }
 
     public void showNumberDialog(Activity activity, TextView view, EventType eventType){
+    //public void showNumberDialog(Activity activity, TextInputEditText view, EventType eventType){
         Log.d("NumberDialog", "dialogThemeID: " + Integer.toString(dialogThemeID));
         final NumberPicker numberPicker =
                 new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
@@ -94,8 +99,8 @@ public class MainActivity extends ThemedActivity {
 
         DialogNumberClickListener listener = new DialogNumberClickListener(view, numberPicker);
 
-        builder.setPositiveButton(R.string.submit, listener); // FIXME hardcoded
-        builder.setNegativeButton(R.string.cancel, listener); // FIXME hardcoded
+        builder.setPositiveButton(R.string.submit, listener);
+        builder.setNegativeButton(R.string.cancel, listener);
         builder.setView(numberPicker);
 
         AlertDialog dialog = builder.create();
@@ -161,15 +166,34 @@ public class MainActivity extends ThemedActivity {
 
                 case "number":
                     TextView number = new TextView(this);
+                    //number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    //number.setBackground(android:background="?attr/editTextBackground"
+
+                    /* Can't find an easier way to do this - insane */
+                    int[] attrs = new int[] { R.attr.editTextBackground};
+                    TypedArray ta = this.obtainStyledAttributes(attrs);
+                    Drawable drawableFromTheme = ta.getDrawable(0);
+                    ta.recycle();
+                    number.setBackgroundDrawable(drawableFromTheme);
+
+                    //TextInputEditText number = new TextInputEditText(this);
                     etype.setView(number);
                     number.setGravity(Gravity.CENTER_HORIZONTAL);
                     TextViewCompat.setTextAppearance(number,
                             android.R.style.TextAppearance_DeviceDefault_Medium);
+                    //number.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
+
                     number.setText(Long.toString(etype.normalDefault));
                     EventNumberClickListener listener =
                             new EventNumberClickListener(MainActivity.this, number, etype);
                     number.setOnClickListener(listener);
                     row.addView(number, rowParams);
+                    break;
+
+                case "text":
+                    TextInputEditText text = new TextInputEditText(this);
+                    etype.setView(text);
+                    row.addView(text, rowParams);
                     break;
 
                 default:
@@ -201,6 +225,10 @@ public class MainActivity extends ThemedActivity {
                     seekBar.setMax((int) etype.totalValues);
                     seekBar.setProgress((int) etype.normalDefault);
                     break;
+                case "text":
+                    TextInputEditText textInputEditText = (TextInputEditText) etype.view;
+                    textInputEditText.setText("");
+                    break;
                 case "number":
                 default:
                     TextView textView = (TextView) etype.view;
@@ -226,15 +254,17 @@ public class MainActivity extends ThemedActivity {
                 case "range_center":
                 case "range_normal":
                     value = Integer.toString(((SeekBar) etype.view).getProgress());
+                    value = Long.toString(etype.min + Long.parseLong(value, 10));
+                    break;
+                case "text":
+                    value = ((TextInputEditText) etype.view).getText().toString();
                     break;
                 case "number":
                 default:
                     value = ((TextView) etype.view).getText().toString();
+                    value = Long.toString(etype.min + Long.parseLong(value, 10));
                     break;
             }
-
-            // Account for normals (important!)
-            value = Long.toString(etype.min + Long.parseLong(value, 10));
 
             // Add
             entries.add(new nu.ere.mooddiary.Entry((int) etype.id, value));

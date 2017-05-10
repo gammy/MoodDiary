@@ -1,15 +1,18 @@
 package nu.ere.mooddiary;
 
 import android.content.DialogInterface;
+import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
 class DialogNumberClickListener implements DialogInterface.OnClickListener {
     private TextView view;
+    //private TextInputEditText view;
     private NumberPicker numberPicker;
 
     public DialogNumberClickListener(TextView view, NumberPicker numberPicker) {
+    //public DialogNumberClickListener(TextInputEditText view, NumberPicker numberPicker) {
         this.view = view;
         this.numberPicker = numberPicker;
     }
