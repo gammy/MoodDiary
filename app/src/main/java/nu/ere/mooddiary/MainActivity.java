@@ -20,8 +20,10 @@ import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.NumberPicker;
 import android.database.sqlite.SQLiteDatabase;
@@ -47,9 +49,7 @@ public class MainActivity extends ThemedActivity {
         Log.d("Main", "Create");
         initDB();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
         initUI();
     }
@@ -58,6 +58,17 @@ public class MainActivity extends ThemedActivity {
         Log.d("Main", "Enter initUI" );
 
         lastSave = 0;
+
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Ensure that no programmatically generated view within our ScrollView forces the
+        // view to scroll down: We want the initial to view always to be at the top:
+        // http://stackoverflow.com/a/35071620
+        ScrollView view = (ScrollView) findViewById(R.id.mainScrollView);
+        view.setFocusableInTouchMode(true);
+        view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
         Button saveButton = (Button) findViewById(R.id.saveButton);
         TextView thanksView = (TextView) findViewById(R.id.thanksTextView);
