@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,7 +74,9 @@ public class MainActivity extends ThemedActivity {
     }
 
     public void showNumberDialog(Activity activity, TextView view, EventType eventType){
-        final NumberPicker numberPicker = new NumberPicker(activity);
+        Log.d("NumberDialog", "dialogThemeID: " + Integer.toString(dialogThemeID));
+        final NumberPicker numberPicker =
+                new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
 
         numberPicker.setMinValue(0);
         numberPicker.setMaxValue((int) eventType.totalValues);
@@ -86,7 +89,8 @@ public class MainActivity extends ThemedActivity {
                                         RelativeLayout.LayoutParams.MATCH_PARENT));
         */
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(new ContextThemeWrapper(activity, dialogThemeID));
 
         DialogNumberClickListener listener = new DialogNumberClickListener(view, numberPicker);
 

@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
 
-public class OverviewActivity extends AppCompatActivity {
+public class OverviewActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("Overview", "Create");

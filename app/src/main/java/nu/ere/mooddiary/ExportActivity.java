@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
-public class ExportActivity extends PreferenceActivity {
+public class ExportActivity extends ThemedPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -26,6 +26,7 @@
         android:summary="@string/summary_preference_select_theme"
         android:defaultValue="1"
         android:entries="@array/preference_theme_keys"
-        android:entryValues="@array/preference_theme_values" />
+        android:entryValues="@array/preference_theme_values"
+        />
 
 </PreferenceScreen>
