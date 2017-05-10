@@ -1,6 +1,7 @@
 package nu.ere.mooddiary;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -31,8 +32,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         prefEventTypes =
                 (PreferenceScreen) findPreference("preference_select_event_types");
 
-        createEventTypePreferences();
-        createReminderPreferences();
+        createEventTypePreferences(); // When user clicks Settings -> Event Types, this is shown
+        createReminderPreferences();  // When user clicks Settings -> Reminders, this is shown
     }
 
     /*
@@ -57,6 +58,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
     }
     */
 
+    // "Level 2"
     public void createEventTypePreferences() {
         Log.d("PreferenceActivity", "Enter createEventTypePreferences");
 
@@ -69,37 +71,23 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1);
             prefEventTypes.addPreference(cb);
-            Log.d("createEventTypePr..", "ITERATE EventType");
+            Log.d("PreferenceActivity", "ITERATE EventType");
         }
 
     }
 
+    // "Level 2"
     public void createReminderPreferences() {
         Log.d("PreferenceActivity", "Enter createReminderPreferences");
 
-        // List a correctly initialized TimePreference for each
-        // current Reminder
-
+        // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
         Reminders r = MainActivity.reminders;
         for (int i = 0; i < r.reminders.size(); i++) {
             Log.d("createReminderP..", "ITERATE Reminder");
         }
 
-
+        // Add a button to add another reminder, which also opens a new/edit submenu
         /*
-        Preference button = new Preference(this);
-        button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                //code for what you want it to do
-                TimePreference tp = new TimePreference(this);
-                tp.
-                return true;
-            }
-        });
-
-        */
-        // Add a button to add another reminder
         TimePreference tp = new TimePreference(this);
         tp.setTitle("Add a reminder");
         tp.setKey("new_reminder");
@@ -113,8 +101,26 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                 }
             };
         tp.setOnPreferenceChangeListener(listener);
+        */
 
-        this.prefReminders.addPreference(tp);
+        Preference newReminderButton = new Preference(this);
+        newReminderButton.setTitle(R.string.action_preference_reminders);
+        newReminderButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                // Finally we load Level 3, the add/edit dialog. It contains:
+                // - Time view / select dialog
+                // - List of event type checkboxes
+                // - Save button, taking the user back to reminderPreferences
+                //code for what you want it to do
+                Intent i = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
+                startActivity(i);
+
+                return true;
+            }
+        });
+
+        this.prefReminders.addPreference(newReminderButton);
         //newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
