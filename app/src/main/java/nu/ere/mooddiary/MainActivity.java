@@ -139,7 +139,7 @@ public class MainActivity extends ThemedActivity {
             TextView label = new TextView(this);
             TextViewCompat.setTextAppearance(label,
                     android.R.style.TextAppearance_DeviceDefault_Small);
-            label.setGravity(Gravity.LEFT);
+            label.setGravity(Gravity.START);
             label.setText(etype.name);
 
             TableRow row = new TableRow(this);
@@ -225,10 +225,12 @@ public class MainActivity extends ThemedActivity {
                     seekBar.setMax((int) etype.totalValues);
                     seekBar.setProgress((int) etype.normalDefault);
                     break;
+
                 case "text":
                     TextInputEditText textInputEditText = (TextInputEditText) etype.view;
                     textInputEditText.setText("");
                     break;
+
                 case "number":
                 default:
                     TextView textView = (TextView) etype.view;
@@ -241,7 +243,7 @@ public class MainActivity extends ThemedActivity {
     public void saveEvents() {
         Log.d("MainActivity", "Enter saveEvents");
 
-        ArrayList<Entry> entries = new ArrayList<Entry>();
+        ArrayList<Entry> entries = new ArrayList<>();
         int evCount = eventTypes.types.size();
 
         // - Save widget data down to the entrylist
@@ -256,9 +258,11 @@ public class MainActivity extends ThemedActivity {
                     value = Integer.toString(((SeekBar) etype.view).getProgress());
                     value = Long.toString(etype.min + Long.parseLong(value, 10));
                     break;
+
                 case "text":
                     value = ((TextInputEditText) etype.view).getText().toString();
                     break;
+
                 case "number":
                 default:
                     value = ((TextView) etype.view).getText().toString();
@@ -286,7 +290,6 @@ public class MainActivity extends ThemedActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
         Intent i;
 
         switch (item.getItemId()) {
@@ -296,23 +299,26 @@ public class MainActivity extends ThemedActivity {
                 PreferencesActivity p = new PreferencesActivity();
                 startActivity(i);
                 return true;
+
             // Load the Export screen
             case R.id.action_export:
                 i = new Intent(MainActivity.this, ExportActivity.class);
                 startActivity(i);
                 return true;
+
             // Load the Overview screen
             case R.id.action_overview:
                 i = new Intent(MainActivity.this, OverviewActivity.class);
                 startActivity(i);
+
                 return true;
             // Load the About screen
             case R.id.action_about:
                 i = new Intent(MainActivity.this, AboutActivity.class);
                 startActivity(i);
                 return true;
-            default:
 
+            default:
         }
 
         // Fallthrough (do nothing - let super handle it)
