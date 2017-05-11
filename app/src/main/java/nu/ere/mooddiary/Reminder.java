@@ -14,5 +14,7 @@ public class Reminder {
         this.dd = dd;
         this.eventTypes = eventTypes;
     }
+
+    // DB Update?
 }
 

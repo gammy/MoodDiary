@@ -19,22 +19,30 @@
             <!-- TODO: Dynamically add a checkbox list of types from EventTypes.class) -->
         </PreferenceScreen>
 
-        <PreferenceScreen
+        <!-- The TimePreference is entirely generated programmatically and has no layout file.
+             As such, it is not possible to add it here either -->
+        <!--
+        <TimePreference
             android:key="export_csv_date_from"
             android:title="Start date"
             android:summary="Select earliest date to export">
-            <!-- TODO: Open a date select dialog -->
-        </PreferenceScreen>
+        </TimePreference>
+        -->
 
+        <!-- Same goes for this of course -->
+        <!--
         <PreferenceScreen
             android:key="export_csv_date_to"
             android:title="End date"
             android:summary="Select the latest date to export">
-            <!-- TODO: Open a date select dialog -->
         </PreferenceScreen>
+        -->
 
+        <!-- The save button must be generated programmatically to end up at the bottom -->
+        <!--
         <Preference android:title="Save"
                     android:key="@string/action_save_csv"
                     android:summary="@string/summary_action_save_csv"/>
+        -->
     </PreferenceScreen>
 </PreferenceScreen>

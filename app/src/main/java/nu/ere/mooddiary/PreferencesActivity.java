@@ -73,7 +73,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
             prefEventTypes.addPreference(cb);
             Log.d("PreferenceActivity", "ITERATE EventType");
         }
-
     }
 
     // "Level 2"
@@ -81,10 +80,10 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         Log.d("PreferenceActivity", "Enter createReminderPreferences");
 
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
-        Reminders r = MainActivity.reminders;
-        for (int i = 0; i < r.reminders.size(); i++) {
-            Log.d("createReminderP..", "ITERATE Reminder");
-        }
+        //Reminders r = MainActivity.reminders;
+        //for (int i = 0; i < r.reminders.size(); i++) {
+        //    Log.d("createReminderP..", "ITERATE Reminder");
+        //}
 
         // Add a button to add another reminder, which also opens a new/edit submenu
         /*

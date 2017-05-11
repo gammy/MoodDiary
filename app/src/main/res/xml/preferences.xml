@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceScreen
+        android:key="preference_select_reminders"
+        android:title="@string/title_preference_select_reminders"
+        android:summary="@string/summary_preference_select_reminders">
+        <!-- preference_add_edit_reminder screen should be built here -->
+    </PreferenceScreen>
+
     <!-- Event type selection shall be deprecated in the future I think, as
          each reminder should have its own list of types -->
     <PreferenceScreen
@@ -9,12 +16,6 @@
         android:summary="@string/summary_preference_select_event_types">
     </PreferenceScreen>
 
-    <PreferenceScreen
-        android:key="preference_select_reminders"
-        android:title="@string/title_preference_select_reminders"
-        android:summary="@string/summary_preference_select_reminders">
-        <!-- preference_add_edit_reminder screen should be built here -->
-    </PreferenceScreen>
 
     <ListPreference
         android:key="preference_select_theme"

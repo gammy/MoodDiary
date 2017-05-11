@@ -85,7 +85,7 @@ public class MainActivity extends ThemedActivity {
 
         entityPrimitives = new EntityPrimitives(db);
         eventTypes = new EventTypes(db);
-        reminders = new Reminders(db);
+        //reminders = new Reminders(db);
     }
 
     public void showNumberDialog(Activity activity, TextView view, EventType eventType){
