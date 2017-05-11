@@ -9,6 +9,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import org.bostonandroid.preference.TimePreference;
 
 public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
     SharedPreferences prefs;
@@ -40,7 +41,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         reminderScreen.addPreference(saveCategory);
 
         // Add a time view
-        TimePreference timePref = new TimePreference(this);
+        TimePreference timePref = new TimePreference(this, null);
         timePref.setTitle("(time should be here)");
         timePref.setKey("reminder_edit_time");
         timeCategory.addPreference(timePref);

@@ -1,11 +1,10 @@
 package nu.ere.mooddiary;
+import org.bostonandroid.preference.DatePreference;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
@@ -59,28 +58,30 @@ public class ExportActivity extends ThemedPreferenceActivity {
     public void createCSVPreferences() {
         Log.d("ExportActivity", "Enter createCSVPreferences");
 
+        // Event select
         PreferenceScreen prefEventTypes =
                 (PreferenceScreen) findPreference("export_csv_event_types");
         createEventTypePreferences(prefEventTypes);
 
-        //Preference dateFromButton = (Preference) findPreference("export_csv_date_from");
-        //dateFromButton.setOnPreferenceClickListener
-        //);
+        // Date begin widget
+        DatePreference datePrefBeg = new DatePreference(this, null);
+        datePrefBeg.setKey("csv_edit_time_beg");
+        datePrefBeg.setPositiveButtonText(R.string.submit);
+        datePrefBeg.setNegativeButtonText(R.string.cancel);
+        datePrefBeg.setTitle("Start time");
 
-        // FIXME these TimePreferences should be DatePreferences... need to do it all custom-style
-        TimePreference timePrefBeg = new TimePreference(this);
-        timePrefBeg.setTitle("Start time");
-        timePrefBeg.setSummary("<selected date>");
-        timePrefBeg.setKey("csv_edit_time_beg");
-        prefCSV.addPreference(timePrefBeg);
+        prefCSV.addPreference(datePrefBeg);
+        //datePrefBeg.defaultValue("2017.01.01");
 
-        TimePreference timePrefEnd = new TimePreference(this);
-        timePrefEnd.setTitle("End time");
-        timePrefEnd.setSummary("<selected date>");
-        timePrefEnd.setKey("csv_edit_time_end");
-        prefCSV.addPreference(timePrefEnd);
+        // Date end widget
+        DatePreference datePrefEnd = new DatePreference(this, null);
+        datePrefEnd.setKey("csv_edit_time_end");
+        datePrefEnd.setPositiveButtonText(R.string.submit);
+        datePrefEnd.setNegativeButtonText(R.string.cancel);
+        datePrefEnd.setTitle("End time");
+        prefCSV.addPreference(datePrefEnd);
 
-        // Add save button (hitting 'back' without a save should just cancel)
+        // Save button (hitting 'back' without a save should just cancel)
         Preference saveButton = new Preference(this);
         saveButton.setTitle(R.string.submit);
         saveButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
