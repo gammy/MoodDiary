@@ -25,14 +25,31 @@ public class OverviewActivity extends ThemedActivity {
         Log.d("Overview", "Enter loadInfo");
 
         TextView view = (TextView) findViewById(R.id.overviewText);
-
         SQLiteDatabase db = MainActivity.db;
-        DatabaseUtils.queryNumEntries(db, "Events", null, null);
 
-        SQLiteStatement s = db.compileStatement("SELECT COUNT(*) FROM Events");
-        long entry_count = s.simpleQueryForLong();
+        SQLiteStatement s;
 
-        String text = Long.toString(entry_count) + " Entries\n\n";
+        s = db.compileStatement("SELECT COUNT(*) FROM Events");
+        long entryCount = s.simpleQueryForLong();
+        s.releaseReference();
+
+        s = db.compileStatement("SELECT COUNT(*) FROM EventTypes");
+        long eventTypeCount = s.simpleQueryForLong();
+        s.releaseReference();
+
+        s = db.compileStatement("SELECT COUNT(*) FROM EntityPrimitives");
+        long entityPrimitiveCount = s.simpleQueryForLong();
+        s.releaseReference();
+
+        s = db.compileStatement("SELECT COUNT(*) FROM ReminderTimes");
+        long reminderCount = s.simpleQueryForLong();
+        s.releaseReference();
+
+        String text =
+                Long.toString(entryCount) + " entries\n" +
+                Long.toString(reminderCount) + " reminders\n" +
+                Long.toString(eventTypeCount) + " event types\n" +
+                Long.toString(entityPrimitiveCount) + " entity primitives\n\n";
 
         Cursor cursor =
                 MainActivity.db.rawQuery("SELECT date, value FROM Events ORDER BY date DESC", null);

@@ -98,7 +98,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
         saveButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                // TODO Produce the CSV
+                // TODO Produce the CSV based on the "csv_*" preferences
                 ExportActivity.this.finish();
                 return true;
             }
