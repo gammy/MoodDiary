@@ -42,7 +42,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         // Add a time view
         TimePreference timePref = new TimePreference(this);
         timePref.setTitle("(time should be here)");
-        timePref.setKey("reminder_edit_rime");
+        timePref.setKey("reminder_edit_time");
         timeCategory.addPreference(timePref);
 
         // TODO figure out how to get the damn time
@@ -63,13 +63,15 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             Log.d("PreferenceActivity", "ITERATE EventType");
         }
 
-        // Add save button
+        // Add save button (hitting 'back' without a save should just cancel)
         Preference saveButton = new Preference(this);
         saveButton.setTitle(R.string.submit);
         saveButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                // TODO
+                // TODO Save data to database
+                // TODO Reload
+                ReminderPreferencesActivity.this.finish();
                 return true;
             }
         });

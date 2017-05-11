@@ -11,11 +11,31 @@ public final class Reminders {
 
     public Reminders(SQLiteDatabase db){
         Log.d("Reminders", "Enter Reminders");
+
+        /*
+        reminders = List()
+        For row in Reminders:
+            reminder = new()
+            reminder.id = row.id
+            reminder.types = List()
+            eventList = sql(SELECT Event FROM Reminders WHERE ReminderTimeID = row.id)
+            For row in eventList:
+                reminder.add(eventID)
+            reminders.add(reminder)
+        */
         reminders = new ArrayList<>();
 
-        Cursor cursor = db.rawQuery("SELECT id, hh, mm, dd FROM Reminders", null);
+        // A reminder is:
+        // - time
+        // - list of types
+
+        //Cursor cursor = db.rawQuery("SELECT MAX(reminderTimeID) FROM Reminders", null);
+        //int reminderGroup = cursor.getInt(0) + 1;
+
+//        Cursor cursor = db.rawQuery("SELECT Event FROM Reminders WHERE ReminderTimeID = ", row.id);
         int added = 0;
 
+/*
         while(cursor.moveToNext()) {
             Reminder reminder = new Reminder(
                     cursor.getInt(0),
@@ -27,7 +47,7 @@ public final class Reminders {
             Log.d("Reminders", "Add reminder: " + cursor.getString(0));
             added++;
         }
-
+*/
         Log.d("Reminders", "Reminders added: " + Integer.toString(added));
     }
 }

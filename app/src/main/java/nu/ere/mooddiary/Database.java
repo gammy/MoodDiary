@@ -21,18 +21,29 @@ public class Database extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         Log.d("Database", "Enter onCreate" );
 
-        /* Table Creation */
+        // Reminders and ReminderTimes relate to entry scheduling (from the app)
+        db.execSQL(
+                "CREATE TABLE ReminderTimes " +
+                    "(" +
+                        "id         INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "reminderID INTEGER NOT NULL, " +
+                        "hh         INTEGER NOT NULL, " +
+                        "mm         INTEGER NOT NULL, " +
+                        "dd         INTEGER NOT NULL" +
+                    ")"
+        );
 
-        // Reminders (alarms)
         db.execSQL(
                 "CREATE TABLE Reminders " +
                     "(" +
-                        "id       INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "hh       INTEGER NOT NULL, " +
-                        "mm       INTEGER NOT NULL, " +
-                        "dd       INTEGER NOT NULL" +
+                        "id             INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "reminderTimeID INTEGER NOT NULL, " +
+                        "type           INTEGER NOT NULL, " +
+                        "FOREIGN KEY(type) REFERENCES EventTypes(id)" +
                     ")"
         );
+
+        /*************************************************************************/
 
         // Primitives (overdesign much?)
         db.execSQL(
@@ -44,7 +55,7 @@ public class Database extends SQLiteOpenHelper{
                 ")"
         );
 
-        // Types// TODO: Add parser for "option" field
+        // Types
         db.execSQL(
                 "CREATE TABLE EventTypes " +
                 "(" +
@@ -117,7 +128,7 @@ public class Database extends SQLiteOpenHelper{
 
         addEventType(db, ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "");
         addEventType(db, ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "");
-        addEventType(db, ID_TEXT,          8, "Note",                -1,   -1, -1, "");
+        addEventType(db, ID_TEXT,          8, "Note",                -1,   -1, -1, ""); // FIXME hack..
         // The idea here being that a user can add new types from the UI at some point
 
     }
@@ -128,6 +139,7 @@ public class Database extends SQLiteOpenHelper{
         // FIXME
         // Drop older tables if they existed
         db.execSQL("DROP TABLE IF EXISTS Reminders");
+        db.execSQL("DROP TABLE IF EXISTS ReminderTimes");
         db.execSQL("DROP TABLE IF EXISTS EntityPrimitives");
         db.execSQL("DROP TABLE IF EXISTS EventTypes");
         db.execSQL("DROP TABLE IF EXISTS Events");
@@ -223,23 +235,40 @@ public class Database extends SQLiteOpenHelper{
 
     /**
      * Insert a reminder
+     *  FIXME incomplete: Need to figure the logic out here.
+     *  A reminder has these properties:
+     *  - Time (HH, MM)
+     *  - A variable number of associated EventTypes
      *
      * @param db
      * @param hh    Hour in 24-hour format
      * @param mm    Hour in 24-hour format
      * @param dd    Hour in 7-day format (0-indexed)
      */
-    public void addReminder(SQLiteDatabase db, int hh, int mm, int dd) {
+    public void addReminder(SQLiteDatabase db, int hh, int mm, int dd, ArrayList<EventTypes> types) {
         Log.d("Database", "Enter addReminder" );
 
+        /*
+        ---------
+        (hh, mm) = getTimeSelectDialog()
+        typeList = getEventTypeselectDialog()
+        nextReminderID = sql(SELECT highest ReminderID number FROM ReminderTimes)
+        reminderTimeID = sql(INSERT INTO ReminderTimes (ReminderID, Hour, Minute) VALUES (nextReminderID, hh, mm)
+        For event in typeList
+            sql(INSERT INTO Reminders (ReminderTimeID, Event) VALUES (reminderTimeID, event.id)
+        */
+
+
+        /*
         String sql = "INSERT INTO Reminders (hh, mm, dd) VALUES (?, ?, ?)";
         SQLiteStatement statement = db.compileStatement(sql);
 
         statement.bindLong(0, (long) hh);
         statement.bindLong(1, (long) mm);
         statement.bindLong(2, (long) dd);
-
+        /
         statement.executeInsert();
+        */
     }
 
 }
