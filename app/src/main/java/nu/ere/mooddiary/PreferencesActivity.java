@@ -68,7 +68,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         for(int i = 0; i < eventTypes.types.size(); i++) {
             EventType e = eventTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);
-            cb.setKey(Long.toString(e.id));
+            cb.setKey("visible_event_" + Long.toString(e.id));
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1);
             prefEventTypes.addPreference(cb);
@@ -83,8 +83,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         // Create categories
         PreferenceCategory oldCategory = new PreferenceCategory(this);
         PreferenceCategory addCategory = new PreferenceCategory(this);
-        oldCategory.setTitle("Reminders"); // FIXME hardcoded
-        addCategory.setTitle("New"); // FIXME hardcoded
+        oldCategory.setTitle(getApplicationContext().getString(R.string.title_category_old_reminders));
+        addCategory.setTitle(getApplicationContext().getString(R.string.title_category_new));
 
         this.prefReminders.addPreference(oldCategory);
         this.prefReminders.addPreference(addCategory);

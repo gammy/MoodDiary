@@ -64,9 +64,9 @@ public class ExportActivity extends ThemedPreferenceActivity {
         PreferenceCategory datesCategory = new PreferenceCategory(this);
         PreferenceCategory saveCategory = new PreferenceCategory(this);
 
-        typesCategory.setTitle("Event types"); // FIXME hardcoded
-        datesCategory.setTitle("Date range"); // FIXME hardcoded
-        saveCategory.setTitle("Save"); // FIXME hardcoded
+        typesCategory.setTitle(getApplicationContext().getString(R.string.title_category_types));
+        datesCategory.setTitle(getApplicationContext().getString(R.string.title_category_dates));
+        saveCategory.setTitle(getApplicationContext().getString(R.string.title_category_save));
 
         prefCSV.addPreference(datesCategory);
         prefCSV.addPreference(typesCategory);
@@ -77,7 +77,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
         datePrefBeg.setKey("csv_edit_time_beg");
         datePrefBeg.setPositiveButtonText(R.string.submit);
         datePrefBeg.setNegativeButtonText(R.string.cancel);
-        datePrefBeg.setTitle("From date"); // FIXME hardcoded
+        datePrefBeg.setTitle(getApplicationContext().getString(R.string.title_date_from));
         datesCategory.addPreference(datePrefBeg);
 
         // Date end widget
@@ -85,7 +85,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
         datePrefEnd.setKey("csv_edit_time_end");
         datePrefEnd.setPositiveButtonText(R.string.submit);
         datePrefEnd.setNegativeButtonText(R.string.cancel);
-        datePrefEnd.setTitle("To date"); // FIXME hardcoded
+        datePrefEnd.setTitle(getApplicationContext().getString(R.string.title_date_to));
         datesCategory.addPreference(datePrefEnd);
 
         // Event type list

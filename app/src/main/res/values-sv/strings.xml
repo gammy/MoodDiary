@@ -23,4 +23,10 @@
     <string name="dark_preference_theme_keys">Mörkt</string>
     <string name="action_preference_reminders">Lägg till eller ändra påminnelser</string>
     <string name="action_donate">Tack, ta en tia!</string>
+    <string name="title_category_dates">Datum</string>
+    <string name="title_category_old_reminders">Påminnelser</string>
+    <string name="title_category_save">Spara</string>
+    <string name="title_category_time">Tid</string>
+    <string name="title_date_from">Från datum</string>
+    <string name="title_date_to">Till datum</string>
 </resources>

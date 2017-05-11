@@ -32,9 +32,9 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         PreferenceCategory typeCategory = new PreferenceCategory(this);
         PreferenceCategory saveCategory = new PreferenceCategory(this);
 
-        timeCategory.setTitle("Time"); // FIXME hardcoded
-        typeCategory.setTitle("Event types"); // FIXME hardcoded
-        saveCategory.setTitle("Save"); // FIXME hardcoded
+        timeCategory.setTitle(getApplicationContext().getString(R.string.title_category_time));
+        typeCategory.setTitle(getApplicationContext().getString(R.string.title_category_types));
+        saveCategory.setTitle(getApplicationContext().getString(R.string.title_category_save));
 
         reminderScreen.addPreference(timeCategory);
         reminderScreen.addPreference(typeCategory);
