@@ -12,13 +12,6 @@
         android:title="Export to CSV"
         android:summary="CSV generation settings">
 
-        <PreferenceScreen
-            android:key="export_csv_event_types"
-            android:title="Event types"
-            android:summary="Select which event types to export">
-            <!-- TODO: Dynamically add a checkbox list of types from EventTypes.class) -->
-        </PreferenceScreen>
-
         <!-- The TimePreference is entirely generated programmatically and has no layout file.
              As such, it is not possible to add it here either -->
         <!--

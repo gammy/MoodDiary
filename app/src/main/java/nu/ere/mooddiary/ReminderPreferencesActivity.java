@@ -72,6 +72,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 // TODO Save data to database
                 // TODO Reload
+                //timePref.onActivityDestroy();
                 ReminderPreferencesActivity.this.finish();
                 return true;
             }

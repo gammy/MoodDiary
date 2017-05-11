@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
@@ -58,28 +59,38 @@ public class ExportActivity extends ThemedPreferenceActivity {
     public void createCSVPreferences() {
         Log.d("ExportActivity", "Enter createCSVPreferences");
 
-        // Event select
-        PreferenceScreen prefEventTypes =
-                (PreferenceScreen) findPreference("export_csv_event_types");
-        createEventTypePreferences(prefEventTypes);
+        // Create categories
+        PreferenceCategory typesCategory = new PreferenceCategory(this);
+        PreferenceCategory datesCategory = new PreferenceCategory(this);
+        PreferenceCategory saveCategory = new PreferenceCategory(this);
+
+        typesCategory.setTitle("Event types"); // FIXME hardcoded
+        datesCategory.setTitle("Date range"); // FIXME hardcoded
+        saveCategory.setTitle("Save"); // FIXME hardcoded
+
+        prefCSV.addPreference(datesCategory);
+        prefCSV.addPreference(typesCategory);
+        prefCSV.addPreference(saveCategory);
 
         // Date begin widget
         DatePreference datePrefBeg = new DatePreference(this, null);
         datePrefBeg.setKey("csv_edit_time_beg");
         datePrefBeg.setPositiveButtonText(R.string.submit);
         datePrefBeg.setNegativeButtonText(R.string.cancel);
-        datePrefBeg.setTitle("Start time");
-
-        prefCSV.addPreference(datePrefBeg);
-        //datePrefBeg.defaultValue("2017.01.01");
+        datePrefBeg.setTitle("From date"); // FIXME hardcoded
+        datesCategory.addPreference(datePrefBeg);
 
         // Date end widget
         DatePreference datePrefEnd = new DatePreference(this, null);
         datePrefEnd.setKey("csv_edit_time_end");
         datePrefEnd.setPositiveButtonText(R.string.submit);
         datePrefEnd.setNegativeButtonText(R.string.cancel);
-        datePrefEnd.setTitle("End time");
-        prefCSV.addPreference(datePrefEnd);
+        datePrefEnd.setTitle("To date"); // FIXME hardcoded
+        datesCategory.addPreference(datePrefEnd);
+
+        // Event type list
+        createEventTypePreferences(typesCategory);
+        prefCSV.addPreference(typesCategory);
 
         // Save button (hitting 'back' without a save should just cancel)
         Preference saveButton = new Preference(this);
@@ -92,12 +103,12 @@ public class ExportActivity extends ThemedPreferenceActivity {
                 return true;
             }
         });
+        saveCategory.addPreference(saveButton);
 
-        prefCSV.addPreference(saveButton);
     }
 
     // Function copied near-verbatim from PreferencesActivity :(
-    public void createEventTypePreferences(PreferenceScreen screen) {
+    public void createEventTypePreferences(PreferenceCategory screen) {
         Log.d("ExportActivity", "Enter createEventTypePreferences");
 
         EventTypes eventTypes = MainActivity.eventTypes;

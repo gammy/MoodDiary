@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
@@ -79,28 +80,32 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
     public void createReminderPreferences() {
         Log.d("PreferenceActivity", "Enter createReminderPreferences");
 
+        // Create categories
+        PreferenceCategory oldCategory = new PreferenceCategory(this);
+        PreferenceCategory addCategory = new PreferenceCategory(this);
+        oldCategory.setTitle("Reminders"); // FIXME hardcoded
+        addCategory.setTitle("New"); // FIXME hardcoded
+
+        this.prefReminders.addPreference(oldCategory);
+        this.prefReminders.addPreference(addCategory);
+
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
-        //Reminders r = MainActivity.reminders;
-        //for (int i = 0; i < r.reminders.size(); i++) {
-        //    Log.d("createReminderP..", "ITERATE Reminder");
-        //}
-
-        // Add a button to add another reminder, which also opens a new/edit submenu
-        /*
-        TimePreference tp = new TimePreference(this);
-        tp.setTitle("Add a reminder");
-        tp.setKey("new_reminder");
-
-        Preference.OnPreferenceChangeListener listener =
-            new Preference.OnPreferenceChangeListener() {
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    // Code goes here
-                //    this.setTitle("lol");
+        for(int i = 0; i < 5; i++) {
+            Preference oldReminder = new Preference(this);
+            oldReminder.setKey("old_reminder_" + Integer.toString(i));
+            oldReminder.setTitle("<time of old reminder>");
+            oldReminder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    // Initialize the damn thing somehow
+                    Intent i = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
+                    startActivity(i);
                     return true;
                 }
-            };
-        tp.setOnPreferenceChangeListener(listener);
-        */
+            });
+            oldCategory.addPreference(oldReminder);
+        }
+;
 
         Preference newReminderButton = new Preference(this);
         newReminderButton.setTitle(R.string.action_preference_reminders);
@@ -119,8 +124,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
             }
         });
 
-        this.prefReminders.addPreference(newReminderButton);
-        //newFragment.show(getSupportFragmentManager(), "timePicker");
+        addCategory.addPreference(newReminderButton);
     }
-
 }
