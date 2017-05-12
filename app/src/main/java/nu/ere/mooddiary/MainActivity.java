@@ -3,7 +3,6 @@ package nu.ere.mooddiary;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +10,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.NumberPicker;
-import android.database.sqlite.SQLiteDatabase;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,7 +33,7 @@ import java.util.Calendar;
 
 public class MainActivity extends ThemedActivity {
 
-    public ORM orm;
+    private ORM orm;
     SharedPreferences sharedPrefs;
     public long lastSave;
 
@@ -45,8 +42,11 @@ public class MainActivity extends ThemedActivity {
         Log.d("Main", "Create");
         installAlarms();
         super.onCreate(savedInstanceState);
-        orm = ORM.getInstance();
+        orm = ORM.getInstance(this);
         initUI();
+        //setContentView(R.layout.coordinator_main);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
     }
 
     public void initUI() {
@@ -149,7 +149,7 @@ public class MainActivity extends ThemedActivity {
         // Add them to the main layout.
         for(int i = 0; i < orm.getEventTypes().types.size(); i++) {
             EventType etype = orm.getEventTypes().types.get(i);
-            EntityPrimitive primitive = etype.getPrimitive(orm.entityPrimitives);
+            EntityPrimitive primitive = etype.getPrimitive(orm.getPrimitives());
 
             // Make a label
             TextView label = new TextView(this);
@@ -291,7 +291,7 @@ public class MainActivity extends ThemedActivity {
         }
 
         lastSave = System.currentTimeMillis();
-        orm.getHelper().addEntries(entries, true);
+        orm.addEntries(entries, true);
     }
 
     @Override
@@ -323,7 +323,7 @@ public class MainActivity extends ThemedActivity {
                 return true;
 
             // Load the Overview screen
-            case R.id.action_overview:
+           case R.id.action_overview:
                 i = new Intent(MainActivity.this, OverviewActivity.class);
                 startActivity(i);
                 return true;

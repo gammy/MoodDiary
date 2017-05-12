@@ -14,7 +14,7 @@ public class OverviewActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("Overview", "Create");
         super.onCreate(savedInstanceState);
-        orm = new ORM();
+        orm = ORM.getInstance(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setContentView(R.layout.content_overview);

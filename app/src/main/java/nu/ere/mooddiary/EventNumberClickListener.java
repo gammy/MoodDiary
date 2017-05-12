@@ -1,7 +1,5 @@
 package nu.ere.mooddiary;
 
-import android.app.Activity;
-import android.support.design.widget.TextInputEditText;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;

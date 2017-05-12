@@ -22,7 +22,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        EventTypes eventTypes = orm.eventTypes;
+        EventTypes eventTypes = orm.getEventTypes();
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = prefs.edit();
 

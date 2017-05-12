@@ -6,36 +6,41 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.app.Application;
 
-public class ORM {
+// Thread-safe singleton with lazy initialization:
+// It's instantiated on first invocation only.
+public final class ORM extends Database {
+    private static volatile ORM instance = null;
 
-    public SQLiteDatabase db;
-    public Database dbh;
-
-    public EntityPrimitives entityPrimitives;
-    public EventTypes eventTypes;
-    public Reminders reminders;
+    public static EntityPrimitives entityPrimitives;
+    public static EventTypes eventTypes;
+    public static Reminders reminders;
 
     SharedPreferences preferences;
 
-    private static final ORM orm = new ORM();
-    public static ORM getInstance() {return orm;}
+    /****************************************/
+
+    private ORM(Context context) {
+        super(context);
+        Log.d("ORM", "Create");
+        db = getWritableDatabase();
+        onUpgrade(db, 0, 0); // FIXME Debugging - trash db to force creation
+        loadObjects();
+    }
+
+    public static synchronized ORM getInstance(Context context) {
+        if(instance == null) {
+           instance = new ORM(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    /****************************************/
 
     public EntityPrimitives getPrimitives() {return entityPrimitives;}
     public EventTypes getEventTypes() {return eventTypes;}
     public Reminders getReminders() {return reminders;}
-    public Database getHelper() {return dbh;}
-
-    protected void ORM(Context context) {
-        Log.d("ORM", "Create");
-
-        dbh = new Database(context);
-        db = dbh.getWritableDatabase();
-
-        dbh.onUpgrade(db, 0, 0); // FIXME Debugging - trash db to force creation
-
-        loadObjects();
-    }
 
     protected void loadObjects() {
         Log.d("ORM", "loadObjects");
@@ -43,6 +48,5 @@ public class ORM {
         entityPrimitives = new EntityPrimitives(db);
         eventTypes = new EventTypes(db);
         reminders = new Reminders(db, eventTypes);
-
     }
 }

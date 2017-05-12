@@ -39,7 +39,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        orm = new ORM();
+        orm = ORM.getInstance(this);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = prefs.edit();
@@ -113,7 +113,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
     public void createEventTypePreferences(PreferenceCategory screen) {
         Log.d("ExportActivity", "Enter createEventTypePreferences");
 
-        EventTypes eventTypes = orm.eventTypes;
+        EventTypes eventTypes = orm.getEventTypes();
 
         for(int i = 0; i < eventTypes.types.size(); i++) {
             EventType e = eventTypes.types.get(i);

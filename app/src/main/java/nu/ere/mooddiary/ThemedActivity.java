@@ -18,11 +18,19 @@ public class ThemedActivity extends AppCompatActivity {
     }
 
     private void setTheme() {
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPrefs.getString("preference_select_theme", null);
+        Log.d("ThemedActivity", "Enter setTheme");
 
-        //int themeID = R.style.getIdentifier("R.style.ThemeOverlay_AppCompat_Dark", null, null);
-        //int themeID = R.style.ThemeOverlay_AppCompat_Dark;
+        String theme = null;
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sharedPrefs != null) {
+            Log.d("ThemedActivity", "Unexpected: There is no sharedPreference object");
+            theme = sharedPrefs.getString("preference_select_theme", null);
+        }
+
+        if(theme == null) {
+            theme = new String("default");
+        }
+
         themeID = dialogThemeID = 0;
 
         switch(theme) {
@@ -38,11 +46,9 @@ public class ThemedActivity extends AppCompatActivity {
                 break;
         }
 
-        Log.d("setTheme", "Theme: " + theme + " (rID " + Integer.toString(themeID) +")");
-        //super.setTheme(android.R.style.ThemeOverlay_Material_Dark);
-        //super.setTheme(R.style.AppThemeDark);
+        Log.d("ThemedActivity", "Theme: " + theme + " (rID " + Integer.toString(themeID) +")");
         super.setTheme(themeID);
-        Log.d("setTheme", "Theme set by Android: " + super.getTheme());
+        Log.d("ThemedActivity", "Theme set by Android: " + super.getTheme());
     }
 }
 
