@@ -114,6 +114,7 @@ public class ReminderActivity extends ThemedActivity {
         for(int i = 0; i < orm.getEventTypes().types.size(); i++) {
             EventType etype = orm.getEventTypes().types.get(i);
             EntityPrimitive primitive = etype.getPrimitive(orm.getPrimitives());
+            Log.d(LOG_PREFIX, "Rendering event id " + Long.toString(etype.id) + ", type " + Long.toString(etype.entity));
 
             // Make a label
             TextView label = new TextView(this);
@@ -177,6 +178,7 @@ public class ReminderActivity extends ThemedActivity {
                     break;
 
                 default:
+                    Log.d(LOG_PREFIX, "Hm, not sure how to render this: " + etype.name);
                     break;
 
             }
