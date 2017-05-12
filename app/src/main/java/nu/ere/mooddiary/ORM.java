@@ -11,6 +11,8 @@ import android.app.Application;
 // Thread-safe singleton with lazy initialization:
 // It's instantiated on first invocation only.
 public final class ORM extends Database {
+    private static final String LOG_PREFIX = "ORM";
+
     private static volatile ORM instance = null;
 
     public static EntityPrimitives entityPrimitives;
@@ -23,7 +25,7 @@ public final class ORM extends Database {
 
     private ORM(Context context) {
         super(context);
-        Log.d("ORM", "Create");
+        Log.d(LOG_PREFIX, "Create");
         db = getWritableDatabase();
         onUpgrade(db, 0, 0); // FIXME Debugging - trash db to force creation
         loadObjects();
@@ -43,7 +45,7 @@ public final class ORM extends Database {
     public Reminders getReminders() {return reminders;}
 
     protected void loadObjects() {
-        Log.d("ORM", "loadObjects");
+        Log.d(LOG_PREFIX, "loadObjects");
 
         entityPrimitives = new EntityPrimitives(db);
         eventTypes = new EventTypes(db);

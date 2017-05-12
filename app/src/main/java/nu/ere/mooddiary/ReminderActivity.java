@@ -22,10 +22,11 @@ import android.widget.TextView;
 //http://stackoverflow.com/questions/2906925/how-do-i-pass-an-object-from-one-activity-to-another-on-android
 
 public class ReminderActivity extends ThemedActivity {
+    private static final String LOG_PREFIX = "ReminderActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("ReminderActivity", "Create");
+        Log.d(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
 
         /** Notification test ***********************/
@@ -61,7 +62,7 @@ public class ReminderActivity extends ThemedActivity {
     }
 
     public void renderEntryTypes() {
-        Log.d("MainActivity", "Enter renderEntryTypes");
+        Log.d(LOG_PREFIX, "Enter renderEntryTypes");
     /*
         // FIXME move some of this back into initUI; this function is only called ONCE.
 

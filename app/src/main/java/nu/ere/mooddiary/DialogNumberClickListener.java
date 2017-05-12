@@ -7,6 +7,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 class DialogNumberClickListener implements DialogInterface.OnClickListener {
+    private static final String LOG_PREFIX = "DialogNumberClickLis..";
+
     private TextView view;
     //private TextInputEditText view;
     private NumberPicker numberPicker;
@@ -18,8 +20,8 @@ class DialogNumberClickListener implements DialogInterface.OnClickListener {
     }
 
     public void onClick(DialogInterface dialog, int which) {
-        Log.d("DialogNumberClick", "Enter onClick");
-        Log.d("DialogNumberClick", "Which = " + Integer.toString(which));
+        Log.d(LOG_PREFIX, "Enter onClick");
+        Log.d(LOG_PREFIX, "Which = " + Integer.toString(which));
 
         switch (which)
         {

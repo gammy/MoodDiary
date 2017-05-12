@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.Button;
 
 public class AboutActivity extends ThemedActivity {
+    private static final String LOG_PREFIX = "AboutActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("About", "Create");
+        Log.d(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

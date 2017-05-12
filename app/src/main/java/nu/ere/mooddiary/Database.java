@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 public class Database extends SQLiteOpenHelper {
+    private static final String LOG_PREFIX = "Database";
     private static final int DB_VERSION = 2;
     private static final String DB_NAME = "moodDiary";
     public static SQLiteDatabase db;
@@ -20,7 +21,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("Database", "Enter onCreate" );
+        Log.d(LOG_PREFIX, "Enter onCreate" );
 
         this.db = db;
 
@@ -138,7 +139,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("Database", "Enter onUpgrade: Trashing everything" );
+        Log.d(LOG_PREFIX, "Enter onUpgrade: Trashing everything" );
         // FIXME
         // Drop older tables if they existed
         db.execSQL("DROP TABLE IF EXISTS Reminders");
@@ -164,7 +165,7 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addEventType(int entity, long order,
                              String name, long min, long max, long dfl, String meta) {
-        Log.d("Database", "Enter addEventType" );
+        Log.d(LOG_PREFIX, "Enter addEventType" );
 
         String sql = "INSERT INTO " +
                          "EventTypes " +
@@ -202,7 +203,7 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addEntries(ArrayList<Entry> entryList,
                           boolean useFirstTimestamp) { // Groups event times by first t
-        Log.d("Database", "Enter addEvents" );
+        Log.d(LOG_PREFIX, "Enter addEvents" );
 
         String sql = "INSERT INTO Events (date, type, value) VALUES (?, ?, ?)";
 
@@ -222,7 +223,7 @@ public class Database extends SQLiteOpenHelper {
             statement.bindString(3, entry.value);
 
             statement.executeInsert();
-            Log.d("Database",
+            Log.d(LOG_PREFIX,
                     "INSERT INTO Events: " + Long.toString(entry.time) + ", " +
                     Integer.toString(entry.eventType) + ", " +
                     entry.value);
@@ -244,7 +245,7 @@ public class Database extends SQLiteOpenHelper {
      * @param dd    Hour in 7-day format (0-indexed)
      */
     public void addReminder(int hh, int mm, int dd, ArrayList<EventTypes> types) {
-        Log.d("Database", "Enter addReminder" );
+        Log.d(LOG_PREFIX, "Enter addReminder" );
 
         /*
         ---------

@@ -11,6 +11,8 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 
 public class ExportActivity extends ThemedPreferenceActivity {
+    private static final String LOG_PREFIX = "ExportActivity";
+
     private ORM orm;
     PreferenceScreen prefEventTypes;
     /*
@@ -38,6 +40,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
                      prefSQL;
 
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
 
@@ -55,11 +58,11 @@ public class ExportActivity extends ThemedPreferenceActivity {
     }
 
     public void createSQLPreferences() {
-        Log.d("ExportActivity", "Enter createSQLPreferences");
+        Log.d(LOG_PREFIX, "Enter createSQLPreferences");
     }
 
     public void createCSVPreferences() {
-        Log.d("ExportActivity", "Enter createCSVPreferences");
+        Log.d(LOG_PREFIX, "Enter createCSVPreferences");
 
         // Create categories
         PreferenceCategory typesCategory = new PreferenceCategory(this);
@@ -111,7 +114,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
     // Function copied near-verbatim from PreferencesActivity :(
     public void createEventTypePreferences(PreferenceCategory screen) {
-        Log.d("ExportActivity", "Enter createEventTypePreferences");
+        Log.d(LOG_PREFIX, "Enter createEventTypePreferences");
 
         EventTypes eventTypes = orm.getEventTypes();
 
@@ -122,7 +125,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1);
             screen.addPreference(cb);
-            Log.d("ExportActivity", "ITERATE EventType");
+            Log.d(LOG_PREFIX, "ITERATE EventType");
         }
     }
 }

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 public class ThemedPreferenceActivity extends PreferenceActivity {
+    private static final String LOG_PREFIX = "ThemedPref..Activity";
 
     protected void onCreate(Bundle savedInstanceState) {
         setTheme();
@@ -15,12 +16,13 @@ public class ThemedPreferenceActivity extends PreferenceActivity {
     }
 
     private void setTheme() {
-        Log.d("ThemedPrefActivity", "Enter setTheme");
+        Log.d(LOG_PREFIX, "Enter setTheme");
 
         String theme = null;
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if(sharedPrefs != null) {
-            Log.d("ThemedPrefActivity", "Unexpected: There is no sharedPreference object");
+        if(sharedPrefs == null) {
+            Log.d(LOG_PREFIX, "Unexpected: There is no sharedPreference object");
+        } else {
             theme = sharedPrefs.getString("preference_select_theme", null);
         }
 
@@ -40,9 +42,9 @@ public class ThemedPreferenceActivity extends PreferenceActivity {
                 break;
         }
 
-        Log.d("ThemedPrefActivity", "Theme: " + theme + " (rID " + Integer.toString(themeID) +")");
+        Log.d(LOG_PREFIX, "Theme: " + theme + " (rID " + Integer.toString(themeID) +")");
         super.setTheme(themeID);
-        Log.d("ThemedPrefActivity", "Theme set by Android: " + super.getTheme());
+        Log.d(LOG_PREFIX, "Theme set by Android: " + super.getTheme());
     }
 }
 

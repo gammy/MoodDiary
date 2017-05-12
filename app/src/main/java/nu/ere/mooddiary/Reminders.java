@@ -9,11 +9,12 @@ import java.util.ArrayList;
 
 // FIXME this is fucked. What the hell am I doing.
 public final class Reminders {
+    private static final String LOG_PREFIX = "Reminders";
     public ArrayList<Reminder> reminders;
     public EventTypes eventTypes;
 
     public Reminders(SQLiteDatabase db, EventTypes eventTypes){
-        Log.d("Reminders", "Enter Reminders");
+        Log.d(LOG_PREFIX, "Enter Reminders");
         this.eventTypes = eventTypes;
         /*
         reminders = List()
@@ -59,11 +60,11 @@ public final class Reminders {
 //        while(cursor.moveToNext()) {
 //            long eventID = cursor.getLong(1);
 //            reminderEventTypes.add(eventTypes.getByID(eventID));
-//            Log.d("Reminders", "Add reminder event type: " + eventID);
+//            Log.d(LOG_PREFIX, "Add reminder event type: " + eventID);
 //            added++;
 //        }
 //        Reminder reminder = new Reminder(id, hh, mm, dd, reminderEventTypes);
 //
-//        Log.d("Reminders", "Reminders added: " + Integer.toString(added));
+//        Log.d(LOG_PREFIX, "Reminders added: " + Integer.toString(added));
     }
 }

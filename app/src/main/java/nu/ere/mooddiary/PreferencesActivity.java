@@ -16,6 +16,7 @@ import android.util.Log;
 //       necessary evil.
 
 public class PreferencesActivity extends ThemedPreferenceActivity {
+    private static final String LOG_PREFIX = "PreferencesActivity";
     private ORM orm;
 
     SharedPreferences prefs;
@@ -67,7 +68,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
     // "Level 2"
     public void createEventTypePreferences() {
-        Log.d("PreferenceActivity", "Enter createEventTypePreferences");
+        Log.d(LOG_PREFIX, "Enter createEventTypePreferences");
 
         EventTypes eventTypes = orm.getEventTypes();
 
@@ -78,13 +79,13 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1);
             prefEventTypes.addPreference(cb);
-            Log.d("PreferenceActivity", "ITERATE EventType");
+            Log.d(LOG_PREFIX, "ITERATE EventType");
         }
     }
 
     // "Level 2"
     public void createReminderPreferences() {
-        Log.d("PreferenceActivity", "Enter createReminderPreferences");
+        Log.d(LOG_PREFIX, "Enter createReminderPreferences");
 
         // Create categories
         PreferenceCategory oldCategory = new PreferenceCategory(this);

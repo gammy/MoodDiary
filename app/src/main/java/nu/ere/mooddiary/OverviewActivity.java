@@ -8,11 +8,12 @@ import android.util.Log;
 import android.widget.TextView;
 
 public class OverviewActivity extends ThemedActivity {
+    private static final String LOG_PREFIX = "OverviewActivity";
     private ORM orm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("Overview", "Create");
+        Log.d(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -23,7 +24,7 @@ public class OverviewActivity extends ThemedActivity {
     }
 
     private void loadInfo() {
-        Log.d("Overview", "Enter loadInfo");
+        Log.d(LOG_PREFIX, "Enter loadInfo");
 
         TextView view = (TextView) findViewById(R.id.overviewText);
         SQLiteDatabase db = orm.db;

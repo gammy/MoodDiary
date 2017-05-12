@@ -6,10 +6,11 @@ import java.util.NoSuchElementException;
 import android.util.Log;
 
 public final class EntityPrimitives {
+    private static final String LOG_PREFIX = "EntityPrimitives";
     public ArrayList<EntityPrimitive> entities;
 
     public EntityPrimitives(SQLiteDatabase db){
-        Log.d("EntityPrimitives", "Enter EntityPrimitives");
+        Log.d(LOG_PREFIX, "Enter EntityPrimitives");
         entities = new ArrayList<EntityPrimitive>();
 
         Cursor cursor = db.rawQuery("SELECT id, name, enabled FROM EntityPrimitives", null);
@@ -22,13 +23,13 @@ public final class EntityPrimitives {
                     cursor.getLong(2)
                     );
             entities.add(primitive);
-            Log.d("EntityPrimitives", "Add primitive: " + cursor.getString(1));
+            Log.d(LOG_PREFIX, "Add primitive: " + cursor.getString(1));
             added++;
         }
 
         cursor.close();
 
-        Log.d("EntityPrimitives", "Primitives added: " + Integer.toString(added));
+        Log.d(LOG_PREFIX, "Primitives added: " + Integer.toString(added));
     }
 
     public EntityPrimitive getByID(long id) {

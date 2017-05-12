@@ -32,14 +32,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainActivity extends ThemedActivity {
-
+    private static final String LOG_PREFIX = "MainActivity";
     private ORM orm;
     SharedPreferences sharedPrefs;
     public long lastSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("Main", "Create");
+        Log.d(LOG_PREFIX, "Create");
         installAlarms();
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
@@ -50,7 +50,7 @@ public class MainActivity extends ThemedActivity {
     }
 
     public void initUI() {
-        Log.d("Main", "Enter initUI" );
+        Log.d(LOG_PREFIX, "Enter initUI" );
 
         lastSave = 0;
 
@@ -74,6 +74,7 @@ public class MainActivity extends ThemedActivity {
     }
 
     public void installAlarms() {
+        Log.d(LOG_PREFIX, "Enter installAlarms" );
 
         Intent reminderIntent = new Intent(MainActivity.this , ReminderActivity.class);
         reminderIntent.putExtra("reminder_id", 1234); // TODO (can add Bundle / Parceable as well?)
@@ -83,8 +84,8 @@ public class MainActivity extends ThemedActivity {
         // TODO: walk through all the Reminders and set all the timers.
         //       This will need to be done each time we add or change an existing reminder as well.
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 00);
-        calendar.set(Calendar.MINUTE, 22);
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 26);
         calendar.set(Calendar.SECOND, 0);
         //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
@@ -94,7 +95,8 @@ public class MainActivity extends ThemedActivity {
     }
 
     public void showNumberDialog(Activity activity, TextView view, EventType eventType){
-        Log.d("NumberDialog", "dialogThemeID: " + Integer.toString(dialogThemeID));
+        Log.d(LOG_PREFIX, "Enter showNumberDialog");
+        Log.d(LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
         final NumberPicker numberPicker =
                 new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
 
@@ -126,7 +128,7 @@ public class MainActivity extends ThemedActivity {
     }
 
     public void renderEntryTypes() {
-        Log.d("MainActivity", "Enter renderEntryTypes");
+        Log.d(LOG_PREFIX, "Enter renderEntryTypes");
         // FIXME move some of this back into initUI; this function is only called ONCE.
 
         // Get our main (scrollable) view, where we are to programmatically add our EntryTypes
@@ -224,7 +226,7 @@ public class MainActivity extends ThemedActivity {
     }
 
     public void resetEntries() {
-        Log.d("MainActivity", "Enter resetEntries");
+        Log.d(LOG_PREFIX, "Enter resetEntries");
 
         // FIXME need to refactor this stuff, it's in too many places already but it's
         //       02:20am, so it will have to wait!
@@ -257,7 +259,7 @@ public class MainActivity extends ThemedActivity {
     }
 
     public void saveEvents() {
-        Log.d("MainActivity", "Enter saveEvents");
+        Log.d(LOG_PREFIX, "Enter saveEvents");
 
         ArrayList<Entry> entries = new ArrayList<>();
         int evCount = orm.getEventTypes().types.size();

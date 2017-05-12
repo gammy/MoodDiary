@@ -13,6 +13,7 @@ import android.util.Log;
 import org.bostonandroid.preference.TimePreference;
 
 public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
+    private static final String LOG_PREFIX = "ReminderPref..Activity";
     private ORM orm;
 
     SharedPreferences prefs;
@@ -20,7 +21,9 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
     PreferenceScreen reminderScreen;
 
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
+        orm = orm.getInstance(this);
 
         EventTypes eventTypes = orm.getEventTypes();
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -56,7 +59,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1); // FIXME should load state from db / reminder obj, not event types
             typeCategory.addPreference(cb);
-            Log.d("PreferenceActivity", "ITERATE EventType");
+            Log.d(LOG_PREFIX, "ITERATE EventType");
         }
 
         // Add save button (hitting 'back' without a save should just cancel)

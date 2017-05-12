@@ -7,10 +7,12 @@ import java.util.NoSuchElementException;
 import java.util.ArrayList;
 
 public class EventTypes {
+    private static final String LOG_PREFIX = "EventTypes";
+
     public ArrayList<EventType> types;
 
     public EventTypes(SQLiteDatabase db){
-        Log.d("EventTypes", "Enter EventTypes");
+        Log.d(LOG_PREFIX, "Enter EventTypes");
         types = new ArrayList<EventType>();
 
         Cursor cursor = db.rawQuery(
@@ -42,7 +44,7 @@ public class EventTypes {
                     cursor.getLong(7)    // enabled
             );
             types.add(type);
-            Log.d("EventTypes", "Add type: " + type.name +
+            Log.d(LOG_PREFIX, "Add type: " + type.name +
                     "(id " + Long.toString(type.id) + ", " +
                     "order " + Long.toString(type.order) + ")");
             added++;
@@ -50,7 +52,7 @@ public class EventTypes {
 
         cursor.close();
 
-        Log.d("EventTypes", "Types added: " + Integer.toString(added));
+        Log.d(LOG_PREFIX, "Types added: " + Integer.toString(added));
     }
 
     public EventType getByID(long id) {
