@@ -40,7 +40,7 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
-        installAlarms();
+        // installAlarms();
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
@@ -55,7 +55,7 @@ public class MainActivity extends ThemedActivity {
         lastSave = 0;
 
         setContentView(R.layout.coordinator_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
 
         // Ensure that no programmatically generated view within our ScrollView forces the
@@ -84,47 +84,14 @@ public class MainActivity extends ThemedActivity {
         // TODO: walk through all the Reminders and set all the timers.
         //       This will need to be done each time we add or change an existing reminder as well.
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 26);
+        calendar.set(Calendar.HOUR_OF_DAY, 21);
+        calendar.set(Calendar.MINUTE, 17);
         calendar.set(Calendar.SECOND, 0);
-        //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
         //                          calendar.getTimeInMillis(),
         //        3600000 /* One hour in ms */, pendingIntent);
 
-    }
-
-    public void showNumberDialog(Activity activity, TextView view, EventType eventType){
-        Log.d(LOG_PREFIX, "Enter showNumberDialog");
-        Log.d(LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
-        final NumberPicker numberPicker =
-                new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
-
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue((int) eventType.totalValues);
-        numberPicker.setValue(Integer.parseInt(view.getText().toString()));
-        numberPicker.setWrapSelectorWheel(false);
-
-        // FIXME numberPicker styling (font size) regression
-        /*
-        numberPicker.setLayoutParams(new RelativeLayout.LayoutParams(
-                                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                                        RelativeLayout.LayoutParams.MATCH_PARENT));
-        */
-
-        AlertDialog.Builder builder =
-                new AlertDialog.Builder(new ContextThemeWrapper(activity, dialogThemeID));
-
-        DialogNumberClickListener listener = new DialogNumberClickListener(view, numberPicker);
-
-        builder.setPositiveButton(R.string.submit, listener);
-        builder.setNegativeButton(R.string.cancel, listener);
-        builder.setView(numberPicker);
-
-        AlertDialog dialog = builder.create();
-
-        dialog.setTitle(eventType.name);
-        dialog.show();
     }
 
     public void renderEntryTypes() {
@@ -203,7 +170,7 @@ public class MainActivity extends ThemedActivity {
 
                     number.setText(Long.toString(etype.normalDefault));
                     EventNumberClickListener listener =
-                            new EventNumberClickListener(MainActivity.this, number, etype);
+                            new EventNumberClickListener(MainActivity.this, number, etype, dialogThemeID);
                     number.setOnClickListener(listener);
                     row.addView(number, rowParams);
                     break;
@@ -333,6 +300,12 @@ public class MainActivity extends ThemedActivity {
             // Load the About screen
             case R.id.action_about:
                 i = new Intent(MainActivity.this, AboutActivity.class);
+                startActivity(i);
+                return true;
+
+            // Load TEST
+            case R.id.action_TEST:
+                i = new Intent(MainActivity.this, ReminderActivity.class);
                 startActivity(i);
                 return true;
 

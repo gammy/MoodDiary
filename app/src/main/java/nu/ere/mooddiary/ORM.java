@@ -15,9 +15,9 @@ public final class ORM extends Database {
 
     private static volatile ORM instance = null;
 
-    public static EntityPrimitives entityPrimitives;
-    public static EventTypes eventTypes;
-    public static Reminders reminders;
+    private static EntityPrimitives entityPrimitives = null;
+    private static EventTypes eventTypes = null;
+    private static Reminders reminders = null;
 
     SharedPreferences preferences;
 
@@ -32,19 +32,23 @@ public final class ORM extends Database {
     }
 
     public static synchronized ORM getInstance(Context context) {
+        Log.d(LOG_PREFIX, "getInstance");
         if(instance == null) {
+            Log.d(LOG_PREFIX, "creating new instance");
            instance = new ORM(context.getApplicationContext());
+        } else {
+            Log.d(LOG_PREFIX, "reusing old instance");
         }
         return instance;
     }
 
     /****************************************/
 
-    public EntityPrimitives getPrimitives() {return entityPrimitives;}
-    public EventTypes getEventTypes() {return eventTypes;}
-    public Reminders getReminders() {return reminders;}
+    public static EntityPrimitives getPrimitives() {return entityPrimitives;}
+    public static EventTypes getEventTypes() {return eventTypes;}
+    public static Reminders getReminders() {return reminders;}
 
-    protected void loadObjects() {
+    protected static synchronized void loadObjects() {
         Log.d(LOG_PREFIX, "loadObjects");
 
         entityPrimitives = new EntityPrimitives(db);

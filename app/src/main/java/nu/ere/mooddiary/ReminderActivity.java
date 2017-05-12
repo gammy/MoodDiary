@@ -1,5 +1,6 @@
 package nu.ere.mooddiary;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -10,9 +11,13 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -23,11 +28,13 @@ import android.widget.TextView;
 
 public class ReminderActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
+    private ORM orm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
+        orm.getInstance(this);
 
         /** Notification test ***********************/
         Intent resultIntent = new Intent(this, ReminderActivity.class);
@@ -58,12 +65,32 @@ public class ReminderActivity extends ThemedActivity {
         // Builds the notification and issues it.
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
-        renderEntryTypes();
+        initUI();
     }
 
+    public void initUI() {
+        Log.d(LOG_PREFIX, "Enter initUI" );
+
+        setContentView(R.layout.coordinator_reminders);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.reminderToolbar);
+        setSupportActionBar(toolbar);
+
+        // Ensure that no programmatically generated view within our ScrollView forces the
+        // view to scroll down: We want the initial to view always to be at the top:
+        // http://stackoverflow.com/a/35071620
+        ScrollView view = (ScrollView) findViewById(R.id.reminderScrollView);
+        view.setFocusableInTouchMode(true);
+        view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+
+        // Set up the save button, which, on click, saves the event and runs an animation
+        Button saveButton = (Button) findViewById(R.id.reminderSaveButton);
+        TextView thanksView = (TextView) findViewById(R.id.reminderThanksTextView);
+        saveButton.setOnClickListener(new SaveClickListener(this, thanksView));
+
+        renderEntryTypes();
+    }
     public void renderEntryTypes() {
         Log.d(LOG_PREFIX, "Enter renderEntryTypes");
-    /*
         // FIXME move some of this back into initUI; this function is only called ONCE.
 
         // Get our main (scrollable) view, where we are to programmatically add our EntryTypes
@@ -84,9 +111,9 @@ public class ReminderActivity extends ThemedActivity {
 
         // Walk our event types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
-        for(int i = 0; i < eventTypes.types.size(); i++) {
-            EventType etype = eventTypes.types.get(i);
-            EntityPrimitive primitive = etype.getPrimitive(entityPrimitives);
+        for(int i = 0; i < orm.getEventTypes().types.size(); i++) {
+            EventType etype = orm.getEventTypes().types.get(i);
+            EntityPrimitive primitive = etype.getPrimitive(orm.getPrimitives());
 
             // Make a label
             TextView label = new TextView(this);
@@ -138,7 +165,7 @@ public class ReminderActivity extends ThemedActivity {
 
                     number.setText(Long.toString(etype.normalDefault));
                     EventNumberClickListener listener =
-                            new EventNumberClickListener(MainActivity.this, number, etype);
+                            new EventNumberClickListener(ReminderActivity.this, number, etype, dialogThemeID);
                     number.setOnClickListener(listener);
                     row.addView(number, rowParams);
                     break;
@@ -158,6 +185,5 @@ public class ReminderActivity extends ThemedActivity {
         }
 
         entryLayout.addView(table);
-    */
     }
 }

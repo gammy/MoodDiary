@@ -1,5 +1,6 @@
 package nu.ere.mooddiary;
 
+import android.app.Activity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -8,13 +9,13 @@ import android.widget.TextView;
 
 // So stupid..
 public class SaveClickListener implements OnClickListener {
-    MainActivity activity;
+    Activity activity;
     TextView view;
 
     Animation in, out;
     SaveSplash splash;
 
-    public SaveClickListener(MainActivity activity, TextView view) {
+    public SaveClickListener(Activity activity, TextView view) {
 
         this.activity = activity;
         this.view = view;
@@ -34,8 +35,8 @@ public class SaveClickListener implements OnClickListener {
         view.startAnimation(in);
         view.setVisibility(View.VISIBLE);
 
-        activity.saveEvents(); // Where the magic happens
-        activity.resetEntries();
+        // activity.saveEvents(); // Where the magic happens FIXME need activity-agnostic method
+        //activity.resetEntries(); // FIXME need activity-agnostic method
     }
 
 
