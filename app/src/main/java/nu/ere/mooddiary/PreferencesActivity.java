@@ -12,7 +12,12 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 
+// Note: Any key prefixed with "junk_" will *not* be used by the app, and is considered a
+//       necessary evil.
+
 public class PreferencesActivity extends ThemedPreferenceActivity {
+    private ORM orm;
+
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
 
@@ -21,6 +26,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        orm = new ORM();
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = prefs.edit();
@@ -63,7 +69,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
     public void createEventTypePreferences() {
         Log.d("PreferenceActivity", "Enter createEventTypePreferences");
 
-        EventTypes eventTypes = MainActivity.eventTypes;
+        EventTypes eventTypes = orm.eventTypes;
 
         for(int i = 0; i < eventTypes.types.size(); i++) {
             EventType e = eventTypes.types.get(i);
@@ -92,8 +98,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
         for(int i = 0; i < 5; i++) {
             Preference oldReminder = new Preference(this);
-            oldReminder.setKey("old_reminder_" + Integer.toString(i));
-            oldReminder.setTitle("<time of old reminder>");
+            oldReminder.setKey("junk_old_reminder_" + Integer.toString(i));
+            //oldReminder.setTitle("<time of old reminder>");
             oldReminder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {

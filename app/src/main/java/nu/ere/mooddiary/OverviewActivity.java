@@ -1,22 +1,23 @@
 package nu.ere.mooddiary;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
 
 public class OverviewActivity extends ThemedActivity {
+    private ORM orm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("Overview", "Create");
         super.onCreate(savedInstanceState);
+        orm = new ORM();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setContentView(R.layout.overview_main);
+        setContentView(R.layout.content_overview);
 
         loadInfo();
     }
@@ -25,7 +26,7 @@ public class OverviewActivity extends ThemedActivity {
         Log.d("Overview", "Enter loadInfo");
 
         TextView view = (TextView) findViewById(R.id.overviewText);
-        SQLiteDatabase db = MainActivity.db;
+        SQLiteDatabase db = orm.db;
 
         SQLiteStatement s;
 
@@ -52,7 +53,7 @@ public class OverviewActivity extends ThemedActivity {
                 Long.toString(entityPrimitiveCount) + " entity primitives\n\n";
 
         Cursor cursor =
-                MainActivity.db.rawQuery("SELECT date, value FROM Events ORDER BY date DESC", null);
+                orm.db.rawQuery("SELECT date, value FROM Events ORDER BY date DESC", null);
         cursor.moveToFirst();
 
         while(cursor.moveToNext()) {

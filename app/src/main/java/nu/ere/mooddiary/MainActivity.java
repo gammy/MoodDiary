@@ -1,21 +1,20 @@
 package nu.ere.mooddiary;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.Menu;
@@ -33,24 +32,20 @@ import android.widget.TextView;
 import android.support.v4.widget.TextViewCompat;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends ThemedActivity {
 
-    public Database dbh;
-    public static SQLiteDatabase db;
-    public EntityPrimitives entityPrimitives;
-    public static EventTypes eventTypes;
-    public static Reminders reminders;
+    public ORM orm;
     SharedPreferences sharedPrefs;
     public long lastSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d("Main", "Create");
-        initDB();
+        installAlarms();
         super.onCreate(savedInstanceState);
-
-
+        orm = ORM.getInstance();
         initUI();
     }
 
@@ -59,7 +54,7 @@ public class MainActivity extends ThemedActivity {
 
         lastSave = 0;
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.coordinator_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,6 +65,7 @@ public class MainActivity extends ThemedActivity {
         view.setFocusableInTouchMode(true);
         view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
+        // Set up the save button, which, on click, saves the event and runs an animation
         Button saveButton = (Button) findViewById(R.id.saveButton);
         TextView thanksView = (TextView) findViewById(R.id.thanksTextView);
         saveButton.setOnClickListener(new SaveClickListener(this, thanksView));
@@ -77,19 +73,27 @@ public class MainActivity extends ThemedActivity {
         renderEntryTypes();
     }
 
-    public void initDB() {
-        dbh = new Database(this);
-        db = dbh.getWritableDatabase();
+    public void installAlarms() {
 
-        dbh.onUpgrade(db, 0, 0); // XXX Debugging - trash db to force creation
+        Intent reminderIntent = new Intent(MainActivity.this , ReminderActivity.class);
+        reminderIntent.putExtra("reminder_id", 1234); // TODO (can add Bundle / Parceable as well?)
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, reminderIntent, 0);
 
-        entityPrimitives = new EntityPrimitives(db);
-        eventTypes = new EventTypes(db);
-        //reminders = new Reminders(db);
+        // TODO: walk through all the Reminders and set all the timers.
+        //       This will need to be done each time we add or change an existing reminder as well.
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 00);
+        calendar.set(Calendar.MINUTE, 22);
+        calendar.set(Calendar.SECOND, 0);
+        //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+        //                          calendar.getTimeInMillis(),
+        //        3600000 /* One hour in ms */, pendingIntent);
+
     }
 
     public void showNumberDialog(Activity activity, TextView view, EventType eventType){
-    //public void showNumberDialog(Activity activity, TextInputEditText view, EventType eventType){
         Log.d("NumberDialog", "dialogThemeID: " + Integer.toString(dialogThemeID));
         final NumberPicker numberPicker =
                 new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
@@ -99,6 +103,7 @@ public class MainActivity extends ThemedActivity {
         numberPicker.setValue(Integer.parseInt(view.getText().toString()));
         numberPicker.setWrapSelectorWheel(false);
 
+        // FIXME numberPicker styling (font size) regression
         /*
         numberPicker.setLayoutParams(new RelativeLayout.LayoutParams(
                                         RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -142,9 +147,9 @@ public class MainActivity extends ThemedActivity {
 
         // Walk our event types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
-        for(int i = 0; i < eventTypes.types.size(); i++) {
-            EventType etype = eventTypes.types.get(i);
-            EntityPrimitive primitive = etype.getPrimitive(entityPrimitives);
+        for(int i = 0; i < orm.getEventTypes().types.size(); i++) {
+            EventType etype = orm.getEventTypes().types.get(i);
+            EntityPrimitive primitive = etype.getPrimitive(orm.entityPrimitives);
 
             // Make a label
             TextView label = new TextView(this);
@@ -224,12 +229,12 @@ public class MainActivity extends ThemedActivity {
         // FIXME need to refactor this stuff, it's in too many places already but it's
         //       02:20am, so it will have to wait!
 
-        int evCount = eventTypes.types.size();
+        int evCount = orm.getEventTypes().types.size();
 
         for (int i = 0; i < evCount; i++) {
-            EventType etype = eventTypes.types.get(i);
+            EventType etype = orm.getEventTypes().types.get(i);
 
-            switch (etype.getPrimitive(entityPrimitives).name) {
+            switch (etype.getPrimitive(orm.getPrimitives()).name) {
                 case "range_center":
                 case "range_normal":
                     SeekBar seekBar = (SeekBar) etype.view;
@@ -255,15 +260,15 @@ public class MainActivity extends ThemedActivity {
         Log.d("MainActivity", "Enter saveEvents");
 
         ArrayList<Entry> entries = new ArrayList<>();
-        int evCount = eventTypes.types.size();
+        int evCount = orm.getEventTypes().types.size();
 
         // - Save widget data down to the entrylist
         for(int i = 0; i < evCount; i++) {
-            EventType etype = eventTypes.types.get(i);
+            EventType etype = orm.getEventTypes().types.get(i);
             String value;
 
             // Parse
-            switch(etype.getPrimitive(entityPrimitives).name) {
+            switch(etype.getPrimitive(orm.getPrimitives()).name) {
                 case "range_center":
                 case "range_normal":
                     value = Integer.toString(((SeekBar) etype.view).getProgress());
@@ -286,7 +291,7 @@ public class MainActivity extends ThemedActivity {
         }
 
         lastSave = System.currentTimeMillis();
-        dbh.addEntries(db, entries, true);
+        orm.getHelper().addEntries(entries, true);
     }
 
     @Override
@@ -321,8 +326,8 @@ public class MainActivity extends ThemedActivity {
             case R.id.action_overview:
                 i = new Intent(MainActivity.this, OverviewActivity.class);
                 startActivity(i);
-
                 return true;
+
             // Load the About screen
             case R.id.action_about:
                 i = new Intent(MainActivity.this, AboutActivity.class);

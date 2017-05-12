@@ -12,7 +12,7 @@ public final class Reminders {
     public ArrayList<Reminder> reminders;
     public EventTypes eventTypes;
 
-    public Reminders(SQLiteDatabase db, EventTypes  eventTypes){
+    public Reminders(SQLiteDatabase db, EventTypes eventTypes){
         Log.d("Reminders", "Enter Reminders");
         this.eventTypes = eventTypes;
         /*

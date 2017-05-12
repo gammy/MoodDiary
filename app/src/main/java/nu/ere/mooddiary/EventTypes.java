@@ -48,6 +48,8 @@ public class EventTypes {
             added++;
         }
 
+        cursor.close();
+
         Log.d("EventTypes", "Types added: " + Integer.toString(added));
     }
 

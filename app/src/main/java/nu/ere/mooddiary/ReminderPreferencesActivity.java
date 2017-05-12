@@ -1,3 +1,4 @@
+/* New Reminder menu, containing a list of event types, a time, and a save button */
 package nu.ere.mooddiary;
 
 import android.content.Intent;
@@ -12,15 +13,16 @@ import android.util.Log;
 import org.bostonandroid.preference.TimePreference;
 
 public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
+    private ORM orm;
+
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
-
     PreferenceScreen reminderScreen;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        EventTypes eventTypes = MainActivity.eventTypes;
+        EventTypes eventTypes = orm.eventTypes;
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         editor = prefs.edit();
 
@@ -42,22 +44,15 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
 
         // Add a time view
         TimePreference timePref = new TimePreference(this, null);
-        timePref.setTitle("(time should be here)");
-        timePref.setKey("reminder_edit_time");
+        timePref.setKey("junk_reminder_edit_time");
         timeCategory.addPreference(timePref);
-
-        // TODO figure out how to get the damn time
-
-        //timePref.setOnPreferenceChangeListener(listener);
-        //addPreferencesFromResource(R.xml.preferences);
-        //PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // Add checkboxes for all enabled event types, and configure them appropriately if
         // we are editing an existing reminder
         for(int i = 0; i < eventTypes.types.size(); i++) {
             EventType e = eventTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);
-            cb.setKey(Long.toString(e.id)); // FIXME should load state from db / reminder obj, not event types
+            cb.setKey("junk_" + Long.toString(e.id)); // FIXME should load state from db / reminder obj, not event types
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1); // FIXME should load state from db / reminder obj, not event types
             typeCategory.addPreference(cb);
@@ -70,6 +65,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         saveButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                // TODO collate all the stupid properties
                 // TODO Save data to database
                 // TODO Reload
                 //timePref.onActivityDestroy();

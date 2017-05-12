@@ -9,9 +9,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class Database extends SQLiteOpenHelper{
+public class Database extends SQLiteOpenHelper {
     private static final int DB_VERSION = 2;
     private static final String DB_NAME = "moodDiary";
+    public static SQLiteDatabase db;
 
     public Database(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -20,6 +21,8 @@ public class Database extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d("Database", "Enter onCreate" );
+
+        this.db = db;
 
         // Reminders and ReminderTimes relate to entry scheduling (from the app)
         db.execSQL(
@@ -119,16 +122,16 @@ public class Database extends SQLiteOpenHelper{
             addEventType(db, ID_NUMBER, 5, "Alcohol (units)",        0, 100, 0, "");
         */
 
-        addEventType(db, ID_RANGE_CENTER,  0, "Mood",               -50,    50, 0, "");
-        addEventType(db, ID_RANGE_NORMAL,  1, "Anxiety",              0,   100, 0, "");
-        addEventType(db, ID_RANGE_NORMAL,  2, "Irritability",         0,   100, 0, "");
-        addEventType(db, ID_RANGE_NORMAL,  3, "Lack of Focus",        0,   100, 0, "");
-        addEventType(db, ID_NUMBER,        4, "Sleep (hours)",        0,   100, 0, "");
-        addEventType(db, ID_NUMBER,        5, "Alcohol (units)",      0,   100, 0, "");
+        addEventType(ID_RANGE_CENTER,  0, "Mood",               -50,    50, 0, "");
+        addEventType(ID_RANGE_NORMAL,  1, "Anxiety",              0,   100, 0, "");
+        addEventType(ID_RANGE_NORMAL,  2, "Irritability",         0,   100, 0, "");
+        addEventType(ID_RANGE_NORMAL,  3, "Lack of Focus",        0,   100, 0, "");
+        addEventType(ID_NUMBER,        4, "Sleep (hours)",        0,   100, 0, "");
+        addEventType(ID_NUMBER,        5, "Alcohol (units)",      0,   100, 0, "");
 
-        addEventType(db, ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "");
-        addEventType(db, ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "");
-        addEventType(db, ID_TEXT,          8, "Note",                -1,   -1, -1, ""); // FIXME hack..
+        addEventType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "");
+        addEventType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "");
+        addEventType(ID_TEXT,          8, "Note",                -1,   -1, -1, ""); // FIXME hack..
         // The idea here being that a user can add new types from the UI at some point
 
     }
@@ -150,7 +153,6 @@ public class Database extends SQLiteOpenHelper{
     /**
      * Insert a new event type into the EventTypes table
      *
-     * @param db
      * @param entity    Entity ID which matches an EntityPrimitives id
      * @param order     A number representing in what order the event type should be rendered (UX)
      * @param name      Canonical name of the new type
@@ -160,8 +162,7 @@ public class Database extends SQLiteOpenHelper{
      * @param meta      Metadata string: currently unused
      * ...// - Save widget data down to the entrylist
      */
-    public void addEventType(SQLiteDatabase db,
-                             int entity, long order,
+    public void addEventType(int entity, long order,
                              String name, long min, long max, long dfl, String meta) {
         Log.d("Database", "Enter addEventType" );
 
@@ -194,14 +195,12 @@ public class Database extends SQLiteOpenHelper{
      * Insert a list of events into the Events table
      * FIXME this stuff is a bit stupid
      *
-     * @param db
      * @param entryList            An ArrayList<Entry> list of Entry objects
      * @param useFirstTimestamp    If true, all entry object times are overwritten by the first
      *                             object's time property. This makes it easier to group events
      *                             which were added simultaneously
      */
-    public void addEntries(SQLiteDatabase db,
-                           ArrayList<Entry> entryList,
+    public void addEntries(ArrayList<Entry> entryList,
                           boolean useFirstTimestamp) { // Groups event times by first t
         Log.d("Database", "Enter addEvents" );
 
@@ -240,12 +239,11 @@ public class Database extends SQLiteOpenHelper{
      *  - Time (HH, MM)
      *  - A variable number of associated EventTypes
      *
-     * @param db
      * @param hh    Hour in 24-hour format
      * @param mm    Hour in 24-hour format
      * @param dd    Hour in 7-day format (0-indexed)
      */
-    public void addReminder(SQLiteDatabase db, int hh, int mm, int dd, ArrayList<EventTypes> types) {
+    public void addReminder(int hh, int mm, int dd, ArrayList<EventTypes> types) {
         Log.d("Database", "Enter addReminder" );
 
         /*

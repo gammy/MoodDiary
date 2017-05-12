@@ -26,6 +26,8 @@ public final class EntityPrimitives {
             added++;
         }
 
+        cursor.close();
+
         Log.d("EntityPrimitives", "Primitives added: " + Integer.toString(added));
     }
 

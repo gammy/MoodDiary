@@ -72,6 +72,16 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="ReminderActivity"
+            android:label="Mood Diary Reminder"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.INFO" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

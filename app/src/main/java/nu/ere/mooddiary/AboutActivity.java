@@ -4,7 +4,6 @@ package nu.ere.mooddiary;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +16,7 @@ public class AboutActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setContentView(R.layout.about_main);
+        setContentView(R.layout.content_about);
         Button donateButton = (Button) findViewById(R.id.donateButton);
         donateButton.setOnClickListener(new View.OnClickListener() {
             @Override
