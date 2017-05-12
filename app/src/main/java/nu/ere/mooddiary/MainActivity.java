@@ -40,7 +40,7 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
-        // installAlarms();
+        installAlarms();
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
@@ -77,15 +77,17 @@ public class MainActivity extends ThemedActivity {
         Log.d(LOG_PREFIX, "Enter installAlarms" );
 
         Intent reminderIntent = new Intent(MainActivity.this , ReminderActivity.class);
-        reminderIntent.putExtra("reminder_id", 1234); // TODO (can add Bundle / Parceable as well?)
+        reminderIntent.putExtra("reminder_id", (long) 1234); // TODO (can add Bundle / Parceable as well?)
+
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, reminderIntent, 0);
 
         // TODO: walk through all the Reminders and set all the timers.
         //       This will need to be done each time we add or change an existing reminder as well.
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 21);
-        calendar.set(Calendar.MINUTE, 17);
+        //  FIXME pfffffffff need to set up a better test than this
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 30);
         calendar.set(Calendar.SECOND, 0);
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,

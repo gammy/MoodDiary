@@ -22,6 +22,7 @@ import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 // TODO: get database objects from MainActivity, perhaps with:
 //http://stackoverflow.com/questions/2906925/how-do-i-pass-an-object-from-one-activity-to-another-on-android
@@ -29,14 +30,45 @@ import android.widget.TextView;
 public class ReminderActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
     private ORM orm;
+    private long reminderID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
-        orm.getInstance(this);
+        orm = ORM.getInstance(this);
+
+        // So, getting the *correct* intent (i.e the one sent from the alarm) is a bit
+        // tricky: If another of our app activities (say MainActivity) is still running,
+        // and this (ReminderActivity) is raised, the intent will come from Main.
+        // I ... I think.
+
+        // FIXME all of this is broken.
+        /*
+        Intent intent = getIntent();
+        reminderID = intent.getLongExtra("reminder_id", -1);
+//        Toast.makeText(this,
+//                "Reminder ID: " + Long.toString(reminderID),
+//                Toast.LENGTH_LONG);
+        */
+        if (savedInstanceState == null) {
+            Intent intent = getIntent();
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Bundle extras = intent.getExtras();
+            if(extras == null) {
+                reminderID = -1;
+            } else {
+                reminderID = extras.getLong("reminder_id");
+                Log.d(LOG_PREFIX, "GOT EXTRA!");
+            }
+        } else {
+            Log.d(LOG_PREFIX, "Disappoint: getting serializable copy of intent extra");
+            reminderID = Long.parseLong((String) savedInstanceState.getSerializable("reminder_id"));
+        }
+        Log.d(LOG_PREFIX, "Reminder ID: " + Long.toString(reminderID));
 
         /** Notification test ***********************/
+
         Intent resultIntent = new Intent(this, ReminderActivity.class);
         // ..
         // Because clicking the notification opens a new ("special") activity, there's
