@@ -23,8 +23,6 @@ public final class ORM extends Database {
 
     SharedPreferences preferences;
 
-    /****************************************/
-
     private ORM(Context context) {
         super(context);
         Log.d(LOG_PREFIX, "Create");
@@ -40,6 +38,7 @@ public final class ORM extends Database {
            instance = new ORM(context.getApplicationContext());
         } else {
             Log.d(LOG_PREFIX, "reusing old instance");
+            // FIXME reload objects here..?
         }
         return instance;
     }
@@ -55,6 +54,6 @@ public final class ORM extends Database {
 
         entityPrimitives = new EntityPrimitives(db);
         eventTypes = new EventTypes(db);
-        reminders = new Reminders(db, eventTypes);
+        //reminders = new Reminders(db, eventTypes);
     }
 }

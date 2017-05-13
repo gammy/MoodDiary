@@ -12,9 +12,6 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-// TODO: get database objects from MainActivity, perhaps with:
-//http://stackoverflow.com/questions/2906925/how-do-i-pass-an-object-from-one-activity-to-another-on-android
-
 public class ReminderActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
     private ORM orm;
@@ -26,34 +23,23 @@ public class ReminderActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
 
-        // So, getting the *correct* intent (i.e the one sent from the alarm) is a bit
-        // tricky: If another of our app activities (say MainActivity) is still running,
-        // and this (ReminderActivity) is raised, the intent will come from Main.
-        // I ... I think.
-
-        // FIXME all of this is broken.
-        /*
-        Intent intent = getIntent();
-        reminderID = intent.getLongExtra("reminder_id", -1);
-//        Toast.makeText(this,
-//                "Reminder ID: " + Long.toString(reminderID),
-//                Toast.LENGTH_LONG);
-        */
         if (savedInstanceState == null) {
             Intent intent = getIntent();
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            //PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             Bundle extras = intent.getExtras();
             if(extras == null) {
                 reminderID = -1;
             } else {
                 reminderID = extras.getLong("reminder_id");
-                Log.d(LOG_PREFIX, "GOT EXTRA!");
             }
         } else {
             Log.d(LOG_PREFIX, "Disappoint: getting serializable copy of intent extra");
             reminderID = Long.parseLong((String) savedInstanceState.getSerializable("reminder_id"));
         }
+
         Log.d(LOG_PREFIX, "Reminder ID: " + Long.toString(reminderID));
+        // TODO errorhandling (probably just abort on -1)
 
         /** Notification test ***********************/
 

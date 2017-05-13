@@ -22,12 +22,13 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Enter onCreate");
+        // FIXME read possible existing reminder via getIntent() ?
         super.onCreate(savedInstanceState);
         orm = orm.getInstance(this);
 
         EventTypes eventTypes = orm.getEventTypes();
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        editor = prefs.edit();
+        // prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        // editor = prefs.edit();
 
         // Create the main context
         reminderScreen = getPreferenceManager().createPreferenceScreen(this);

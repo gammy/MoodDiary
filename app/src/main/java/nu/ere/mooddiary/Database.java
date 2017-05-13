@@ -1,6 +1,7 @@
 package nu.ere.mooddiary;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -8,6 +9,7 @@ import android.database.sqlite.SQLiteCursor;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Database extends SQLiteOpenHelper {
     private static final String LOG_PREFIX = "Database";
@@ -27,17 +29,6 @@ public class Database extends SQLiteOpenHelper {
 
         // Reminders and ReminderTimes relate to entry scheduling (from the app)
         db.execSQL(
-                "CREATE TABLE ReminderTimes " +
-                    "(" +
-                        "id         INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "reminderID INTEGER NOT NULL, " +
-                        "hh         INTEGER NOT NULL, " +
-                        "mm         INTEGER NOT NULL, " +
-                        "dd         INTEGER NOT NULL" +
-                    ")"
-        );
-
-        db.execSQL(
                 "CREATE TABLE Reminders " +
                     "(" +
                         "id             INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -46,6 +37,17 @@ public class Database extends SQLiteOpenHelper {
                         "FOREIGN KEY(type) REFERENCES EventTypes(id)" +
                     ")"
         );
+
+        db.execSQL(
+                "CREATE TABLE ReminderTimes " +
+                    "(" +
+                        "id         INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "reminderID INTEGER NOT NULL, " + // Not unique (acts as a "group")
+                        "hh         INTEGER NOT NULL, " +
+                        "mm         INTEGER NOT NULL " +
+                    ")"
+        );
+
 
         /*************************************************************************/
 
@@ -133,7 +135,16 @@ public class Database extends SQLiteOpenHelper {
         addEventType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "");
         addEventType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "");
         addEventType(ID_TEXT,          8, "Note",                -1,   -1, -1, ""); // FIXME hack..
+
         // The idea here being that a user can add new types from the UI at some point
+
+        // Reminders
+        // (Add a stock reminder for 2pm)
+        ArrayList<Integer> reminderEventList = new ArrayList<>();
+        reminderEventList.add(0); // Mood
+        reminderEventList.add(1); // Anxiety
+        reminderEventList.add(2); // Irritability
+        addReminder(2, 0, reminderEventList);
 
     }
 
@@ -242,32 +253,91 @@ public class Database extends SQLiteOpenHelper {
      *
      * @param hh    Hour in 24-hour format
      * @param mm    Hour in 24-hour format
-     * @param dd    Hour in 7-day format (0-indexed)
      */
-    public void addReminder(int hh, int mm, int dd, ArrayList<EventTypes> types) {
+    public void addReminder(int hh, int mm, ArrayList<Integer> typeIDs) {
         Log.d(LOG_PREFIX, "Enter addReminder" );
+        Cursor cursor;
+        String sql;
+        SQLiteStatement statement;
 
-        /*
-        ---------
-        (hh, mm) = getTimeSelectDialog()
-        typeList = getEventTypeselectDialog()
-        nextReminderID = sql(SELECT highest ReminderID number FROM ReminderTimes)
-        reminderTimeID = sql(INSERT INTO ReminderTimes (ReminderID, Hour, Minute) VALUES (nextReminderID, hh, mm)
-        For event in typeList
-            sql(INSERT INTO Reminders (ReminderTimeID, Event) VALUES (reminderTimeID, event.id)
-        */
+        // Make a new reminderID
+        int newReminderID = 0;
+        cursor = db.rawQuery("SELECT MAX(reminderID) FROM ReminderTimes", null);
+        if(cursor.moveToFirst()) {
+            newReminderID = cursor.getInt(0);
+            newReminderID += 1;
+        }
 
+        db.beginTransaction();
 
-        /*
-        String sql = "INSERT INTO Reminders (hh, mm, dd) VALUES (?, ?, ?)";
-        SQLiteStatement statement = db.compileStatement(sql);
-
-        statement.bindLong(0, (long) hh);
-        statement.bindLong(1, (long) mm);
-        statement.bindLong(2, (long) dd);
-        /
+        // Insert new ReminderTime
+        sql = "INSERT INTO ReminderTimes (reminderID, hh, mm) VALUES (?, ?, ?)";
+        statement = db.compileStatement(sql);
+        statement.bindLong(1, newReminderID);
+        statement.bindLong(2, hh);
+        statement.bindLong(3, mm);
         statement.executeInsert();
-        */
+        statement.close();
+
+        // Insert associated events
+        sql = "INSERT INTO Reminders (reminderTimeID, type) VALUES (?, ?)";
+        statement = db.compileStatement(sql);
+
+        for(int i = 0; i < typeIDs.size(); i++) {
+            int eventTypeID = typeIDs.get(i);
+            statement.bindLong(1, newReminderID);
+            statement.bindLong(2, eventTypeID);
+
+            statement.executeInsert();
+        }
+        statement.close();
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
     }
 
+    /*
+    public void testReminders() {
+        Log.d(LOG_PREFIX, "Enter testReminders" );
+
+        Cursor cursor;
+        String sql;
+        SQLiteStatement statement;
+
+        // Make a new reminderID
+        int newReminderID = 0;
+        cursor = db.rawQuery("SELECT MAX(reminderID) FROM ReminderTimes", null);
+        if(cursor.moveToFirst()) {
+            newReminderID = cursor.getInt(0);
+            newReminderID += 1;
+        }
+
+        db.beginTransaction();
+
+        // Insert new ReminderTime
+        sql = "INSERT INTO ReminderTimes (reminderID, hh, mm) VALUES (?, ?, ?)";
+        statement = db.compileStatement(sql);
+        statement.bindLong(1, newReminderID);
+        statement.bindLong(2, hh);
+        statement.bindLong(3, mm);
+        statement.executeInsert();
+        statement.close();
+
+        // Insert associated events
+        sql = "INSERT INTO Reminders (reminderTimeID, type) VALUES (?, ?)";
+        statement = db.compileStatement(sql);
+
+        for(int i = 0; i < typeIDs.size(); i++) {
+            int eventTypeID = typeIDs.get(i);
+            statement.bindLong(1, newReminderID);
+            statement.bindLong(2, eventTypeID);
+
+            statement.executeInsert();
+        }
+        statement.close();
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+    */
 }
