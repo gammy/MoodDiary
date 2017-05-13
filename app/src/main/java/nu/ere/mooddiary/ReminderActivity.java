@@ -199,7 +199,7 @@ public class ReminderActivity extends ThemedActivity {
 
                     number.setText(Long.toString(etype.normalDefault));
                     EventNumberClickListener listener =
-                            new EventNumberClickListener(ReminderActivity.this, number, etype, dialogThemeID);
+                            new EventNumberClickListener(ReminderActivity.this, etype, dialogThemeID);
                     number.setOnClickListener(listener);
                     row.addView(number, rowParams);
                     break;

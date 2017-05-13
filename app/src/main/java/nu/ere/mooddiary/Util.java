@@ -23,10 +23,17 @@ import java.util.ArrayList;
 public class Util {
     private static final String LOG_PREFIX = "MainActivity";
 
+    /**
+     *
+     * @param activity The calling activity (i.e `this` in your Activity)
+     * @param eventType
+     * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
+     * @return
+     */
     public static NumberPicker showNumberDialog(Activity activity,
-                                         TextView view,
-                                         EventType eventType,
-                                         int dialogThemeID){
+                                                EventType eventType,
+                                                int dialogThemeID){
+        TextView view = (TextView) eventType.view;
         Log.d(LOG_PREFIX, "Enter showNumberDialog");
         Log.d(LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
         final NumberPicker numberPicker =
@@ -61,6 +68,15 @@ public class Util {
         return(numberPicker);
     }
 
+    /**
+     * Generate the entire page layout for a Reminder.
+     * This involves creating the encasing widgets (tables, etc), instantiating Views based on
+     * event type primitives, and rendering everything.
+     *
+     * @param activity The calling activity (i.e `this` in your Activity)
+     * @param layout The layout resource to be used as main container where all Views are created
+     * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
+     */
     public static void renderEntryTypes(Activity activity, int layout, int dialogThemeID) {
         Log.d(LOG_PREFIX, "Enter renderEntryTypes");
         Resources resources = activity.getResources();
@@ -138,7 +154,7 @@ public class Util {
 
                     number.setText(Long.toString(etype.normalDefault));
                     EventNumberClickListener listener =
-                            new EventNumberClickListener(activity, number, etype, dialogThemeID);
+                            new EventNumberClickListener(activity, etype, dialogThemeID);
                     number.setOnClickListener(listener);
                     row.addView(number, rowParams);
                     break;
@@ -160,13 +176,17 @@ public class Util {
         entryLayout.addView(table);
     }
 
+    /**
+     * Walk through all event types and reset (zero) any Views.
+     * Expected to be called after the views have actually been instantiated
+     * (i.e via renderEntryTypes)
+     *
+     * @param activity The calling activity (i.e `this` in your Activity)
+     */
     public static void resetEntries(Activity activity) {
         Log.d(LOG_PREFIX, "Enter resetEntries");
         Resources resources = activity.getResources();
         ORM orm = ORM.getInstance(activity);
-
-        // FIXME need to refactor this stuff, it's in too many places already but it's
-        //       02:20am, so it will have to wait!
 
         int evCount = orm.getEventTypes().types.size();
 
