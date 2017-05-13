@@ -31,15 +31,26 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         super.onCreate(savedInstanceState);
         orm = orm.getInstance(this);
 
-        Reminder reminder = null;
+        ReminderTime reminderTime = null;
 
         boolean makeNew = getIntent().getBooleanExtra("newReminder", false);
         if(makeNew) {
             Log.d(LOG_PREFIX, "Our mission: CREATE reminder");
         } else {
             Log.d(LOG_PREFIX, "Our mission: EDIT reminder");
-            oldID = getIntent().getIntExtra("reminderTimeID", -1);
-            reminder = orm.getReminderTimes().getReminderByID(oldID);
+            oldID = getIntent().getIntExtra("reminderTimeID", 999); // FIXME 999 for debugging
+            Log.d(LOG_PREFIX, "oldID: " + Integer.toString(oldID));
+            if(oldID == -1) {
+                Log.d(LOG_PREFIX, "Aiieeeeeee! I was told to load an existing reminder, but there was none in the intent!");
+            }
+            // FIXME Purposely skipping errorcheck (the below line will crash if oldID is invalid) - for bug tracking purposes.
+            //reminder = orm.getReminderTimes().getReminderByID(oldID);
+            //public ArrayList<EventType> getTypesByReminderTimeID(int reminderTimeID) {
+            //orm.getReminderTimes().getTypesByReminderTimeID(oldID);
+            reminderTime = orm.getReminderTimes().getByID(oldID);
+
+            //reminderTime = orm.getReminderTimes().getTypesByReminderTimeID();
+
         }
 
         // Create the main context
@@ -61,8 +72,8 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         // Add a time view
         TimePreference timePref = new TimePreference(this, null);
         timePref.setKey("junk_reminder_edit_time");
-        if(reminder != null) {
-            timePref.setTitle(Util.toHumanTime(this, reminder.hour, reminder.minute));
+        if(reminderTime != null) {
+            timePref.setTitle(Util.toHumanTime(this, reminderTime.hour, reminderTime.minute));
         } else {
             // Set a brand-new date to one hour from now
             Date date = new Date();

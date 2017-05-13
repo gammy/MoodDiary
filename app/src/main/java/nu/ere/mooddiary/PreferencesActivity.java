@@ -27,7 +27,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
     PreferenceScreen prefReminders,
                      prefEventTypes;
 
-    public int preferenceTimeIDToEdit = -1; // FIXME hack omg
+    public int editReminderTimeID = -1; // FIXME hack omg
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +104,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         for(int i = 0; i < orm.getReminderTimes().reminderTimes.size(); i++) {
             ReminderTime reminder = orm.getReminderTimes().reminderTimes.get(i);
             Preference oldReminder = new Preference(this);
-            this.preferenceTimeIDToEdit = reminder.id;
+            this.editReminderTimeID = reminder.group; // FIXME id? group?
             oldReminder.setKey("junk_old_reminder_" + Integer.toString(i)); // FIXME
             oldReminder.setTitle(Util.toHumanTime(this, reminder.hour, reminder.minute));
             oldReminder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -112,7 +112,11 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
                     in.putExtra("newReminder", false);
-                    in.putExtra("reminderTimeID", PreferencesActivity.this.preferenceTimeIDToEdit); // FIXME awkward
+                    in.putExtra("reminderTimeID",
+                            PreferencesActivity.this.editReminderTimeID); // FIXME awkward
+
+                    Log.d("PreferencesActivity", "Clicker: putExtra:" +
+                            Integer.toString(PreferencesActivity.this.editReminderTimeID)); // FIXME awkward
                     startActivityForResult(in, 1338); // FIXME const - 1338 - EDIT
                     return true;
                 }
@@ -153,11 +157,10 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         }
 
         if(requestCode == 1337) { // Create (FIXME const)
-            Log.d(LOG_PREFIX, "result: OK - CREATE reminder");
+            Log.d(LOG_PREFIX, "result: OK - CREATE reminder"); // TODO
         } else
         if (requestCode == 1338){ // Edit (FIXME const)
-            Log.d(LOG_PREFIX, "result: OK - UPDATE reminder");
-
+            Log.d(LOG_PREFIX, "result: OK - UPDATE reminder"); // TODO
         }
     }
 }

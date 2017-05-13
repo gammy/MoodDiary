@@ -43,8 +43,8 @@ public class Database extends SQLiteOpenHelper {
                     "(" +
                         "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "reminderGroup INTEGER NOT NULL, " + // Not unique
-                        "hour            INTEGER NOT NULL, " +
-                        "minute            INTEGER NOT NULL " +
+                        "hour          INTEGER NOT NULL, " +
+                        "minute        INTEGER NOT NULL " +
                     ")"
         );
 

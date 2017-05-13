@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public final class ReminderTimes {
     private static final String LOG_PREFIX = "ReminderTimes";
@@ -41,12 +42,17 @@ public final class ReminderTimes {
         cursor.close();
     }
 
-    public Reminder getReminderByID(long id) {
+    /*
+    public Reminder getReminderByID(long groupID) { // FIXME groupID you mean!
+        Log.d(LOG_PREFIX, "Enter getReminderByID");
         Cursor cursor;
 
         // Get core reminder properties
+        Log.d(LOG_PREFIX, "Got passed id: " + Long.toString(groupID));
+
         cursor = orm.db.rawQuery("SELECT hour, minute FROM ReminderTimes WHERE reminderGroup = " +
-                Long.toString(id), null);
+                Long.toString(groupID), null);
+        cursor.moveToFirst();
         int hour   = cursor.getInt(cursor.getColumnIndex("hour"));
         int minute = cursor.getInt(cursor.getColumnIndex("minute"));
         cursor.close();
@@ -55,7 +61,7 @@ public final class ReminderTimes {
         ArrayList<EventType> reminderEventTypes = new ArrayList<>();
 
         cursor = orm.db.rawQuery("SELECT id, type FROM ReminderGroups WHERE reminderTime = " +
-                Long.toString(id), null);
+                Long.toString(groupID), null);
         // FIXME assumes no errors
 
         // Get all event types associated with this reminder
@@ -65,10 +71,21 @@ public final class ReminderTimes {
             reminderEventTypes.add(eventType);
         }
 
-        Reminder reminder = new Reminder(id, hour, minute, reminderEventTypes);
+        Reminder reminder = new Reminder(groupID, hour, minute, reminderEventTypes);
         return(reminder);
     }
+    */
 
+    public ReminderTime getByID(long id) {
+        for(int i = 0; i < reminderTimes.size(); i++) {
+            ReminderTime r = reminderTimes.get(i);
+            if(r.id == id) {
+                return(r);
+            }
+        }
+        throw new NoSuchElementException("Unable to find an ReminderTime with id " +
+                Long.toString(id));
+    }
     public ArrayList<EventType> getTypesByReminderTimeID(int reminderTimeID) {
         Log.d(LOG_PREFIX, "Enter getTypesByReminderTimeID");
         // Collate event types associated with this reminder
