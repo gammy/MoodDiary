@@ -11,6 +11,8 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.WindowId;
+import nu.ere.mooddiary.Util;
 
 // Note: Any key prefixed with "junk_" will *not* be used by the app, and is considered a
 //       necessary evil.
@@ -97,16 +99,17 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         this.prefReminders.addPreference(addCategory);
 
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < orm.getReminderTimes().reminderTimes.size(); i++) {
+            ReminderTime reminder = orm.getReminderTimes().reminderTimes.get(i);
             Preference oldReminder = new Preference(this);
-            oldReminder.setKey("junk_old_reminder_" + Integer.toString(i));
-            //oldReminder.setTitle("<time of old reminder>");
+            oldReminder.setKey("junk_old_reminder_" + Integer.toString(i)); // FIXME
+            oldReminder.setTitle(Util.toHumanTime(this, reminder.hour, reminder.minute));
             oldReminder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     // Initialize the damn thing somehow
-                    Intent i = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
-                    startActivity(i);
+                    Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
+                    startActivity(in);
                     return true;
                 }
             });

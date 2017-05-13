@@ -27,13 +27,13 @@ public class Database extends SQLiteOpenHelper {
 
         this.db = db;
 
-        // Reminders and ReminderTimes relate to entry scheduling (from the app)
+        // ReminderGroups and ReminderTimes relate to entry scheduling (from the app)
         db.execSQL(
-                "CREATE TABLE Reminders " +
+                "CREATE TABLE ReminderGroups " +
                     "(" +
-                        "id             INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "reminderTimeID INTEGER NOT NULL, " +
-                        "type           INTEGER NOT NULL, " +
+                        "id           INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "reminderTime INTEGER NOT NULL, " +
+                        "type         INTEGER NOT NULL, " +
                         "FOREIGN KEY(type) REFERENCES EventTypes(id)" +
                     ")"
         );
@@ -41,10 +41,10 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(
                 "CREATE TABLE ReminderTimes " +
                     "(" +
-                        "id         INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "reminderID INTEGER NOT NULL, " + // Not unique (acts as a "group")
-                        "hh         INTEGER NOT NULL, " +
-                        "mm         INTEGER NOT NULL " +
+                        "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "reminderGroup INTEGER NOT NULL, " + // Not unique
+                        "hour            INTEGER NOT NULL, " +
+                        "minute            INTEGER NOT NULL " +
                     ")"
         );
 
@@ -144,8 +144,7 @@ public class Database extends SQLiteOpenHelper {
         reminderEventList.add(0); // Mood
         reminderEventList.add(1); // Anxiety
         reminderEventList.add(2); // Irritability
-        addReminder(2, 0, reminderEventList);
-
+        addReminder(14, 0, reminderEventList); // 2pm
     }
 
     @Override
@@ -153,7 +152,8 @@ public class Database extends SQLiteOpenHelper {
         Log.d(LOG_PREFIX, "Enter onUpgrade: Trashing everything" );
         // FIXME
         // Drop older tables if they existed
-        db.execSQL("DROP TABLE IF EXISTS Reminders");
+        db.execSQL("DROP TABLE IF EXISTS Reminders"); // OLD, no longer exists in schema
+        db.execSQL("DROP TABLE IF EXISTS ReminderGroups");
         db.execSQL("DROP TABLE IF EXISTS ReminderTimes");
         db.execSQL("DROP TABLE IF EXISTS EntityPrimitives");
         db.execSQL("DROP TABLE IF EXISTS EventTypes");
@@ -245,49 +245,47 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Insert a reminder
-     *  FIXME incomplete: Need to figure the logic out here.
-     *  A reminder has these properties:
-     *  - Time (HH, MM)
-     *  - A variable number of associated EventTypes
+     * Add a new reminder
      *
-     * @param hh    Hour in 24-hour format
-     * @param mm    Hour in 24-hour format
+     * @param hour      Hour in 24-hour format
+     * @param minute      Minute
+     * @param typeIDs A simple arraylist of eventTypeID integers
      */
-    public void addReminder(int hh, int mm, ArrayList<Integer> typeIDs) {
+    public void addReminder(int hour, int minute, ArrayList<Integer> typeIDs) {
         Log.d(LOG_PREFIX, "Enter addReminder" );
         Cursor cursor;
         String sql;
         SQLiteStatement statement;
 
         // Make a new reminderID
-        int newReminderID = 0;
-        cursor = db.rawQuery("SELECT MAX(reminderID) FROM ReminderTimes", null);
+        int newReminderGroup = 0;
+        cursor = db.rawQuery("SELECT MAX(reminderGroup) FROM ReminderTimes", null);
         if(cursor.moveToFirst()) {
-            newReminderID = cursor.getInt(0);
-            newReminderID += 1;
+            newReminderGroup = cursor.getInt(0);
+            newReminderGroup += 1;
         }
+        Log.d(LOG_PREFIX, "addReminder: newReminderID: " + Integer.toString(newReminderGroup));
 
         db.beginTransaction();
 
         // Insert new ReminderTime
-        sql = "INSERT INTO ReminderTimes (reminderID, hh, mm) VALUES (?, ?, ?)";
+        sql = "INSERT INTO ReminderTimes (reminderGroup, hour, minute) VALUES (?, ?, ?)";
         statement = db.compileStatement(sql);
-        statement.bindLong(1, newReminderID);
-        statement.bindLong(2, hh);
-        statement.bindLong(3, mm);
+        statement.bindLong(1, newReminderGroup);
+        statement.bindLong(2, hour);
+        statement.bindLong(3, minute);
         statement.executeInsert();
         statement.close();
 
         // Insert associated events
-        sql = "INSERT INTO Reminders (reminderTimeID, type) VALUES (?, ?)";
+        sql = "INSERT INTO ReminderGroups (reminderTime, type) VALUES (?, ?)";
         statement = db.compileStatement(sql);
 
         for(int i = 0; i < typeIDs.size(); i++) {
             int eventTypeID = typeIDs.get(i);
-            statement.bindLong(1, newReminderID);
+            Log.d(LOG_PREFIX, "addReminder: inserting type: " + Integer.toString(eventTypeID));
+            statement.bindLong(1, newReminderGroup);
             statement.bindLong(2, eventTypeID);
-
             statement.executeInsert();
         }
         statement.close();
@@ -296,48 +294,46 @@ public class Database extends SQLiteOpenHelper {
         db.endTransaction();
     }
 
-    /*
     public void testReminders() {
         Log.d(LOG_PREFIX, "Enter testReminders" );
 
         Cursor cursor;
-        String sql;
-        SQLiteStatement statement;
 
-        // Make a new reminderID
-        int newReminderID = 0;
-        cursor = db.rawQuery("SELECT MAX(reminderID) FROM ReminderTimes", null);
-        if(cursor.moveToFirst()) {
-            newReminderID = cursor.getInt(0);
-            newReminderID += 1;
+        cursor = db.rawQuery("SELECT id, reminderGroup, hour, minute FROM ReminderTimes", null);
+        Log.d(LOG_PREFIX, "testReminders: rawquery OK");
+
+        // Walk through each reminder and collate the associated eventTypes
+        while(cursor.moveToNext()) {
+            Log.d(LOG_PREFIX, "testReminders: looping ReminderTimes");
+
+            int id    = cursor.getInt(cursor.getColumnIndex("id"));
+            int group = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
+            int hour    = cursor.getInt(cursor.getColumnIndex("hour"));
+            int minute    = cursor.getInt(cursor.getColumnIndex("minute"));
+            Log.d(LOG_PREFIX,
+                    "Reminder id" + Integer.toString(id) + ", " +
+                    "group " + Integer.toString(group) + ", " +
+                    "time = " + Integer.toString(hour) + ":" + Integer.toString(minute));
+
+            // Collate event types associated with this reminder
+            Cursor rCursor;
+            // ArrayList<EventType> reminderEventTypes = new ArrayList<>();
+
+            rCursor = db.rawQuery("SELECT id, type FROM ReminderGroups WHERE reminderTime = " +
+                            Long.toString(id), null);
+
+            // Get all event types associated with this reminder
+            while (rCursor.moveToNext()) {
+                int eventTypeID = rCursor.getInt(rCursor.getColumnIndex("type"));
+                Log.d(LOG_PREFIX, "   associated event type: " + Integer.toString(eventTypeID));
+                // EventType eventType = orm.getEventTypes().getByID(eventTypeID);
+                //reminderEventTypes.add(eventType);
+            }
+
+            rCursor.close();
+            // Reminder reminder = new Reminder(id, hour, minute, reminderEventTypes);
         }
-
-        db.beginTransaction();
-
-        // Insert new ReminderTime
-        sql = "INSERT INTO ReminderTimes (reminderID, hh, mm) VALUES (?, ?, ?)";
-        statement = db.compileStatement(sql);
-        statement.bindLong(1, newReminderID);
-        statement.bindLong(2, hh);
-        statement.bindLong(3, mm);
-        statement.executeInsert();
-        statement.close();
-
-        // Insert associated events
-        sql = "INSERT INTO Reminders (reminderTimeID, type) VALUES (?, ?)";
-        statement = db.compileStatement(sql);
-
-        for(int i = 0; i < typeIDs.size(); i++) {
-            int eventTypeID = typeIDs.get(i);
-            statement.bindLong(1, newReminderID);
-            statement.bindLong(2, eventTypeID);
-
-            statement.executeInsert();
-        }
-        statement.close();
-
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        cursor.close();
+        Log.d(LOG_PREFIX, "Leave testReminders");
     }
-    */
 }

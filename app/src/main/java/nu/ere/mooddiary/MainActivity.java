@@ -23,10 +23,12 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
-        installAlarms();
+        //installAlarms();
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
+
+        orm.testReminders();
     }
 
     public void initUI() {

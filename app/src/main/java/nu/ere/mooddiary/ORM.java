@@ -17,7 +17,7 @@ public final class ORM extends Database {
 
     private static EntityPrimitives entityPrimitives = null;
     private static EventTypes eventTypes = null;
-    private static Reminders reminders = null;
+    private static ReminderTimes reminders = null;
 
     public static long lastSave = 0;
 
@@ -47,13 +47,13 @@ public final class ORM extends Database {
 
     public static EntityPrimitives getPrimitives() {return entityPrimitives;}
     public static EventTypes getEventTypes() {return eventTypes;}
-    public static Reminders getReminders() {return reminders;}
+    public static ReminderTimes getReminderTimes() {return reminders;}
 
     protected static synchronized void loadObjects() {
         Log.d(LOG_PREFIX, "loadObjects");
 
         entityPrimitives = new EntityPrimitives(db);
         eventTypes = new EventTypes(db);
-        //reminders = new Reminders(db, eventTypes);
+        reminders = new ReminderTimes(instance);
     }
 }

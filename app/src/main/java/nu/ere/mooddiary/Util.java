@@ -2,14 +2,17 @@ package nu.ere.mooddiary;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.webkit.JavascriptInterface;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
@@ -18,10 +21,12 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.view.Gravity;
 
+import java.text.Format;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Util {
-    private static final String LOG_PREFIX = "MainActivity";
+    private static final String LOG_PREFIX = "Util";
 
     /**
      *
@@ -255,6 +260,28 @@ public class Util {
 
         orm.lastSave = System.currentTimeMillis();
         orm.addEntries(entries, true);
+    }
+
+    public static String toHumanTime(Context context, int hour, int minute) {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new java.util.Date());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+
+        Log.d(LOG_PREFIX, "toHumanTime: Alarm set for: " +
+                String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + ":" +
+                String.valueOf(calendar.get(Calendar.MINUTE)) + ":" +
+                String.valueOf(calendar.get(Calendar.SECOND))
+        );
+
+        long millis = calendar.getTimeInMillis();
+        Log.d(LOG_PREFIX, "in milliseconds: " + Long.toString(millis));
+        String timeString = DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_TIME);
+
+
+        return timeString;
     }
 
 }

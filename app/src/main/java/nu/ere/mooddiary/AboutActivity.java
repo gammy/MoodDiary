@@ -16,8 +16,9 @@ public class AboutActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.aboutToolbar);
         setSupportActionBar(toolbar);
+        // toolbar.setTitle("Mood Diary"); // FIXME
         setContentView(R.layout.content_about);
         Button donateButton = (Button) findViewById(R.id.donateButton);
         donateButton.setOnClickListener(new View.OnClickListener() {
