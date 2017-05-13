@@ -37,13 +37,13 @@ public class SaveClickListener implements OnClickListener {
     public void onClick(View v)
     {
         Log.d(LOG_PREFIX, "alarm: CLICK");
+
+        Util.saveEvents(activity);
+
         in.setAnimationListener(splash);
         view.startAnimation(in);
         view.setVisibility(View.VISIBLE);
 
-        // activity.saveEvents(); // Where the magic happens FIXME need activity-agnostic method
-        //activity.resetEntries(); // FIXME need activity-agnostic method
+        Util.resetEntries(activity);
     }
-
-
 }

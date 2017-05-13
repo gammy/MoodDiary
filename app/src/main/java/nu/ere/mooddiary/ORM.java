@@ -19,6 +19,8 @@ public final class ORM extends Database {
     private static EventTypes eventTypes = null;
     private static Reminders reminders = null;
 
+    public static long lastSave = 0;
+
     SharedPreferences preferences;
 
     /****************************************/
