@@ -117,7 +117,8 @@ public class ReminderActivity extends ThemedActivity {
         // Set up the save button, which, on click, saves the event and runs an animation
         Button saveButton = (Button) findViewById(R.id.reminderSaveButton);
         TextView thanksView = (TextView) findViewById(R.id.reminderThanksTextView);
-        saveButton.setOnClickListener(new SaveClickListener(this, thanksView));
+        // The saveClickListener below will terminate this activity once it's done.
+        saveButton.setOnClickListener(new SaveClickListener(this, thanksView, true));
 
         renderEntryTypes();
     }

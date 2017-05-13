@@ -30,6 +30,7 @@ import android.support.v4.widget.TextViewCompat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "MainActivity";
@@ -44,9 +45,6 @@ public class MainActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
-        //setContentView(R.layout.coordinator_main);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
     }
 
     public void initUI() {
@@ -68,7 +66,7 @@ public class MainActivity extends ThemedActivity {
         // Set up the save button, which, on click, saves the event and runs an animation
         Button saveButton = (Button) findViewById(R.id.saveButton);
         TextView thanksView = (TextView) findViewById(R.id.thanksTextView);
-        saveButton.setOnClickListener(new SaveClickListener(this, thanksView));
+        saveButton.setOnClickListener(new SaveClickListener(this, thanksView, false));
 
         renderEntryTypes();
     }
@@ -77,6 +75,7 @@ public class MainActivity extends ThemedActivity {
         Log.d(LOG_PREFIX, "Enter installAlarms" );
 
         Intent reminderIntent = new Intent(MainActivity.this , ReminderActivity.class);
+        //reminderIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         reminderIntent.putExtra("reminder_id", (long) 1234); // TODO (can add Bundle / Parceable as well?)
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -85,10 +84,27 @@ public class MainActivity extends ThemedActivity {
         // TODO: walk through all the Reminders and set all the timers.
         //       This will need to be done each time we add or change an existing reminder as well.
         Calendar calendar = Calendar.getInstance();
-        //  FIXME pfffffffff need to set up a better test than this
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 30);
-        calendar.set(Calendar.SECOND, 0);
+
+        Calendar now = Calendar.getInstance();
+        now.setTime(new java.util.Date());
+
+        Log.d(LOG_PREFIX, "alarm: Current time is : " +
+                String.valueOf(now.get(Calendar.HOUR_OF_DAY)) + ":" +
+                String.valueOf(now.get(Calendar.MINUTE)) + ":" +
+                String.valueOf(now.get(Calendar.SECOND))
+        );
+
+        now.add(Calendar.SECOND, 30); // 30 seconds from now
+
+        Log.d(LOG_PREFIX, "alarm: Setting alarm to: " +
+                String.valueOf(now.get(Calendar.HOUR_OF_DAY)) + ":" +
+                String.valueOf(now.get(Calendar.MINUTE)) + ":" +
+                String.valueOf(now.get(Calendar.SECOND))
+        );
+
+        calendar.set(Calendar.HOUR_OF_DAY, now.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, now.get(Calendar.MINUTE));
+        calendar.set(Calendar.SECOND, now.get(Calendar.SECOND));
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
         //                          calendar.getTimeInMillis(),
