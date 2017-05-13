@@ -45,7 +45,7 @@ public final class ReminderTimes {
         Cursor cursor;
 
         // Get core reminder properties
-        cursor = orm.db.rawQuery("SELECT hour, minute, FROM ReminderTimes WHERE reminderGroup = " +
+        cursor = orm.db.rawQuery("SELECT hour, minute FROM ReminderTimes WHERE reminderGroup = " +
                 Long.toString(id), null);
         int hour   = cursor.getInt(cursor.getColumnIndex("hour"));
         int minute = cursor.getInt(cursor.getColumnIndex("minute"));

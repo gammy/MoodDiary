@@ -1,6 +1,7 @@
 /* New Reminder menu, containing a list of event types, a time, and a save button */
 package nu.ere.mooddiary;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,6 +13,9 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import org.bostonandroid.preference.TimePreference;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "ReminderPref..Activity";
     private ORM orm;
@@ -20,15 +24,23 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
     SharedPreferences.Editor editor;
     PreferenceScreen reminderScreen;
 
+    private int oldID = -1;
+
     public void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Enter onCreate");
-        // FIXME read possible existing reminder via getIntent() ?
         super.onCreate(savedInstanceState);
         orm = orm.getInstance(this);
 
-        EventTypes eventTypes = orm.getEventTypes();
-        // prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        // editor = prefs.edit();
+        Reminder reminder = null;
+
+        boolean makeNew = getIntent().getBooleanExtra("newReminder", false);
+        if(makeNew) {
+            Log.d(LOG_PREFIX, "Our mission: CREATE reminder");
+        } else {
+            Log.d(LOG_PREFIX, "Our mission: EDIT reminder");
+            oldID = getIntent().getIntExtra("reminderTimeID", -1);
+            reminder = orm.getReminderTimes().getReminderByID(oldID);
+        }
 
         // Create the main context
         reminderScreen = getPreferenceManager().createPreferenceScreen(this);
@@ -49,7 +61,27 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         // Add a time view
         TimePreference timePref = new TimePreference(this, null);
         timePref.setKey("junk_reminder_edit_time");
+        if(reminder != null) {
+            timePref.setTitle(Util.toHumanTime(this, reminder.hour, reminder.minute));
+        } else {
+            // Set a brand-new date to one hour from now
+            Date date = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.set(Calendar.MINUTE, 60);
+            timePref.setTitle(Util.toHumanTime(this,
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE)));
+            // FIXME set actual time also (in the dialog)
+        }
         timeCategory.addPreference(timePref);
+
+        // Whether we're creating or changing, we need to view *all* of the event types available.
+        // later on, if changing, get all the associated reminderGroups. Then, when rendering
+        // the Views, set each default value to whatever they were
+        EventTypes eventTypes = orm.getEventTypes();
+        // prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        // editor = prefs.edit();
 
         // Add checkboxes for all enabled event types, and configure them appropriately if
         // we are editing an existing reminder
@@ -69,11 +101,9 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         saveButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                // TODO collate all the stupid properties
-                // TODO Save data to database
-                // TODO Reload
-                //timePref.onActivityDestroy();
-                ReminderPreferencesActivity.this.finish();
+                Intent rIntent = getIntent();
+                setResult(Activity.RESULT_OK, rIntent);
+                finish();
                 return true;
             }
         });
@@ -81,4 +111,5 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         saveCategory.addPreference(saveButton);
         setPreferenceScreen(reminderScreen);
     }
+
 }
