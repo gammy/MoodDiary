@@ -124,6 +124,8 @@ public class Util {
 
                 case "text":
                     TextInputEditText text = new TextInputEditText(activity);
+                    TextViewCompat.setTextAppearance(text,
+                            android.R.style.TextAppearance_DeviceDefault_Medium);
                     measurementType.setView(text);
                     row.addView(text, rowParams);
                     break;

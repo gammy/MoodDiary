@@ -30,18 +30,14 @@ class DialogRangeClickListener implements DialogInterface.OnClickListener {
         switch (which)
         {
             case DialogInterface.BUTTON_POSITIVE:
+                if(view == null) {
+                    Util.saveSingleEntry(this.activity, this.measurementType, value);
+                }
                 setViewText(view, "Eh?");
                 break;
             default:
                 break;
         }
-
-        // Ugly, but it works. This saves a single entry from the main view
-        if(this.view == null) {
-            Util.saveSingleEntry(this.activity, this.measurementType, value);
-        }
-
-
     }
 
     public void setView(SeekBar view) {

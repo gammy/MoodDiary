@@ -32,22 +32,17 @@ class DialogNumberClickListener implements DialogInterface.OnClickListener {
         switch (which)
         {
             case DialogInterface.BUTTON_POSITIVE:
+                // Ugly, but it works. This saves a single entry from the main view
+                if(view == null) {
+                    Util.saveSingleEntry(activity, measurementType, value);
+                }
                 setViewText(view, value);
                 break;
+
             default:
                 break;
         }
 
-        // Ugly, but it works. This saves a single entry from the main view
-        if(view == null) {
-            Entry entry = new Entry(measurementType.id, value);
-            ORM orm = ORM.getInstance(activity);
-            ArrayList<Entry> entryList = new ArrayList<>();
-            entryList.add(entry);
-            orm.addEntries(entryList, true);
-            String text = activity.getString(R.string.toast_saved);
-            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
-        }
 
     }
 
