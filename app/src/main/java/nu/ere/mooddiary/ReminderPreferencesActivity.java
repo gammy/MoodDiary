@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import org.bostonandroid.preference.TimePreference;
@@ -45,7 +44,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             }
             // FIXME Purposely skipping errorcheck (the below line will crash if oldID is invalid) - for bug tracking purposes.
             //reminder = orm.getReminderTimes().getReminderByID(oldID);
-            //public ArrayList<EventType> getTypesByReminderTimeID(int reminderTimeID) {
+            //public ArrayList<MeasurementType> getTypesByReminderTimeID(int reminderTimeID) {
             //orm.getReminderTimes().getTypesByReminderTimeID(oldID);
             reminderTime = orm.getReminderTimes().getByID(oldID);
 
@@ -92,14 +91,14 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         // Whether we're creating or changing, we need to view *all* of the event types available.
         // later on, if changing, get all the associated reminderGroups. Then, when rendering
         // the Views, set each default value to whatever they were
-        EventTypes eventTypes = orm.getEventTypes();
+        MeasurementTypes measurementTypes = orm.getMeasurementTypes();
         // prefs = PreferenceManager.getDefaultSharedPreferences(this);
         // editor = prefs.edit();
 
         // Add checkboxes for all enabled event types, and configure them appropriately if
         // we are editing an existing reminder
-        for(int i = 0; i < eventTypes.types.size(); i++) {
-            EventType e = eventTypes.types.get(i);
+        for(int i = 0; i < measurementTypes.types.size(); i++) {
+            MeasurementType e = measurementTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);
             cb.setKey("junk_" + Long.toString(e.id)); // FIXME should load state from db / reminder obj, not event types
             cb.setTitle(e.name);

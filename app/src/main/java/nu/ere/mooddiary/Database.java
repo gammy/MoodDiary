@@ -5,11 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
-import android.database.sqlite.SQLiteCursor;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Database extends SQLiteOpenHelper {
     private static final String LOG_PREFIX = "Database";
@@ -34,7 +32,7 @@ public class Database extends SQLiteOpenHelper {
                         "id           INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "reminderTime INTEGER NOT NULL, " +
                         "type         INTEGER NOT NULL, " +
-                        "FOREIGN KEY(type) REFERENCES EventTypes(id)" +
+                        "FOREIGN KEY(type) REFERENCES MeasurementTypes(id)" +
                     ")"
         );
 
@@ -63,7 +61,7 @@ public class Database extends SQLiteOpenHelper {
 
         // Types
         db.execSQL(
-                "CREATE TABLE EventTypes " +
+                "CREATE TABLE MeasurementTypes " +
                 "(" +
                     "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "ui_order      INTEGER DEFAULT 0, " + // ui display order
@@ -86,7 +84,7 @@ public class Database extends SQLiteOpenHelper {
                     "date       INTEGER," +
                     "type       INTEGER NOT NULL, " +
                     "value      STRING NOT NULL," + // Even for passing integers, etc
-                        "FOREIGN KEY(type) REFERENCES EventTypes(id) " +
+                        "FOREIGN KEY(type) REFERENCES MeasurementTypes(id) " +
                 ")"
         );
 
@@ -117,24 +115,24 @@ public class Database extends SQLiteOpenHelper {
         /* The original values for these were based on a hand-written form provided by
            affektiva mottagningen:
 
-            addEventType(db, ID_RANGE,  0, "Mood",                  -3,   3, 0, "");
-            addEventType(db, ID_RANGE,  1, "Anxiety",                0,   3, 0, "");
-            addEventType(db, ID_RANGE,  2, "Irritability",           0,   3, 0, "");
-            addEventType(db, ID_RANGE,  3, "Lack of Concentration",  0,   3, 0, "");
-            addEventType(db, ID_NUMBER, 4, "Sleep (hours)",          0, 100, 0, "");
-            addEventType(db, ID_NUMBER, 5, "Alcohol (units)",        0, 100, 0, "");
+            addMeasurementType(db, ID_RANGE,  0, "Mood",                  -3,   3, 0, "");
+            addMeasurementType(db, ID_RANGE,  1, "Anxiety",                0,   3, 0, "");
+            addMeasurementType(db, ID_RANGE,  2, "Irritability",           0,   3, 0, "");
+            addMeasurementType(db, ID_RANGE,  3, "Lack of Concentration",  0,   3, 0, "");
+            addMeasurementType(db, ID_NUMBER, 4, "Sleep (hours)",          0, 100, 0, "");
+            addMeasurementType(db, ID_NUMBER, 5, "Alcohol (units)",        0, 100, 0, "");
         */
 
-        addEventType(ID_RANGE_CENTER,  0, "Mood",               -50,    50, 0, "");
-        addEventType(ID_RANGE_NORMAL,  1, "Anxiety",              0,   100, 0, "");
-        addEventType(ID_RANGE_NORMAL,  2, "Irritability",         0,   100, 0, "");
-        addEventType(ID_RANGE_NORMAL,  3, "Lack of Focus",        0,   100, 0, "");
-        addEventType(ID_NUMBER,        4, "Sleep (hours)",        0,   100, 0, "");
-        addEventType(ID_NUMBER,        5, "Alcohol (units)",      0,   100, 0, "");
+        addMeasurementType(ID_RANGE_CENTER,  0, "Mood",               -50,    50, 0, "");
+        addMeasurementType(ID_RANGE_NORMAL,  1, "Anxiety",              0,   100, 0, "");
+        addMeasurementType(ID_RANGE_NORMAL,  2, "Irritability",         0,   100, 0, "");
+        addMeasurementType(ID_RANGE_NORMAL,  3, "Lack of Focus",        0,   100, 0, "");
+        addMeasurementType(ID_NUMBER,        4, "Sleep (hours)",        0,   100, 0, "");
+        addMeasurementType(ID_NUMBER,        5, "Alcohol (units)",      0,   100, 0, "");
 
-        addEventType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "");
-        addEventType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "");
-        addEventType(ID_TEXT,          8, "Note",                -1,   -1, -1, ""); // FIXME hack..
+        addMeasurementType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "");
+        addMeasurementType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "");
+        addMeasurementType(ID_TEXT,          8, "Note",                -1,   -1, -1, ""); // FIXME hack..
 
         // The idea here being that a user can add new types from the UI at some point
 
@@ -162,14 +160,14 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS ReminderGroups");
         db.execSQL("DROP TABLE IF EXISTS ReminderTimes");
         db.execSQL("DROP TABLE IF EXISTS EntityPrimitives");
-        db.execSQL("DROP TABLE IF EXISTS EventTypes");
+        db.execSQL("DROP TABLE IF EXISTS MeasurementTypes");
         db.execSQL("DROP TABLE IF EXISTS Events");
         // Creating tables again
         onCreate(db);
     }
 
     /**
-     * Insert a new event type into the EventTypes table
+     * Insert a new event type into the MeasurementTypes table
      *
      * @param entity    Entity ID which matches an EntityPrimitives id
      * @param order     A number representing in what order the event type should be rendered (UX)
@@ -180,12 +178,12 @@ public class Database extends SQLiteOpenHelper {
      * @param meta      Metadata string: currently unused
      * ...// - Save widget data down to the entrylist
      */
-    public void addEventType(int entity, int order,
-                             String name, int min, int max, int dfl, String meta) {
-        Log.d(LOG_PREFIX, "Enter addEventType" );
+    public void addMeasurementType(int entity, int order,
+                                   String name, int min, int max, int dfl, String meta) {
+        Log.d(LOG_PREFIX, "Enter addMeasurementType" );
 
         String sql = "INSERT INTO " +
-                         "EventTypes " +
+                         "MeasurementTypes " +
                      "(" +
                          "entity, " +
                          "ui_order, " +
@@ -308,7 +306,7 @@ public class Database extends SQLiteOpenHelper {
         cursor = db.rawQuery("SELECT id, reminderGroup, hour, minute FROM ReminderTimes", null);
         Log.d(LOG_PREFIX, "testReminders: rawquery OK");
 
-        // Walk through each reminder and collate the associated eventTypes
+        // Walk through each reminder and collate the associated measurementTypes
         while(cursor.moveToNext()) {
             Log.d(LOG_PREFIX, "testReminders: looping ReminderTimes");
 
@@ -323,7 +321,7 @@ public class Database extends SQLiteOpenHelper {
 
             // Collate event types associated with this reminder
             Cursor rCursor;
-            // ArrayList<EventType> reminderEventTypes = new ArrayList<>();
+            // ArrayList<MeasurementType> reminderEventTypes = new ArrayList<>();
 
             rCursor = db.rawQuery("SELECT id, type FROM ReminderGroups WHERE reminderTime = " +
                             Long.toString(id), null);
@@ -332,8 +330,8 @@ public class Database extends SQLiteOpenHelper {
             while (rCursor.moveToNext()) {
                 int eventTypeID = rCursor.getInt(rCursor.getColumnIndex("type"));
                 Log.d(LOG_PREFIX, "   associated event type: " + Integer.toString(eventTypeID));
-                // EventType eventType = orm.getEventTypes().getByID(eventTypeID);
-                //reminderEventTypes.add(eventType);
+                // MeasurementType measurementType = orm.getMeasurementTypes().getByID(eventTypeID);
+                //reminderEventTypes.add(measurementType);
             }
 
             rCursor.close();

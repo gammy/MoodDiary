@@ -71,10 +71,10 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
     public void createEventTypePreferences() {
         Log.d(LOG_PREFIX, "Enter createEventTypePreferences");
 
-        EventTypes eventTypes = orm.getEventTypes();
+        MeasurementTypes measurementTypes = orm.getMeasurementTypes();
 
-        for(int i = 0; i < eventTypes.types.size(); i++) {
-            EventType e = eventTypes.types.get(i);
+        for(int i = 0; i < measurementTypes.types.size(); i++) {
+            MeasurementType e = measurementTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);
             cb.setKey("visible_event_" + Long.toString(e.id));
             cb.setTitle(e.name);

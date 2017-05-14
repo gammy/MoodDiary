@@ -1,8 +1,10 @@
 package nu.ere.mooddiary;
 
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
-public class EventType {
+public class MeasurementType {
     public int id;
     public int order;
     public String name;
@@ -13,9 +15,9 @@ public class EventType {
     public int totalValues;
     public int normalDefault;
 
-    public View view;
+    View view;
 
-    public EventType(int id, int order, String name, int entity, int min, int max, int dfl, int enabled) {
+    public MeasurementType(int id, int order, String name, int entity, int min, int max, int dfl, int enabled) {
         this.id = id;
         this.order = order;
         this.name = name;
@@ -43,13 +45,11 @@ public class EventType {
         return entityPrimitives.getByID(this.entity);
     }
 
-    public View getView() {
-        return(this.view);
-    }
-
     public void setView(View view) {
         this.view = view;
     }
-
+    public View getView() {
+        return(view);
+    }
 }
 

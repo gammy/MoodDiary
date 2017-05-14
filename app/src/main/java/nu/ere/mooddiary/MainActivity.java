@@ -4,15 +4,17 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
+
 import java.util.Calendar;
 
 public class MainActivity extends ThemedActivity {
@@ -23,7 +25,7 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
-        installAlarms();
+        //installAlarms();
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
@@ -47,12 +49,7 @@ public class MainActivity extends ThemedActivity {
         view.setFocusableInTouchMode(true);
         view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
-        // Set up the save button, which, on click, saves the event and runs an animation
-        Button saveButton = (Button) findViewById(R.id.saveButton);
-        TextView thanksView = (TextView) findViewById(R.id.thanksTextView);
-        saveButton.setOnClickListener(new SaveClickListener(this, thanksView, false));
-
-        Util.renderReminderEventTypes(this, -1, R.id.entryLayout, dialogThemeID);
+        renderEventSelect(R.id.entryLayout);
     }
 
     public void installAlarms() {
@@ -94,6 +91,66 @@ public class MainActivity extends ThemedActivity {
         //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
         //                          calendar.getTimeInMillis(),
         //        3600000 /* One hour in ms */, pendingIntent);
+
+    }
+
+    /**
+     *
+     * @param layout The layout resource to be used as main container where all Views are created
+     */
+    public void renderEventSelect(int layout) {
+        Log.d(LOG_PREFIX, "Enter renderEventSelect");
+        Resources resources = this.getResources();
+        ORM orm = ORM.getInstance(this);
+
+        // Get our main (scrollable) view, where we are to programmatically add our EntryTypes
+        LinearLayout entryLayout = (LinearLayout) this.findViewById(layout);
+
+        /*
+        // Create a table
+        TableLayout table = new TableLayout(this);
+        table.setColumnStretchable(1, true); // Stretch the rightmost column (holding sliders etc)
+
+        TableRow rowTitle = new TableRow(this);
+        rowTitle.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+
+        TableRow.LayoutParams rowParams = new TableRow.LayoutParams();
+        rowParams.span = 1;
+
+        rowParams.topMargin    = (int) resources.getDimension(R.dimen.entry_padding_top);
+        rowParams.bottomMargin = (int) resources.getDimension(R.dimen.entry_padding_bottom);
+        */
+
+        // Walk our event types and create the appropriate text and entry widget (slider, etc).
+        // Add them to the main layout.
+        for(int i = 0; i < orm.getMeasurementTypes().types.size(); i++) {
+            MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
+            EntityPrimitive primitive = measurementType.getPrimitive(orm.getPrimitives());
+
+            AppCompatButton measurementButton = new AppCompatButton(this);
+            measurementButton.setText(measurementType.name);
+
+            // Bind the listener to an appropriate dialog
+            switch(primitive.name) {
+                case "range_center":
+                    break;
+
+                case "range_normal":
+                    break;
+
+                case "number":
+                    MeasurementButtonClickListener listener =
+                            new MeasurementButtonClickListener(this, measurementType, dialogThemeID);
+                    measurementButton.setOnClickListener(listener);
+                    break;
+
+                case "text":
+                    break;
+
+            }
+
+            entryLayout.addView(measurementButton);
+        }
 
     }
 

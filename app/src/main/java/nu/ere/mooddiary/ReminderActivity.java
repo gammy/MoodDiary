@@ -46,7 +46,7 @@ public class ReminderActivity extends ThemedActivity {
     public void initUI() {
         Log.d(LOG_PREFIX, "Enter initUI" );
 
-        setContentView(R.layout.coordinator_reminders);
+        setContentView(R.layout.content_reminders);
         Toolbar toolbar = (Toolbar) findViewById(R.id.reminderToolbar);
         setSupportActionBar(toolbar);
 

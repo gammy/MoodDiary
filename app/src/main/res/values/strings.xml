@@ -36,6 +36,7 @@
     <!-- Dialog boxes -->
     <string name="submit">Ok</string>
     <string name="cancel">Back</string>
+    <string name="toast_saved">Saved</string>
 
     <!-- Export menu -->
     <string name="action_save_csv">Save</string>

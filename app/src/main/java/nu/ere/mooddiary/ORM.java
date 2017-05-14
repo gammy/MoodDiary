@@ -3,10 +3,7 @@ package nu.ere.mooddiary;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.util.Log;
-import android.app.Application;
 
 // Thread-safe singleton with lazy initialization:
 // It's instantiated on first invocation only.
@@ -16,7 +13,7 @@ public final class ORM extends Database {
     private static volatile ORM instance = null;
 
     private static EntityPrimitives entityPrimitives = null;
-    private static EventTypes eventTypes = null;
+    private static MeasurementTypes measurementTypes = null;
     private static ReminderTimes reminders = null;
 
     public static long lastSave = 0;
@@ -46,14 +43,14 @@ public final class ORM extends Database {
     /****************************************/
 
     public static EntityPrimitives getPrimitives() {return entityPrimitives;}
-    public static EventTypes getEventTypes() {return eventTypes;}
+    public static MeasurementTypes getMeasurementTypes() {return measurementTypes;}
     public static ReminderTimes getReminderTimes() {return reminders;}
 
     protected static synchronized void loadObjects() {
         Log.d(LOG_PREFIX, "loadObjects");
 
         entityPrimitives = new EntityPrimitives(db);
-        eventTypes = new EventTypes(db);
+        measurementTypes = new MeasurementTypes(db);
         reminders = new ReminderTimes(instance);
     }
 }

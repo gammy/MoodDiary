@@ -9,7 +9,6 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
-import android.widget.Toast;
 
 public class ExportActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "ExportActivity";
@@ -117,11 +116,11 @@ public class ExportActivity extends ThemedPreferenceActivity {
     public void createEventTypePreferences(PreferenceCategory screen) {
         Log.d(LOG_PREFIX, "Enter createEventTypePreferences");
 
-        EventTypes eventTypes = orm.getEventTypes();
+        MeasurementTypes measurementTypes = orm.getMeasurementTypes();
 
-        Log.d(LOG_PREFIX, "event type count: " + Integer.toString(eventTypes.types.size()));
-        for(int i = 0; i < eventTypes.types.size(); i++) {
-            EventType e = eventTypes.types.get(i);
+        Log.d(LOG_PREFIX, "event type count: " + Integer.toString(measurementTypes.types.size()));
+        for(int i = 0; i < measurementTypes.types.size(); i++) {
+            MeasurementType e = measurementTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);
             cb.setKey("csv_type_" + Long.toString(e.id));
             cb.setTitle(e.name);

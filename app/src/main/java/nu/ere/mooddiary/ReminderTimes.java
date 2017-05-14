@@ -21,7 +21,7 @@ public final class ReminderTimes {
 
         reminderTimes = new ArrayList<>();
 
-        // Walk through each reminder and collate the associated eventTypes
+        // Walk through each reminder and collate the associated measurementTypes
         while(cursor.moveToNext()) {
             Log.d(LOG_PREFIX, "reminderTimes: looping ReminderTimes");
 
@@ -58,7 +58,7 @@ public final class ReminderTimes {
         cursor.close();
 
         // Collate event types associated with this reminder
-        ArrayList<EventType> reminderEventTypes = new ArrayList<>();
+        ArrayList<MeasurementType> reminderEventTypes = new ArrayList<>();
 
         cursor = orm.db.rawQuery("SELECT id, type FROM ReminderGroups WHERE reminderTime = " +
                 Long.toString(groupID), null);
@@ -67,8 +67,8 @@ public final class ReminderTimes {
         // Get all event types associated with this reminder
         while(cursor.moveToNext()) {
             int eventTypeID = cursor.getInt(cursor.getColumnIndex("type"));
-            EventType eventType = orm.getEventTypes().getByID(eventTypeID);
-            reminderEventTypes.add(eventType);
+            MeasurementType measurementType = orm.getMeasurementTypes().getByID(eventTypeID);
+            reminderEventTypes.add(measurementType);
         }
 
         Reminder reminder = new Reminder(groupID, hour, minute, reminderEventTypes);
@@ -86,11 +86,11 @@ public final class ReminderTimes {
         throw new NoSuchElementException("Unable to find an ReminderTime with id " +
                 Long.toString(id));
     }
-    public ArrayList<EventType> getTypesByReminderTimeID(int reminderTimeID) {
+    public ArrayList<MeasurementType> getTypesByReminderTimeID(int reminderTimeID) {
         Log.d(LOG_PREFIX, "Enter getTypesByReminderTimeID");
         // Collate event types associated with this reminder
         Cursor rCursor;
-        ArrayList<EventType> reminderEventTypes = new ArrayList<>();
+        ArrayList<MeasurementType> reminderMeasurementTypes = new ArrayList<>();
 
         rCursor = orm.db.rawQuery("SELECT type FROM ReminderGroups WHERE reminderTime = " +
                 Integer.toString(reminderTimeID), null);
@@ -99,12 +99,12 @@ public final class ReminderTimes {
         while (rCursor.moveToNext()) {
             int eventTypeID = rCursor.getInt(rCursor.getColumnIndex("type"));
             Log.d(LOG_PREFIX, "   associated event type: " + Integer.toString(eventTypeID));
-            EventType eventType = orm.getEventTypes().getByID(eventTypeID);
-            reminderEventTypes.add(eventType);
+            MeasurementType measurementType = orm.getMeasurementTypes().getByID(eventTypeID);
+            reminderMeasurementTypes.add(measurementType);
         }
 
         rCursor.close();
 
-        return(reminderEventTypes);
+        return(reminderMeasurementTypes);
     }
 }

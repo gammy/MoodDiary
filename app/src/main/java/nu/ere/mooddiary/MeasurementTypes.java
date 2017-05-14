@@ -6,14 +6,14 @@ import android.util.Log;
 import java.util.NoSuchElementException;
 import java.util.ArrayList;
 
-public class EventTypes {
-    private static final String LOG_PREFIX = "EventTypes";
+public class MeasurementTypes {
+    private static final String LOG_PREFIX = "MeasurementTypes";
 
-    public ArrayList<EventType> types;
+    public ArrayList<MeasurementType> types;
 
-    public EventTypes(SQLiteDatabase db){
-        Log.d(LOG_PREFIX, "Enter EventTypes");
-        types = new ArrayList<EventType>();
+    public MeasurementTypes(SQLiteDatabase db){
+        Log.d(LOG_PREFIX, "Enter MeasurementTypes");
+        types = new ArrayList<MeasurementType>();
 
         Cursor cursor = db.rawQuery(
                 "SELECT " +
@@ -26,14 +26,14 @@ public class EventTypes {
                     "val_dfl, " +
                     "enabled " +
                 "FROM " +
-                    "EventTypes " +
+                    "MeasurementTypes " +
                 "ORDER BY " +
                     "ui_order ASC", null);
         int added = 0;
 
         while(cursor.moveToNext()) {
 
-            EventType type = new EventType(
+            MeasurementType type = new MeasurementType(
                     cursor.getInt(0),   // id
                     cursor.getInt(1),   // order
                     cursor.getString(2), // name
@@ -55,24 +55,24 @@ public class EventTypes {
         Log.d(LOG_PREFIX, "Types added: " + Integer.toString(added));
     }
 
-    public EventType getByID(long id) {
+    public MeasurementType getByID(long id) {
         for(int i = 0; i < types.size(); i++) {
-            EventType e = types.get(i);
+            MeasurementType e = types.get(i);
             if(e.id == id) {
                 return(e);
             }
         }
-        throw new NoSuchElementException("Unable to find an EventType with id " +
+        throw new NoSuchElementException("Unable to find an MeasurementType with id " +
                 Long.toString(id));
     }
 
-    public EventType getByName(String name) {
+    public MeasurementType getByName(String name) {
         for(int i = 0; i < types.size(); i++) {
-            EventType e = types.get(i);
+            MeasurementType e = types.get(i);
             if(e.name.equals(name)) {
                 return(e);
             }
         }
-        throw new NoSuchElementException("Unable to find an EventType with name '" + name + "'");
+        throw new NoSuchElementException("Unable to find an MeasurementType with name '" + name + "'");
     }
 }

@@ -35,7 +35,7 @@ public class OverviewActivity extends ThemedActivity {
         long entryCount = s.simpleQueryForLong();
         s.releaseReference();
 
-        s = db.compileStatement("SELECT COUNT(*) FROM EventTypes");
+        s = db.compileStatement("SELECT COUNT(*) FROM MeasurementTypes");
         long eventTypeCount = s.simpleQueryForLong();
         s.releaseReference();
 

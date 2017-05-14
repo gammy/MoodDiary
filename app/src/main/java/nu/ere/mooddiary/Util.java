@@ -16,7 +16,6 @@ import android.support.v4.widget.TextViewCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.webkit.JavascriptInterface;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
@@ -25,7 +24,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.view.Gravity;
 
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -37,22 +35,28 @@ public class Util {
     /**
      *
      * @param activity The calling activity (i.e `this` in your Activity)
-     * @param eventType
+     * @param measurementType
      * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
      * @return
      */
     public static NumberPicker showNumberDialog(Activity activity,
-                                                EventType eventType,
+                                                TextView view,
+                                                MeasurementType measurementType,
                                                 int dialogThemeID){
-        TextView view = (TextView) eventType.view;
         Log.d(LOG_PREFIX, "Enter showNumberDialog");
         Log.d(LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
         final NumberPicker numberPicker =
                 new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
 
         numberPicker.setMinValue(0);
-        numberPicker.setMaxValue((int) eventType.totalValues);
-        numberPicker.setValue(Integer.parseInt(view.getText().toString()));
+        numberPicker.setMaxValue(measurementType.totalValues);
+        // This is stupid: The code assumes that the caller view is a number or somesuch,
+        // to set the correct 'default' (startup) value of the number box. But in the MainActivity
+        // the caller view is a button, and has nothing to do with any default value; the button
+        // has the *name* of the measurement type..
+        if(view != null) {
+            numberPicker.setValue(Integer.parseInt(view.getText().toString())); // FIXME regression with abstraction of TextView
+        }
         numberPicker.setWrapSelectorWheel(false);
 
         // FIXME numberPicker styling (font size) regression
@@ -65,7 +69,9 @@ public class Util {
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(new ContextThemeWrapper(activity, dialogThemeID));
 
-        DialogNumberClickListener listener = new DialogNumberClickListener(view, numberPicker);
+        DialogNumberClickListener listener = new DialogNumberClickListener(activity, numberPicker);
+        listener.setView(view);
+        listener.setMeasurementType(measurementType);
 
         builder.setPositiveButton(R.string.submit, listener);
         builder.setNegativeButton(R.string.cancel, listener);
@@ -73,7 +79,7 @@ public class Util {
 
         AlertDialog dialog = builder.create();
 
-        dialog.setTitle(eventType.name);
+        dialog.setTitle(measurementType.name);
         dialog.show();
 
         return(numberPicker);
@@ -112,16 +118,16 @@ public class Util {
 
         // Walk our event types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
-        for(int i = 0; i < orm.getEventTypes().types.size(); i++) {
-            EventType etype = orm.getEventTypes().types.get(i);
-            EntityPrimitive primitive = etype.getPrimitive(orm.getPrimitives());
+        for(int i = 0; i < orm.getMeasurementTypes().types.size(); i++) {
+            MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
+            EntityPrimitive primitive = measurementType.getPrimitive(orm.getPrimitives());
 
             // Make a label
             TextView label = new TextView(activity);
             TextViewCompat.setTextAppearance(label,
                     android.R.style.TextAppearance_DeviceDefault_Small);
             label.setGravity(Gravity.START);
-            label.setText(etype.name);
+            label.setText(measurementType.name);
 
             TableRow row = new TableRow(activity);
             // row.setBackgroundColor(Color.BLUE); // (debugging)
@@ -133,15 +139,15 @@ public class Util {
                 case "range_center":
                 case "range_normal":
                     SeekBar seekBar = new SeekBar(activity);
-                    etype.setView(seekBar);
+                    measurementType.setView(seekBar);
                     // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
                     // the database EntityPrimitive name.
                     int styleID = resources.getIdentifier(primitive.name,
                             "drawable", activity.getPackageName());
                     seekBar.setProgressDrawable(
                             ResourcesCompat.getDrawable(resources, styleID, null));
-                    seekBar.setMax((int) etype.totalValues);
-                    seekBar.setProgress((int) etype.normalDefault);
+                    seekBar.setMax(measurementType.totalValues);
+                    seekBar.setProgress(measurementType.normalDefault);
                     row.addView(seekBar, rowParams);
                     break;
 
@@ -158,22 +164,22 @@ public class Util {
                     number.setBackgroundDrawable(drawableFromTheme);
 
                     //TextInputEditText number = new TextInputEditText(this);
-                    etype.setView(number);
+                    measurementType.setView(number);
                     number.setGravity(Gravity.CENTER_HORIZONTAL);
                     TextViewCompat.setTextAppearance(number,
                             android.R.style.TextAppearance_DeviceDefault_Medium);
                     //number.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
 
-                    number.setText(Long.toString(etype.normalDefault));
-                    EventNumberClickListener listener =
-                            new EventNumberClickListener(activity, etype, dialogThemeID);
+                    number.setText(Long.toString(measurementType.normalDefault));
+                    MeasurementTextClickListener listener =
+                            new MeasurementTextClickListener(activity, number, measurementType, dialogThemeID);
                     number.setOnClickListener(listener);
                     row.addView(number, rowParams);
                     break;
 
                 case "text":
                     TextInputEditText text = new TextInputEditText(activity);
-                    etype.setView(text);
+                    measurementType.setView(text);
                     row.addView(text, rowParams);
                     break;
 
@@ -200,31 +206,31 @@ public class Util {
         Resources resources = activity.getResources();
         ORM orm = ORM.getInstance(activity);
 
-        int evCount = orm.getEventTypes().types.size();
+        int evCount = orm.getMeasurementTypes().types.size();
 
         for (int i = 0; i < evCount; i++) {
-            EventType etype = orm.getEventTypes().types.get(i);
+            MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
             Log.d(LOG_PREFIX, "resetEntries: to reset etype " +
-                    Long.toString(etype.id) + ", view id " + Long.toString(etype.view.getId()));
+                    Long.toString(measurementType.id) + ", view id " + Long.toString(measurementType.view.getId()));
 
 
-            switch (etype.getPrimitive(orm.getPrimitives()).name) {
+            switch (measurementType.getPrimitive(orm.getPrimitives()).name) {
                 case "range_center":
                 case "range_normal":
-                    SeekBar seekBar = (SeekBar) etype.view;
-                    seekBar.setMax((int) etype.totalValues);
-                    seekBar.setProgress((int) etype.normalDefault);
+                    SeekBar seekBar = (SeekBar) measurementType.view;
+                    seekBar.setMax(measurementType.totalValues);
+                    seekBar.setProgress(measurementType.normalDefault);
                     break;
 
                 case "text":
-                    TextInputEditText textInputEditText = (TextInputEditText) etype.view;
+                    TextInputEditText textInputEditText = (TextInputEditText) measurementType.view;
                     textInputEditText.setText("");
                     break;
 
                 case "number":
                 default:
-                    TextView textView = (TextView) etype.view;
-                    textView.setText(Long.toString(etype.normalDefault));
+                    TextView textView = (TextView) measurementType.view;
+                    textView.setText(Long.toString(measurementType.normalDefault));
                     break;
             }
         }
@@ -235,34 +241,34 @@ public class Util {
         ORM orm = ORM.getInstance(activity);
 
         ArrayList<Entry> entries = new ArrayList<>();
-        int evCount = orm.getEventTypes().types.size();
+        int evCount = orm.getMeasurementTypes().types.size();
 
         // - Save widget data down to the entrylist
         for(int i = 0; i < evCount; i++) {
-            EventType etype = orm.getEventTypes().types.get(i);
+            MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
             String value;
 
             // Parse
-            switch(etype.getPrimitive(orm.getPrimitives()).name) {
+            switch(measurementType.getPrimitive(orm.getPrimitives()).name) {
                 case "range_center":
                 case "range_normal":
-                    value = Integer.toString(((SeekBar) etype.view).getProgress());
-                    value = Long.toString(etype.min + Long.parseLong(value, 10));
+                    value = Integer.toString(((SeekBar) measurementType.view).getProgress());
+                    value = Long.toString(measurementType.min + Long.parseLong(value, 10));
                     break;
 
                 case "text":
-                    value = ((TextInputEditText) etype.view).getText().toString();
+                    value = ((TextInputEditText) measurementType.view).getText().toString();
                     break;
 
                 case "number":
                 default:
-                    value = ((TextView) etype.view).getText().toString();
-                    value = Long.toString(etype.min + Long.parseLong(value, 10));
+                    value = ((TextView) measurementType.view).getText().toString();
+                    value = Long.toString(measurementType.min + Long.parseLong(value, 10));
                     break;
             }
 
             // Add
-            entries.add(new nu.ere.mooddiary.Entry((int) etype.id, value));
+            entries.add(new nu.ere.mooddiary.Entry((int) measurementType.id, value));
         }
 
         orm.lastSave = System.currentTimeMillis();

@@ -1,21 +1,25 @@
 package nu.ere.mooddiary;
 
+import android.app.Activity;
 import android.content.DialogInterface;
-import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 class DialogNumberClickListener implements DialogInterface.OnClickListener {
     private static final String LOG_PREFIX = "DialogNumberClickLis..";
 
-    private TextView view;
-    //private TextInputEditText view;
-    private NumberPicker numberPicker;
+    private TextView view = null;
 
-    public DialogNumberClickListener(TextView view, NumberPicker numberPicker) {
-    //public DialogNumberClickListener(TextInputEditText view, NumberPicker numberPicker) {
-        this.view = view;
+    private NumberPicker numberPicker = null;
+    private Activity activity = null;
+    private MeasurementType measurementType = null;
+
+    public DialogNumberClickListener(Activity activity, NumberPicker numberPicker) {
+        this.activity = activity;
         this.numberPicker = numberPicker;
     }
 
@@ -23,14 +27,44 @@ class DialogNumberClickListener implements DialogInterface.OnClickListener {
         Log.d(LOG_PREFIX, "Enter onClick");
         Log.d(LOG_PREFIX, "Which = " + Integer.toString(which));
 
+        String value = Integer.toString(numberPicker.getValue());
+
         switch (which)
         {
             case DialogInterface.BUTTON_POSITIVE:
-                view.setText(Integer.toString(numberPicker.getValue()));
+                setViewText(view, value);
                 break;
             default:
                 break;
         }
+
+        // Ugly, but it works. This saves a single entry from the main view
+        if(view == null) {
+            Entry entry = new Entry(measurementType.id, value);
+            ORM orm = ORM.getInstance(activity);
+            ArrayList<Entry> entryList = new ArrayList<>();
+            entryList.add(entry);
+            orm.addEntries(entryList, true);
+            String text = activity.getString(R.string.toast_saved);
+            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void setView(TextView view) {
+        this.view = view;
+    }
+
+    public void setMeasurementType(MeasurementType measurementType) {
+        this.measurementType = measurementType;
+    }
+
+    private void setViewText(TextView view, String text) {
+        if(view == null) {
+            return;
+        }
+
+        view.setText(text);
     }
 }
 
