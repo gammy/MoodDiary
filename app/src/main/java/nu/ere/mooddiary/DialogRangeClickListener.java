@@ -3,9 +3,7 @@ package nu.ere.mooddiary;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 class DialogRangeClickListener implements DialogInterface.OnClickListener {
     private static final String LOG_PREFIX = "DialogRangeClickLis..";

@@ -1,4 +1,4 @@
-/* New Reminder menu, containing a list of event types, a time, and a save button */
+/* New Reminder menu, containing a list of measurement types, a time, and a save button */
 package nu.ere.mooddiary;
 
 import android.app.Activity;
@@ -10,8 +10,11 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.widget.Toast;
+
 import org.bostonandroid.preference.TimePreference;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -19,8 +22,6 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "ReminderPref..Activity";
     private ORM orm;
 
-    SharedPreferences prefs;
-    SharedPreferences.Editor editor;
     PreferenceScreen reminderScreen;
 
     private int oldID = -1;
@@ -42,14 +43,8 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             if(oldID == -1) {
                 Log.d(LOG_PREFIX, "Aiieeeeeee! I was told to load an existing reminder, but there was none in the intent!");
             }
-            // FIXME Purposely skipping errorcheck (the below line will crash if oldID is invalid) - for bug tracking purposes.
-            //reminder = orm.getReminderTimes().getReminderByID(oldID);
-            //public ArrayList<MeasurementType> getTypesByReminderTimeID(int reminderTimeID) {
-            //orm.getReminderTimes().getTypesByReminderTimeID(oldID);
             reminderTime = orm.getReminderTimes().getByID(oldID);
-
-            //reminderTime = orm.getReminderTimes().getTypesByReminderTimeID();
-
+            Toast.makeText(this, "reminderTime: " + Integer.toString(oldID), Toast.LENGTH_SHORT).show();
         }
 
         // Create the main context
@@ -88,21 +83,39 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         }
         timeCategory.addPreference(timePref);
 
-        // Whether we're creating or changing, we need to view *all* of the event types available.
+        // Whether we're creating or changing, we need to view *all* of the minutes available.
         // later on, if changing, get all the associated reminderGroups. Then, when rendering
         // the Views, set each default value to whatever they were
         MeasurementTypes measurementTypes = orm.getMeasurementTypes();
         // prefs = PreferenceManager.getDefaultSharedPreferences(this);
         // editor = prefs.edit();
 
-        // Add checkboxes for all enabled event types, and configure them appropriately if
+        ArrayList<MeasurementType> enabledReminderMeasurementTypes = null;
+        if(! makeNew) {
+            enabledReminderMeasurementTypes =
+                    orm.getReminderTimes().getTypesByReminderTimeID(oldID);
+        }
+
+        // Add checkboxes for all enabled minutes, and configure them appropriately if
         // we are editing an existing reminder
         for(int i = 0; i < measurementTypes.types.size(); i++) {
             MeasurementType e = measurementTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);
-            cb.setKey("junk_" + Long.toString(e.id)); // FIXME should load state from db / reminder obj, not event types
             cb.setTitle(e.name);
-            cb.setChecked(e.enabled == 1); // FIXME should load state from db / reminder obj, not event types
+
+            cb.setChecked(false); // Default off
+
+            // FIXME improve this code please
+            if(! makeNew) {
+                cb.setChecked(false);
+                for (int j = 0; j < enabledReminderMeasurementTypes.size(); j++) {
+                    MeasurementType chkType = enabledReminderMeasurementTypes.get(j);
+                    if(chkType.id == e.id) {
+                        cb.setChecked(true);
+                    }
+                }
+            }
+
             typeCategory.addPreference(cb);
         }
 

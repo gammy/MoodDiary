@@ -121,7 +121,7 @@ public class MainActivity extends ThemedActivity {
         rowParams.bottomMargin = (int) resources.getDimension(R.dimen.entry_padding_bottom);
         */
 
-        // Walk our event types and create the appropriate text and entry widget (slider, etc).
+        // Walk our measurement types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
         for(int i = 0; i < orm.getMeasurementTypes().types.size(); i++) {
             MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);

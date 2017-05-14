@@ -1,8 +1,6 @@
 package nu.ere.mooddiary;
 
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 public class MeasurementType {
     public int id;

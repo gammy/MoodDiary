@@ -4,11 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 
 class DialogTextClickListener implements DialogInterface.OnClickListener {
     private static final String LOG_PREFIX = "DialogTextClickLis..";

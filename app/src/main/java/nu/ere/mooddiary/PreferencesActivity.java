@@ -11,6 +11,8 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.prefs.PreferenceChangeListener;
+
 // Note: Any key prefixed with "junk_" will *not* be used by the app, and is considered a
 //       necessary evil.
 
@@ -41,7 +43,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         prefEventTypes =
                 (PreferenceScreen) findPreference("preference_select_event_types");
 
-        createEventTypePreferences(); // When user clicks Settings -> Event Types, this is shown
+        createEventTypePreferences(); // When user clicks Settings -> Measurement Types, this is shown
         createReminderPreferences();  // When user clicks Settings -> Reminders, this is shown
     }
 
@@ -99,24 +101,27 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
         for(int i = 0; i < orm.getReminderTimes().reminderTimes.size(); i++) {
             ReminderTime reminder = orm.getReminderTimes().reminderTimes.get(i);
+            Log.d(LOG_PREFIX, "Load old reminderTimeId: " + Integer.toString(reminder.id));
+
             Preference oldReminder = new Preference(this);
-            this.editReminderTimeID = reminder.id;
-            oldReminder.setKey("junk_old_reminder_" + Integer.toString(i)); // FIXME
+             // oldReminder.setKey("junk_old_reminder_" + Integer.toString(i)); // FIXME
+
             oldReminder.setTitle(Util.toHumanTime(this, reminder.hour, reminder.minute));
-            oldReminder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            Preference.OnPreferenceClickListener listener =
+                    new OnReminderTimePreferenceClickListener(reminder.id) {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
                     in.putExtra("newReminder", false);
-                    in.putExtra("reminderTimeID",
-                            PreferencesActivity.this.editReminderTimeID); // FIXME awkward
-
+                    in.putExtra("reminderTimeID", this.reminderTimeID);
                     Log.d("PreferencesActivity", "Clicker: putExtra:" +
-                            Integer.toString(PreferencesActivity.this.editReminderTimeID)); // FIXME awkward
+                            Integer.toString(this.reminderTimeID));
                     startActivityForResult(in, 1338); // FIXME const - 1338 - EDIT
                     return true;
                 }
-            });
+            };
+            oldReminder.setOnPreferenceClickListener(listener);
+
             oldCategory.addPreference(oldReminder);
         }
 
@@ -127,7 +132,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
             public boolean onPreferenceClick(Preference preference) {
                 // Finally we load Level 3, the add/edit dialog. It contains:
                 // - Time view / select dialog
-                // - List of event type checkboxes
+                // - List of measurement type checkboxes
                 // - Save button
                 // onActivityResult in this class will be called on save or cancel/back
                 //code for what you want it to do

@@ -93,7 +93,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
         datePrefEnd.setTitle(getApplicationContext().getString(R.string.title_date_to));
         datesCategory.addPreference(datePrefEnd);
 
-        // Event type list
+        // minute list
         createEventTypePreferences(typesCategory);
         prefCSV.addPreference(typesCategory);
 
@@ -118,7 +118,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
         MeasurementTypes measurementTypes = orm.getMeasurementTypes();
 
-        Log.d(LOG_PREFIX, "event type count: " + Integer.toString(measurementTypes.types.size()));
+        Log.d(LOG_PREFIX, "minute count: " + Integer.toString(measurementTypes.types.size()));
         for(int i = 0; i < measurementTypes.types.size(); i++) {
             MeasurementType e = measurementTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);

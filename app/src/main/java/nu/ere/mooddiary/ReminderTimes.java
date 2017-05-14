@@ -1,6 +1,7 @@
 package nu.ere.mooddiary;
 
 import android.database.Cursor;
+import android.support.annotation.IntegerRes;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -42,40 +43,6 @@ public final class ReminderTimes {
         cursor.close();
     }
 
-    /*
-    public Reminder getReminderByID(long groupID) { // FIXME groupID you mean!
-        Log.d(LOG_PREFIX, "Enter getReminderByID");
-        Cursor cursor;
-
-        // Get core reminder properties
-        Log.d(LOG_PREFIX, "Got passed id: " + Long.toString(groupID));
-
-        cursor = orm.db.rawQuery("SELECT hour, minute FROM ReminderTimes WHERE reminderGroup = " +
-                Long.toString(groupID), null);
-        cursor.moveToFirst();
-        int hour   = cursor.getInt(cursor.getColumnIndex("hour"));
-        int minute = cursor.getInt(cursor.getColumnIndex("minute"));
-        cursor.close();
-
-        // Collate event types associated with this reminder
-        ArrayList<MeasurementType> reminderEventTypes = new ArrayList<>();
-
-        cursor = orm.db.rawQuery("SELECT id, type FROM ReminderGroups WHERE reminderTime = " +
-                Long.toString(groupID), null);
-        // FIXME assumes no errors
-
-        // Get all event types associated with this reminder
-        while(cursor.moveToNext()) {
-            int eventTypeID = cursor.getInt(cursor.getColumnIndex("type"));
-            MeasurementType measurementType = orm.getMeasurementTypes().getByID(eventTypeID);
-            reminderEventTypes.add(measurementType);
-        }
-
-        Reminder reminder = new Reminder(groupID, hour, minute, reminderEventTypes);
-        return(reminder);
-    }
-    */
-
     public ReminderTime getByID(long id) {
         for(int i = 0; i < reminderTimes.size(); i++) {
             ReminderTime r = reminderTimes.get(i);
@@ -86,24 +53,25 @@ public final class ReminderTimes {
         throw new NoSuchElementException("Unable to find an ReminderTime with id " +
                 Long.toString(id));
     }
+
     public ArrayList<MeasurementType> getTypesByReminderTimeID(int reminderTimeID) {
         Log.d(LOG_PREFIX, "Enter getTypesByReminderTimeID");
-        // Collate event types associated with this reminder
-        Cursor rCursor;
+        Log.d(LOG_PREFIX, "Caller is looking for types for reminderTimeID " +
+                Integer.toString(reminderTimeID));
         ArrayList<MeasurementType> reminderMeasurementTypes = new ArrayList<>();
 
-        rCursor = orm.db.rawQuery("SELECT type FROM ReminderGroups WHERE reminderTime = " +
+        Cursor cursor = orm.db.rawQuery("SELECT type FROM ReminderGroups WHERE reminderTime = " +
                 Integer.toString(reminderTimeID), null);
 
-        // Get all event types associated with this reminder
-        while (rCursor.moveToNext()) {
-            int eventTypeID = rCursor.getInt(rCursor.getColumnIndex("type"));
-            Log.d(LOG_PREFIX, "   associated event type: " + Integer.toString(eventTypeID));
-            MeasurementType measurementType = orm.getMeasurementTypes().getByID(eventTypeID);
+        // Get all measurement types associated with this reminder
+        while (cursor.moveToNext()) {
+            int measurementTypeId = cursor.getInt(cursor.getColumnIndex("type"));
+            Log.d(LOG_PREFIX, "   associated measurement type: " + Integer.toString(measurementTypeId));
+            MeasurementType measurementType = orm.getMeasurementTypes().getByID(measurementTypeId);
             reminderMeasurementTypes.add(measurementType);
         }
 
-        rCursor.close();
+        cursor.close();
 
         return(reminderMeasurementTypes);
     }

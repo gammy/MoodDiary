@@ -5,9 +5,6 @@ import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 
 class DialogNumberClickListener implements DialogInterface.OnClickListener {
     private static final String LOG_PREFIX = "DialogNumberClickLis..";

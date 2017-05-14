@@ -111,7 +111,7 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO EntityPrimitives (id// TODO:, name) VALUES (4, 'checkbox')");
         */
 
-        // Event Types
+        // Measurement Types
         /* The original values for these were based on a hand-written form provided by
            affektiva mottagningen:
 
@@ -139,15 +139,15 @@ public class Database extends SQLiteOpenHelper {
         // Reminders
 
         ArrayList<Integer> reminderEventList = new ArrayList<>();
-        reminderEventList.add(0); // Mood
-        reminderEventList.add(1); // Anxiety
-        reminderEventList.add(4); // Sleep
+        reminderEventList.add(1); // Mood
+        reminderEventList.add(2); // Anxiety
+        reminderEventList.add(5); // Sleep
         addReminder(10, 0, reminderEventList); // 10am
 
         reminderEventList = new ArrayList<>();
-        reminderEventList.add(0); // Mood
-        reminderEventList.add(1); // Anxiety
-        reminderEventList.add(2); // Irritability
+        reminderEventList.add(1); // Mood
+        reminderEventList.add(2); // Anxiety
+        reminderEventList.add(3); // Irritability
         addReminder(15, 0, reminderEventList); // 3pm
     }
 
@@ -167,10 +167,10 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Insert a new event type into the MeasurementTypes table
+     * Insert a new measurement type into the MeasurementTypes table
      *
      * @param entity    Entity ID which matches an EntityPrimitives id
-     * @param order     A number representing in what order the event type should be rendered (UX)
+     * @param order     A number representing in what order the measurement type should be rendered (UX)
      * @param name      Canonical name of the new type
      * @param min       Minimum allowed value (used to render UI)
      * @param max       Maximum allowed value (used to render UI)
@@ -319,17 +319,17 @@ public class Database extends SQLiteOpenHelper {
                     "group " + Integer.toString(group) + ", " +
                     "time = " + Integer.toString(hour) + ":" + Integer.toString(minute));
 
-            // Collate event types associated with this reminder
+            // Collate measurement types associated with this reminder
             Cursor rCursor;
             // ArrayList<MeasurementType> reminderEventTypes = new ArrayList<>();
 
             rCursor = db.rawQuery("SELECT id, type FROM ReminderGroups WHERE reminderTime = " +
                             Long.toString(id), null);
 
-            // Get all event types associated with this reminder
+            // Get all reminder types associated with this reminder
             while (rCursor.moveToNext()) {
                 int eventTypeID = rCursor.getInt(rCursor.getColumnIndex("type"));
-                Log.d(LOG_PREFIX, "   associated event type: " + Integer.toString(eventTypeID));
+                Log.d(LOG_PREFIX, "   associated measurement type: " + Integer.toString(eventTypeID));
                 // MeasurementType measurementType = orm.getMeasurementTypes().getByID(eventTypeID);
                 //reminderEventTypes.add(measurementType);
             }
