@@ -1,11 +1,11 @@
 package nu.ere.mooddiary;
 
 public class EntityPrimitive {
-    public long id;
+    public int id;
     public String name;
-    public long enabled;
+    public int enabled;
 
-    public EntityPrimitive(long id, String name, long enabled) {
+    public EntityPrimitive(int id, String name, int enabled) {
         this.id = id;
         this.name = name;
     }

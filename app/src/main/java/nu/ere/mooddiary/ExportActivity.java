@@ -9,6 +9,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ExportActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "ExportActivity";

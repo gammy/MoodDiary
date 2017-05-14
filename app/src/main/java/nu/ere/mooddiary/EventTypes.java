@@ -34,14 +34,14 @@ public class EventTypes {
         while(cursor.moveToNext()) {
 
             EventType type = new EventType(
-                    cursor.getLong(0),   // id
-                    cursor.getLong(1),   // order
+                    cursor.getInt(0),   // id
+                    cursor.getInt(1),   // order
                     cursor.getString(2), // name
-                    cursor.getLong(3),   // entity type (primitive)
-                    cursor.getLong(4),   // minimum
-                    cursor.getLong(5),   // maximum
-                    cursor.getLong(6),   // default
-                    cursor.getLong(7)    // enabled
+                    cursor.getInt(3),   // entity type (primitive)
+                    cursor.getInt(4),   // minimum
+                    cursor.getInt(5),   // maximum
+                    cursor.getInt(6),   // default
+                    cursor.getInt(7)    // enabled
             );
             types.add(type);
             Log.d(LOG_PREFIX, "Add type: " + type.name +

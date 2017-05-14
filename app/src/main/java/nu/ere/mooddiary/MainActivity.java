@@ -23,7 +23,7 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
-        //installAlarms();
+        installAlarms();
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
@@ -52,7 +52,7 @@ public class MainActivity extends ThemedActivity {
         TextView thanksView = (TextView) findViewById(R.id.thanksTextView);
         saveButton.setOnClickListener(new SaveClickListener(this, thanksView, false));
 
-        Util.renderEntryTypes(this, R.id.entryLayout, dialogThemeID);
+        Util.renderReminderEventTypes(this, -1, R.id.entryLayout, dialogThemeID);
     }
 
     public void installAlarms() {

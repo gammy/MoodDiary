@@ -3,19 +3,19 @@ package nu.ere.mooddiary;
 import android.view.View;
 
 public class EventType {
-    public long id;
-    public long order;
+    public int id;
+    public int order;
     public String name;
-    public long entity;
-    public long min, max, dfl;
-    public long enabled;
+    public int entity;
+    public int min, max, dfl;
+    public int enabled;
 
-    public long totalValues;
-    public long normalDefault;
+    public int totalValues;
+    public int normalDefault;
 
     public View view;
 
-    public EventType(long id, long order, String name, long entity, long min, long max, long dfl, long enabled) {
+    public EventType(int id, int order, String name, int entity, int min, int max, int dfl, int enabled) {
         this.id = id;
         this.order = order;
         this.name = name;

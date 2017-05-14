@@ -1,21 +1,19 @@
 package nu.ere.mooddiary;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ReminderActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
     private ORM orm;
-    private long reminderID;
+    private int reminderID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,45 +29,16 @@ public class ReminderActivity extends ThemedActivity {
             if(extras == null) {
                 reminderID = -1;
             } else {
-                reminderID = extras.getLong("reminder_id");
+                reminderID = extras.getInt("reminder_id");
             }
         } else {
             Log.d(LOG_PREFIX, "Disappoint: getting serializable copy of intent extra");
-            reminderID = Long.parseLong((String) savedInstanceState.getSerializable("reminder_id"));
+            reminderID = Integer.parseInt((String) savedInstanceState.getSerializable("reminder_id"));
         }
 
-        Log.d(LOG_PREFIX, "Reminder ID: " + Long.toString(reminderID));
+        Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
+        Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_SHORT).show();
         // TODO errorhandling (probably just abort on -1)
-
-        /** Notification test ***********************/
-
-        Intent resultIntent = new Intent(this, ReminderActivity.class);
-        // ..
-        // Because clicking the notification opens a new ("special") activity, there's
-        // no need to create an artificial back stack.
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("My notification")
-                    .setContentText("Hello World!");
-
-        mBuilder.setContentIntent(pendingIntent);
-
-        // Sets an ID for the notification
-        int mNotificationId = 001;
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
         initUI();
     }
@@ -94,6 +63,22 @@ public class ReminderActivity extends ThemedActivity {
         // The saveClickListener below will terminate this activity once it's done.
         saveButton.setOnClickListener(new SaveClickListener(this, thanksView, true));
 
-        Util.renderEntryTypes(this, R.id.reminderLayout, dialogThemeID);
+        Util.renderReminderEventTypes(this, reminderID, R.id.reminderLayout, dialogThemeID);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        /*
+        final View view = getWindow().getDecorView();
+        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) view.getLayoutParams();
+
+        lp.gravity = Gravity.CENTER;
+
+        lp.width = 1000;
+        lp.height = 1600;
+        getWindowManager().updateViewLayout(view, lp);
+        */
     }
 }

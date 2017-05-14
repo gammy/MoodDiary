@@ -180,8 +180,8 @@ public class Database extends SQLiteOpenHelper {
      * @param meta      Metadata string: currently unused
      * ...// - Save widget data down to the entrylist
      */
-    public void addEventType(int entity, long order,
-                             String name, long min, long max, long dfl, String meta) {
+    public void addEventType(int entity, int order,
+                             String name, int min, int max, int dfl, String meta) {
         Log.d(LOG_PREFIX, "Enter addEventType" );
 
         String sql = "INSERT INTO " +
@@ -198,12 +198,12 @@ public class Database extends SQLiteOpenHelper {
                       "VALUES (?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement statement = db.compileStatement(sql);
 
-        statement.bindLong(  1, entity);
-        statement.bindLong(  2, order);
+        statement.bindLong(  1, (long) entity);
+        statement.bindLong(  2, (long) order);
         statement.bindString(3, name);
-        statement.bindLong(  4, min);
-        statement.bindLong(  5, max);
-        statement.bindLong(  6, dfl);
+        statement.bindLong(  4, (long) min);
+        statement.bindLong(  5, (long) max);
+        statement.bindLong(  6, (long) dfl);
         statement.bindString(7, meta);
 
         long rowId = statement.executeInsert();

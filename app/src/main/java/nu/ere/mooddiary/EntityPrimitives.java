@@ -20,7 +20,7 @@ public final class EntityPrimitives {
             EntityPrimitive primitive = new EntityPrimitive(
                     cursor.getInt(0),
                     cursor.getString(1),
-                    cursor.getLong(2)
+                    cursor.getInt(2)
                     );
             entities.add(primitive);
             Log.d(LOG_PREFIX, "Add primitive: " + cursor.getString(1));
@@ -32,7 +32,7 @@ public final class EntityPrimitives {
         Log.d(LOG_PREFIX, "Primitives added: " + Integer.toString(added));
     }
 
-    public EntityPrimitive getByID(long id) {
+    public EntityPrimitive getByID(int id) {
         for(int i = 0; i < entities.size(); i++) {
             EntityPrimitive e = entities.get(i);
             if(e.id == id) {

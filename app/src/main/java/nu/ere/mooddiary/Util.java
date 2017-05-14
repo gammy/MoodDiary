@@ -2,11 +2,15 @@ package nu.ere.mooddiary;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.text.format.DateUtils;
@@ -24,6 +28,8 @@ import android.view.Gravity;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Util {
     private static final String LOG_PREFIX = "Util";
@@ -82,8 +88,9 @@ public class Util {
      * @param layout The layout resource to be used as main container where all Views are created
      * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
      */
-    public static void renderEntryTypes(Activity activity, int layout, int dialogThemeID) {
-        Log.d(LOG_PREFIX, "Enter renderEntryTypes");
+    public static void renderReminderEventTypes(Activity activity,
+                                                int reminderGroup, int layout, int dialogThemeID) {
+        Log.d(LOG_PREFIX, "Enter renderReminderEventTypes");
         Resources resources = activity.getResources();
         ORM orm = ORM.getInstance(activity);
 
@@ -184,7 +191,7 @@ public class Util {
     /**
      * Walk through all event types and reset (zero) any Views.
      * Expected to be called after the views have actually been instantiated
-     * (i.e via renderEntryTypes)
+     * (i.e via renderReminderEventTypes)
      *
      * @param activity The calling activity (i.e `this` in your Activity)
      */
@@ -260,6 +267,38 @@ public class Util {
 
         orm.lastSave = System.currentTimeMillis();
         orm.addEntries(entries, true);
+    }
+
+    public static void raiseNotification(Activity activity) {
+        /** Notification test ***********************/
+
+        Intent resultIntent = new Intent(activity, ReminderActivity.class);
+        // ..
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(
+                        activity,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(activity)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("My notification")
+                    .setContentText("Hello World!");
+
+        mBuilder.setContentIntent(pendingIntent);
+
+        // Sets an ID for the notification
+        int mNotificationId = 1;
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) activity.getSystemService(NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
     public static String toHumanTime(Context context, int hour, int minute) {
