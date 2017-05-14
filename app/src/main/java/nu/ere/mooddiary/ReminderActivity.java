@@ -33,7 +33,8 @@ public class ReminderActivity extends ThemedActivity {
             }
         } else {
             Log.d(LOG_PREFIX, "Disappoint: getting serializable copy of intent extra");
-            reminderID = Integer.parseInt((String) savedInstanceState.getSerializable("reminder_id"));
+            // FIXME causes crash on screen reorient: ticket 6b000d4cb67470a302b1241a83ee09e0bdf4a327 (85)
+            // reminderID = Integer.parseInt((String) savedInstanceState.getSerializable("reminder_id"));
         }
 
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
