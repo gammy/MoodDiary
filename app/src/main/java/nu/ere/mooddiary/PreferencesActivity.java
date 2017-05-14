@@ -1,18 +1,15 @@
 package nu.ere.mooddiary;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
-import android.view.WindowId;
-import nu.ere.mooddiary.Util;
+import android.widget.Toast;
 
 // Note: Any key prefixed with "junk_" will *not* be used by the app, and is considered a
 //       necessary evil.
@@ -83,7 +80,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1);
             prefEventTypes.addPreference(cb);
-            Log.d(LOG_PREFIX, "ITERATE EventType");
         }
     }
 
@@ -104,7 +100,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         for(int i = 0; i < orm.getReminderTimes().reminderTimes.size(); i++) {
             ReminderTime reminder = orm.getReminderTimes().reminderTimes.get(i);
             Preference oldReminder = new Preference(this);
-            this.editReminderTimeID = reminder.group; // FIXME id? group?
+            this.editReminderTimeID = reminder.id;
             oldReminder.setKey("junk_old_reminder_" + Integer.toString(i)); // FIXME
             oldReminder.setTitle(Util.toHumanTime(this, reminder.hour, reminder.minute));
             oldReminder.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -158,9 +154,11 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
         if(requestCode == 1337) { // Create (FIXME const)
             Log.d(LOG_PREFIX, "result: OK - CREATE reminder"); // TODO
+            Toast.makeText(this, "TODO: Create", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
         } else
         if (requestCode == 1338){ // Edit (FIXME const)
             Log.d(LOG_PREFIX, "result: OK - UPDATE reminder"); // TODO
+            Toast.makeText(this, "TODO: Update", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
         }
     }
 }

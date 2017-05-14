@@ -139,12 +139,18 @@ public class Database extends SQLiteOpenHelper {
         // The idea here being that a user can add new types from the UI at some point
 
         // Reminders
-        // (Add a stock reminder for 2pm)
+
         ArrayList<Integer> reminderEventList = new ArrayList<>();
         reminderEventList.add(0); // Mood
         reminderEventList.add(1); // Anxiety
+        reminderEventList.add(4); // Sleep
+        addReminder(10, 0, reminderEventList); // 10am
+
+        reminderEventList = new ArrayList<>();
+        reminderEventList.add(0); // Mood
+        reminderEventList.add(1); // Anxiety
         reminderEventList.add(2); // Irritability
-        addReminder(14, 0, reminderEventList); // 2pm
+        addReminder(15, 0, reminderEventList); // 3pm
     }
 
     @Override

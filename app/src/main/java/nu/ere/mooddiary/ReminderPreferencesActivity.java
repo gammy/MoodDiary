@@ -74,6 +74,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         timePref.setKey("junk_reminder_edit_time");
         if(reminderTime != null) {
             timePref.setTitle(Util.toHumanTime(this, reminderTime.hour, reminderTime.minute));
+            timePref.setSummary("");
         } else {
             // Set a brand-new date to one hour from now
             Date date = new Date();
@@ -83,6 +84,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             timePref.setTitle(Util.toHumanTime(this,
                     calendar.get(Calendar.HOUR_OF_DAY),
                     calendar.get(Calendar.MINUTE)));
+            timePref.setSummary("");
             // FIXME set actual time also (in the dialog)
         }
         timeCategory.addPreference(timePref);
@@ -103,7 +105,6 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1); // FIXME should load state from db / reminder obj, not event types
             typeCategory.addPreference(cb);
-            Log.d(LOG_PREFIX, "ITERATE EventType");
         }
 
         // Add save button (hitting 'back' without a save should just cancel)

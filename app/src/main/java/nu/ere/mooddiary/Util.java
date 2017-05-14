@@ -279,7 +279,7 @@ public class Util {
         long millis = calendar.getTimeInMillis();
         Log.d(LOG_PREFIX, "in milliseconds: " + Long.toString(millis));
         String timeString = DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_TIME);
-
+        Log.d(LOG_PREFIX, "Human: " + timeString);
 
         return timeString;
     }

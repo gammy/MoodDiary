@@ -118,6 +118,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
         EventTypes eventTypes = orm.getEventTypes();
 
+        Log.d(LOG_PREFIX, "event type count: " + Integer.toString(eventTypes.types.size()));
         for(int i = 0; i < eventTypes.types.size(); i++) {
             EventType e = eventTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);
@@ -125,7 +126,6 @@ public class ExportActivity extends ThemedPreferenceActivity {
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1);
             screen.addPreference(cb);
-            Log.d(LOG_PREFIX, "ITERATE EventType");
         }
     }
 }
