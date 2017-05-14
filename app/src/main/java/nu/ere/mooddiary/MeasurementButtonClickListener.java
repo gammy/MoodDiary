@@ -1,6 +1,7 @@
 package nu.ere.mooddiary;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -22,7 +23,7 @@ public class MeasurementButtonClickListener implements OnClickListener {
     @Override
     public void onClick(View v)
     {
-        Util.showNumberDialog(activity, null, measurementType, dialogThemeID);
+        CustomDialogs.showDialog(activity, null, measurementType, dialogThemeID);
     }
 
 

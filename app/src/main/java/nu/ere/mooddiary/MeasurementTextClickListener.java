@@ -26,7 +26,7 @@ public class MeasurementTextClickListener implements OnClickListener {
     @Override
     public void onClick(View v)
     {
-        Util.showNumberDialog(activity, textView, measurementType, dialogThemeID);
+        CustomDialogs.showNumberDialog(activity, textView, measurementType, dialogThemeID);
     }
 
 

@@ -130,24 +130,9 @@ public class MainActivity extends ThemedActivity {
             AppCompatButton measurementButton = new AppCompatButton(this);
             measurementButton.setText(measurementType.name);
 
-            // Bind the listener to an appropriate dialog
-            switch(primitive.name) {
-                case "range_center":
-                    break;
-
-                case "range_normal":
-                    break;
-
-                case "number":
-                    MeasurementButtonClickListener listener =
-                            new MeasurementButtonClickListener(this, measurementType, dialogThemeID);
-                    measurementButton.setOnClickListener(listener);
-                    break;
-
-                case "text":
-                    break;
-
-            }
+            MeasurementButtonClickListener listener =
+                    new MeasurementButtonClickListener(this, measurementType, dialogThemeID);
+            measurementButton.setOnClickListener(listener);
 
             entryLayout.addView(measurementButton);
         }

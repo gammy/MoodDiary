@@ -1,7 +1,6 @@
 package nu.ere.mooddiary;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -15,14 +14,13 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.view.Gravity;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,59 +29,6 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Util {
     private static final String LOG_PREFIX = "Util";
-
-    /**
-     *
-     * @param activity The calling activity (i.e `this` in your Activity)
-     * @param measurementType
-     * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
-     * @return
-     */
-    public static NumberPicker showNumberDialog(Activity activity,
-                                                TextView view,
-                                                MeasurementType measurementType,
-                                                int dialogThemeID){
-        Log.d(LOG_PREFIX, "Enter showNumberDialog");
-        Log.d(LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
-        final NumberPicker numberPicker =
-                new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
-
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(measurementType.totalValues);
-        // This is stupid: The code assumes that the caller view is a number or somesuch,
-        // to set the correct 'default' (startup) value of the number box. But in the MainActivity
-        // the caller view is a button, and has nothing to do with any default value; the button
-        // has the *name* of the measurement type..
-        if(view != null) {
-            numberPicker.setValue(Integer.parseInt(view.getText().toString())); // FIXME regression with abstraction of TextView
-        }
-        numberPicker.setWrapSelectorWheel(false);
-
-        // FIXME numberPicker styling (font size) regression
-        /*
-        numberPicker.setLayoutParams(new RelativeLayout.LayoutParams(
-                                        RelativeLayout.LayoutParams.MATCH_PARENT,
-                                        RelativeLayout.LayoutParams.MATCH_PARENT));
-        */
-
-        AlertDialog.Builder builder =
-                new AlertDialog.Builder(new ContextThemeWrapper(activity, dialogThemeID));
-
-        DialogNumberClickListener listener = new DialogNumberClickListener(activity, numberPicker);
-        listener.setView(view);
-        listener.setMeasurementType(measurementType);
-
-        builder.setPositiveButton(R.string.submit, listener);
-        builder.setNegativeButton(R.string.cancel, listener);
-        builder.setView(numberPicker);
-
-        AlertDialog dialog = builder.create();
-
-        dialog.setTitle(measurementType.name);
-        dialog.show();
-
-        return(numberPicker);
-    }
 
     /**
      * Generate the entire page layout for a Reminder.
@@ -329,4 +274,16 @@ public class Util {
         return timeString;
     }
 
+    public static void saveSingleEntry(Activity activity,
+                                       MeasurementType measurementType,
+                                       String value) {
+        // Ugly, but it works. This saves a single entry from the main view
+        Entry entry = new Entry(measurementType.id, value);
+        ORM orm = ORM.getInstance(activity);
+        ArrayList<Entry> entryList = new ArrayList<>();
+        entryList.add(entry);
+        orm.addEntries(entryList, true);
+        String text = activity.getString(R.string.toast_saved);
+        Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
+    }
 }
