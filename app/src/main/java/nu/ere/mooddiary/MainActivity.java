@@ -182,6 +182,7 @@ public class MainActivity extends ThemedActivity {
             // Load TEST
             case R.id.action_TEST:
                 i = new Intent(MainActivity.this, ReminderActivity.class);
+                i.putExtra("reminder_id", 2);
                 startActivity(i);
                 return true;
 

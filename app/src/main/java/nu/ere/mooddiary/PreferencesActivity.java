@@ -11,8 +11,6 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.util.prefs.PreferenceChangeListener;
-
 // Note: Any key prefixed with "junk_" will *not* be used by the app, and is considered a
 //       necessary evil.
 
@@ -25,8 +23,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
     PreferenceScreen prefReminders,
                      prefEventTypes;
-
-    public int editReminderTimeID = -1; // FIXME hack omg
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,35 +110,28 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                     Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
                     in.putExtra("newReminder", false);
                     in.putExtra("reminderTimeID", this.reminderTimeID);
-                    Log.d("PreferencesActivity", "Clicker: putExtra:" +
-                            Integer.toString(this.reminderTimeID));
                     startActivityForResult(in, 1338); // FIXME const - 1338 - EDIT
                     return true;
                 }
             };
             oldReminder.setOnPreferenceClickListener(listener);
-
             oldCategory.addPreference(oldReminder);
         }
 
         Preference newReminderButton = new Preference(this);
         newReminderButton.setTitle(R.string.action_preference_reminders);
-        newReminderButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                // Finally we load Level 3, the add/edit dialog. It contains:
-                // - Time view / select dialog
-                // - List of measurement type checkboxes
-                // - Save button
-                // onActivityResult in this class will be called on save or cancel/back
-                //code for what you want it to do
-                Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
-                in.putExtra("newReminder", true);
-                startActivityForResult(in, 1337); // FIXME const
-                return true;
-            }
-        });
 
+        Preference.OnPreferenceClickListener listener =
+            new OnReminderTimePreferenceClickListener(-1) {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
+                    in.putExtra("newReminder", true);
+                    startActivityForResult(in, 1337); // FIXME const - 1337 - CREATE
+                    return true;
+                }
+            };
+        newReminderButton.setOnPreferenceClickListener(listener);
         addCategory.addPreference(newReminderButton);
     }
 

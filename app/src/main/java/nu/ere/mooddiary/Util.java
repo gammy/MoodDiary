@@ -72,12 +72,12 @@ public class Util {
         }
     }
 
-    public static void saveEvents(Activity activity) {
+    public static void saveEvents(Activity activity, ArrayList<MeasurementType> measurementTypes) {
         Log.d(LOG_PREFIX, "Enter saveEvents");
         ORM orm = ORM.getInstance(activity);
 
         ArrayList<Entry> entries = new ArrayList<>();
-        int evCount = orm.getMeasurementTypes().types.size();
+        int evCount = measurementTypes.size();
 
         // - Save widget data down to the entrylist
         for(int i = 0; i < evCount; i++) {
@@ -104,7 +104,7 @@ public class Util {
             }
 
             // Add
-            entries.add(new nu.ere.mooddiary.Entry((int) measurementType.id, value));
+            entries.add(new nu.ere.mooddiary.Entry(measurementType.id, value));
         }
 
         orm.lastSave = System.currentTimeMillis();

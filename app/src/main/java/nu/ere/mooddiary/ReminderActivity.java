@@ -21,10 +21,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class ReminderActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
     private ORM orm;
     private int reminderID;
+    private ArrayList<MeasurementType> measurementTypes = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class ReminderActivity extends ThemedActivity {
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
         Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_SHORT).show();
         // TODO errorhandling (probably just abort on -1)
+        measurementTypes = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
 
         initUI();
     }
@@ -72,10 +76,11 @@ public class ReminderActivity extends ThemedActivity {
         // Set up the save button, which, on click, saves the event and runs an animation
         Button saveButton = (Button) findViewById(R.id.reminderSaveButton);
         TextView thanksView = (TextView) findViewById(R.id.reminderThanksTextView);
-        // The saveClickListener below will terminate this activity once it's done.
-        saveButton.setOnClickListener(new SaveClickListener(this, thanksView, true));
 
-        renderReminderEventTypes(reminderID, R.id.reminderLayout, dialogThemeID);
+        renderReminderEventTypes(R.id.reminderLayout, dialogThemeID);
+
+        // The saveClickListener below will terminate this activity once it's done.
+        saveButton.setOnClickListener(new SaveClickListener(this, measurementTypes, thanksView, true));
     }
 
     /**
@@ -86,7 +91,7 @@ public class ReminderActivity extends ThemedActivity {
      * @param layout The layout resource to be used as main container where all Views are created
      * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
      */
-    public void renderReminderEventTypes(int reminderGroup, int layout, int dialogThemeID) {
+    public void renderReminderEventTypes(int layout, int dialogThemeID) {
         Log.d(LOG_PREFIX, "Enter renderReminderEventTypes");
         Resources resources = getResources();
 
@@ -106,10 +111,11 @@ public class ReminderActivity extends ThemedActivity {
         rowParams.topMargin    = (int) resources.getDimension(R.dimen.entry_padding_top);
         rowParams.bottomMargin = (int) resources.getDimension(R.dimen.entry_padding_bottom);
 
-        // Walk our minutes and create the appropriate text and entry widget (slider, etc).
+        // Walk our measurement types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
-        for(int i = 0; i < orm.getMeasurementTypes().types.size(); i++) {
-            MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
+        for(int i = 0; i < measurementTypes.size(); i++) {
+            //MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
+            MeasurementType measurementType = measurementTypes.get(i);
             EntityPrimitive primitive = measurementType.getPrimitive(orm.getPrimitives());
 
             // Make a label
