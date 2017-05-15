@@ -310,10 +310,10 @@ public class Util {
         int minute = bundle.getInt(BundleExtraKey.REMINDER_MINUTE);
         ArrayList<Integer> types = bundle.getIntegerArrayList(BundleExtraKey.REMINDER_TYPES);
 
-        // TODO: Try/catch to return false on error
         orm.addReminder(hour, minute, types);
         orm.getReminderTimes().reload();
 
+        Toast.makeText(activity, "Saved changes", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
         return(true);
     }
 

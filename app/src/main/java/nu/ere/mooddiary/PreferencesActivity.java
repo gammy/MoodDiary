@@ -159,8 +159,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                 Util.addReminder(this, bundle);
                 prefReminders.removeAll();
                 createReminderPreferences();
-                Toast.makeText(this, "TODO: Create", Toast.LENGTH_SHORT).show();
-                // FIXME: Reload activity! (Re-render UI)
                 break;
 
             case ReminderEditMode.CHANGE:

@@ -32,4 +32,6 @@
     <string name="title_category_new">Ny</string>
     <string name="title_category_types">Mättyper</string>
     <string name="toast_saved">Sparat</string>
+    <string name="delete">Ta bort</string>
+    <string name="title_category_delete">Ta bort</string>
 </resources>

@@ -267,10 +267,10 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Add a new reminder
+     * Add a new reminder (and associated groups)
      *
-     * @param hour      Hour in 24-hour format
-     * @param minute      Minute
+     * @param hour    Hour in 24-hour format
+     * @param minute  Minute
      * @param typeIDs A simple arraylist of eventTypeID integers
      */
     public void addReminder(int hour, int minute, ArrayList<Integer> typeIDs) {
