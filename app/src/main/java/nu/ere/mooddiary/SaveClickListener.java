@@ -44,14 +44,21 @@ public class SaveClickListener implements OnClickListener {
     @Override
     public void onClick(View v)
     {
-        Log.d(LOG_PREFIX, "alarm: CLICK");
+        Log.d(LOG_PREFIX, "CLICK, save!");
+        Log.d(LOG_PREFIX, "Number of types to save: " + Integer.toString(measurementTypes.size()));
 
+        for(int i = 0; i < measurementTypes.size(); i++) {
+            MeasurementType measurementType = measurementTypes.get(i);
+            Log.d(LOG_PREFIX, " mType " + Integer.toString(measurementType.id) + ", " +
+                "View " + measurementType.view.toString());
+
+        }
         Util.saveEvents(activity, measurementTypes);
 
         in.setAnimationListener(splash);
         view.startAnimation(in);
         view.setVisibility(View.VISIBLE);
 
-        // Util.resetEntries(activity);
+        //Util.resetEntries(activity);
     }
 }

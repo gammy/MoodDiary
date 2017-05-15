@@ -1,5 +1,7 @@
 package org.bostonandroid.preference;
 // https://github.com/bostonandroid/TimePreference
+// I've slightly modified it to take a custom calendar instance rather than read from XML.
+// I don't understand why they didn't implement that?
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,12 +18,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
 
 public class TimePreference extends DialogPreference implements TimePicker.OnTimeChangedListener {
   private String timeString;
   private String changedValueCanBeNull;
+  private Calendar calendar = null;
 
   public TimePreference(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
@@ -57,23 +61,17 @@ public class TimePreference extends DialogPreference implements TimePicker.OnTim
    * @return the Calendar for the time picker
    */
   public Calendar getTime() {
-    try {
-      Date date = formatter().parse(defaultValue());
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(date);
-      return cal;
-    } catch (java.text.ParseException e) {
-      return defaultCalendar();
-    }
+    return this.calendar;
+//    try {
+//      Date date = formatter().parse(defaultValue());
+//      Calendar cal = Calendar.getInstance();
+//      cal.setTime(date);
+//      return cal;
+//    } catch (java.text.ParseException e) {
+//      return defaultCalendar();
+//    }
   }
 
-  /**
-   * Set the selected time to the specified string.
-   * 
-   * @param dateString
-   *          The date, represented as a string, in the format specified by
-   *          {@link #formatter()}.
-   */
   public void setTime(String timeString) {
     this.timeString = timeString;
   }
@@ -150,8 +148,11 @@ public class TimePreference extends DialogPreference implements TimePicker.OnTim
    * TODO: Called when the user changes the time.
    */
   public void onTimeChanged(TimePicker view, int hour, int minute) {
-    Calendar selected = new GregorianCalendar(1970,0,1,hour,minute);
-    this.changedValueCanBeNull = formatter().format(selected.getTime());
+    this.calendar.set(Calendar.HOUR_OF_DAY, hour);
+    this.calendar.set(Calendar.MINUTE, minute);
+    //Calendar selected = new GregorianCalendar(1970,0,1,hour,minute);
+    //this.changedValueCanBeNull = formatter().format(selected.getTime());
+    this.changedValueCanBeNull = formatter().format(this.calendar.getTime());
   }
 
   /**
@@ -174,13 +175,15 @@ public class TimePreference extends DialogPreference implements TimePicker.OnTim
   }
 
   private void setTheTime(String s) {
+    Log.d("TimePreference", "setTheTime: " + s);
     setTime(s);
     persistTime(s);
   }
 
   private void persistTime(String s) {
     persistString(s);
-    setSummary(summaryFormatter(getContext()).format(getTime().getTime()));
+    //setSummary(summaryFormatter(getContext()).format(getTime().getTime()));
+    setTitle(summaryFormatter(getContext()).format(getTime().getTime()));
   }
 
   /**
@@ -189,16 +192,26 @@ public class TimePreference extends DialogPreference implements TimePicker.OnTim
    * 
    * @return the Calendar set to the default date
    */
-  public static Calendar defaultCalendar() {
-    return new GregorianCalendar(1970, 0, 1, 0, 0);
+  public Calendar defaultCalendar() {
+    return this.getCalendar(); //new GregorianCalendar(1970, 0, 1, 0, 0);
   }
 
+  public Calendar getCalendar() {
+    if(this.calendar == null) {
+      this.calendar = new GregorianCalendar(1970, 0, 1, 0, 0);
+    }
+    return this.calendar;
+  }
+  public void setCalendar(Calendar calendar) {
+    this.calendar = calendar;
+
+  }
   /**
    * The defaultCalendar() as a string using the {@link #formatter()}.
    * 
    * @return a String representation of the default time
    */
-  public static String defaultCalendarString() {
+  public String defaultCalendarString() {
     return formatter().format(defaultCalendar().getTime());
   }
 
@@ -218,7 +231,7 @@ public class TimePreference extends DialogPreference implements TimePicker.OnTim
    *          the name of the preference to get the date from
    * @return a Calendar that the user has selected
    */
-  public static Calendar getTimeFor(SharedPreferences preferences, String field) {
+  public Calendar getTimeFor(SharedPreferences preferences, String field) {
     Date date = stringToDate(preferences.getString(field,
         defaultCalendarString()));
     Calendar cal = Calendar.getInstance();
@@ -226,7 +239,7 @@ public class TimePreference extends DialogPreference implements TimePicker.OnTim
     return cal;
   }
 
-  private static Date stringToDate(String timeString) {
+  private Date stringToDate(String timeString) {
     try {
       return formatter().parse(timeString);
     } catch (ParseException e) {

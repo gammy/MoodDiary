@@ -23,8 +23,13 @@
         android:title="@string/title_action_about"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_TEST"
+        android:id="@+id/action_test_reminder_activity"
         android:orderInCategory="500"
-        android:title="TEST"
+        android:title="Reminder activity test"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_test_alarm"
+        android:orderInCategory="500"
+        android:title="Alarm test"
         app:showAsAction="never" />
 </menu>

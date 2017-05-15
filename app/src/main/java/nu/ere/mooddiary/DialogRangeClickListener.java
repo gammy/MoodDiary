@@ -22,16 +22,17 @@ class DialogRangeClickListener implements DialogInterface.OnClickListener {
         Log.d(LOG_PREFIX, "Enter onClick");
         Log.d(LOG_PREFIX, "Which = " + Integer.toString(which));
 
-        String value = Integer.toString(seekBar.getProgress());
-        value = Long.toString(measurementType.min + Long.parseLong(value, 10));
+        int v = measurementType.min + seekBar.getProgress();
+        String value = Integer.toString(v);
 
         switch (which)
         {
             case DialogInterface.BUTTON_POSITIVE:
                 if(view == null) {
                     Util.saveSingleEntry(this.activity, this.measurementType, value);
+                } else {
+                    setViewText(view, "Eh?"); // FIXME
                 }
-                setViewText(view, "Eh?");
                 break;
             default:
                 break;
@@ -47,11 +48,12 @@ class DialogRangeClickListener implements DialogInterface.OnClickListener {
     }
 
     private void setViewText(SeekBar view, String text) {
+        Log.d(LOG_PREFIX, "setViewText: STUB"); // FIXME or WONTFIX
         if(view == null) {
+            Log.d(LOG_PREFIX, "setViewText: view is null"); // FIXME or WONTFIX
             return;
         }
 
-        Log.d(LOG_PREFIX, "setviewText: STUB"); // FIXME or WONTFIX
         //view.setText(text);
     }
 }

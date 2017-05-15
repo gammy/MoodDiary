@@ -139,16 +139,18 @@ public class Database extends SQLiteOpenHelper {
         // Reminders
 
         ArrayList<Integer> reminderEventList = new ArrayList<>();
-        reminderEventList.add(1); // Mood
-        reminderEventList.add(2); // Anxiety
-        reminderEventList.add(5); // Sleep
-        addReminder(10, 0, reminderEventList); // 10am
+        reminderEventList.add(1);
+        reminderEventList.add(5);
+        reminderEventList.add(9);
+        //addReminder(10, 0, reminderEventList); // 10am
+        addReminder(14, 59, reminderEventList); // 10am
 
         reminderEventList = new ArrayList<>();
         reminderEventList.add(1); // Mood
         reminderEventList.add(2); // Anxiety
         reminderEventList.add(3); // Irritability
-        addReminder(15, 0, reminderEventList); // 3pm
+        //addReminder(15, 0, reminderEventList); // 3pm
+        addReminder(15, 0, reminderEventList); // 10am
     }
 
     @Override
@@ -249,6 +251,22 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
+     * Delete a new reminder (i.e delete reminderTime, and all associated reminderGroups)
+     *
+     * @param reminderTimeId
+     */
+    public void deleteReminder(int reminderTimeId) {
+        Log.d(LOG_PREFIX, "Enter deleteReminder");
+        db.beginTransaction();
+
+        db.delete("ReminderGroups", "reminderTime = ?", new String[] {Integer.toString(reminderTimeId)});
+        db.delete("ReminderTimes", "id = ?", new String[] {Integer.toString(reminderTimeId)});
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    /**
      * Add a new reminder
      *
      * @param hour      Hour in 24-hour format
@@ -268,7 +286,7 @@ public class Database extends SQLiteOpenHelper {
             newReminderGroup = cursor.getInt(0);
             newReminderGroup += 1;
         }
-        Log.d(LOG_PREFIX, "addReminder: newReminderID: " + Integer.toString(newReminderGroup));
+        Log.d(LOG_PREFIX, "addReminder: newReminderGroup: " + Integer.toString(newReminderGroup));
 
         db.beginTransaction();
 
@@ -287,7 +305,7 @@ public class Database extends SQLiteOpenHelper {
 
         for(int i = 0; i < typeIDs.size(); i++) {
             int eventTypeID = typeIDs.get(i);
-            Log.d(LOG_PREFIX, "addReminder: inserting type: " + Integer.toString(eventTypeID));
+            Log.d(LOG_PREFIX, "addReminder: INSERT type: " + Integer.toString(eventTypeID));
             statement.bindLong(1, newReminderGroup);
             statement.bindLong(2, eventTypeID);
             statement.executeInsert();

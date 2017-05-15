@@ -25,18 +25,15 @@ public class MainActivity extends ThemedActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
-        //installAlarms();
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
-
         orm.testReminders();
+        Util.installAlarms(this);
     }
 
     public void initUI() {
         Log.d(LOG_PREFIX, "Enter initUI" );
-
-        orm.lastSave = 0;
 
         setContentView(R.layout.coordinator_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.mainToolbar);
@@ -50,48 +47,6 @@ public class MainActivity extends ThemedActivity {
         view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
         renderEventSelect(R.id.entryLayout);
-    }
-
-    public void installAlarms() {
-        Log.d(LOG_PREFIX, "Enter installAlarms" );
-
-        Intent reminderIntent = new Intent(MainActivity.this , ReminderActivity.class);
-        reminderIntent.putExtra("reminder_id", (long) 1234);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(MainActivity.this, 0 /* "Unique" Request code */,
-                        reminderIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // TODO: walk through all the Reminders and set all the timers.
-        //       This will need to be done each time we add or change an existing reminder as well.
-        Calendar calendar = Calendar.getInstance();
-
-        Calendar now = Calendar.getInstance();
-        now.setTime(new java.util.Date());
-
-        Log.d(LOG_PREFIX, "alarm: Current time is : " +
-                String.valueOf(now.get(Calendar.HOUR_OF_DAY)) + ":" +
-                String.valueOf(now.get(Calendar.MINUTE)) + ":" +
-                String.valueOf(now.get(Calendar.SECOND))
-        );
-
-        now.add(Calendar.SECOND, 30); // 30 seconds from now
-
-        Log.d(LOG_PREFIX, "alarm: Setting alarm to: " +
-                String.valueOf(now.get(Calendar.HOUR_OF_DAY)) + ":" +
-                String.valueOf(now.get(Calendar.MINUTE)) + ":" +
-                String.valueOf(now.get(Calendar.SECOND))
-        );
-
-        calendar.set(Calendar.HOUR_OF_DAY, now.get(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, now.get(Calendar.MINUTE));
-        calendar.set(Calendar.SECOND, now.get(Calendar.SECOND));
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-        //                          calendar.getTimeInMillis(),
-        //        3600000 /* One hour in ms */, pendingIntent);
-
     }
 
     /**
@@ -179,11 +134,14 @@ public class MainActivity extends ThemedActivity {
                 startActivity(i);
                 return true;
 
-            // Load TEST
-            case R.id.action_TEST:
+            case R.id.action_test_reminder_activity:
                 i = new Intent(MainActivity.this, ReminderActivity.class);
-                i.putExtra("reminder_id", 2);
+                i.putExtra("reminder_id", 1);
                 startActivity(i);
+                return true;
+
+            case R.id.action_test_alarm:
+                Util.alarmTest(this);
                 return true;
 
             default:

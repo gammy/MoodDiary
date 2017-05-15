@@ -108,9 +108,9 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
-                    in.putExtra("newReminder", false);
-                    in.putExtra("reminderTimeID", this.reminderTimeID);
-                    startActivityForResult(in, 1338); // FIXME const - 1338 - EDIT
+                    in.putExtra(BundleExtraKey.REMINDER_MODE, ReminderEditMode.CHANGE);
+                    in.putExtra(BundleExtraKey.REMINDER_TIME_ID, this.reminderTimeID);
+                    startActivityForResult(in, ReminderEditMode.CHANGE);
                     return true;
                 }
             };
@@ -126,8 +126,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
-                    in.putExtra("newReminder", true);
-                    startActivityForResult(in, 1337); // FIXME const - 1337 - CREATE
+                    in.putExtra(BundleExtraKey.REMINDER_MODE, ReminderEditMode.CREATE);
+                    startActivityForResult(in, ReminderEditMode.CREATE);
                     return true;
                 }
             };
@@ -141,18 +141,33 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         Log.d(LOG_PREFIX, "requestCode " + Integer.toString(requestCode) +
                 ", resultCode " + Integer.toString(resultCode));
 
-        if(resultCode != RESULT_OK) {
+        if (resultCode != RESULT_OK) {
             Log.d(LOG_PREFIX, "Bad resultCode: do nothing");
+            Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
             return;
         }
 
-        if(requestCode == 1337) { // Create (FIXME const)
-            Log.d(LOG_PREFIX, "result: OK - CREATE reminder"); // TODO
-            Toast.makeText(this, "TODO: Create", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
-        } else
-        if (requestCode == 1338){ // Edit (FIXME const)
-            Log.d(LOG_PREFIX, "result: OK - UPDATE reminder"); // TODO
-            Toast.makeText(this, "TODO: Update", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
+        Bundle bundle = data.getExtras();
+        Log.d(LOG_PREFIX, "Received bundle!");
+        Log.d(LOG_PREFIX, "Hour, Minute = " +
+                Integer.toString(bundle.getInt(BundleExtraKey.REMINDER_HOUR)) + ":" +
+                Integer.toString(bundle.getInt(BundleExtraKey.REMINDER_MINUTE)));
+
+        switch (requestCode) {
+            case ReminderEditMode.CREATE:
+                Log.d(LOG_PREFIX, "CREATE reminder");
+                Util.addReminder(this, bundle);
+                Toast.makeText(this, "TODO: Create", Toast.LENGTH_SHORT).show();
+                break;
+
+            case ReminderEditMode.CHANGE:
+                Log.d(LOG_PREFIX, "UPDATE reminder");
+                Util.updateReminder(this, bundle);
+                break;
+
+            default:
+                Log.d(LOG_PREFIX, "Unknown request: " + Integer.toString(requestCode));
+                break;
         }
     }
 }

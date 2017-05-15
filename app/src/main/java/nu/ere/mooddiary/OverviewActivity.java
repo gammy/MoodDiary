@@ -50,7 +50,7 @@ public class OverviewActivity extends ThemedActivity {
         String text =
                 Long.toString(entryCount) + " entries\n" +
                 Long.toString(reminderCount) + " reminders\n" +
-                Long.toString(eventTypeCount) + " minutes\n" +
+                Long.toString(eventTypeCount) + " measurement types\n" +
                 Long.toString(entityPrimitiveCount) + " entity primitives\n\n";
 
         Cursor cursor =

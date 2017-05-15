@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public class ReminderActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
@@ -52,11 +53,15 @@ public class ReminderActivity extends ThemedActivity {
         }
 
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
+        if(reminderID == -1) {
+            throw new NoSuchElementException("Caller didn't provide a reminderid");
+        }
+
         Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_SHORT).show();
-        // TODO errorhandling (probably just abort on -1)
         measurementTypes = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
 
         initUI();
+        //Util.raiseNotification(this);
     }
 
     public void initUI() {
@@ -117,6 +122,7 @@ public class ReminderActivity extends ThemedActivity {
             //MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
             MeasurementType measurementType = measurementTypes.get(i);
             EntityPrimitive primitive = measurementType.getPrimitive(orm.getPrimitives());
+            Log.d(LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
 
             // Make a label
             TextView label = new TextView(this);
@@ -135,6 +141,7 @@ public class ReminderActivity extends ThemedActivity {
                 case "range_center":
                 case "range_normal":
                     SeekBar seekBar = new SeekBar(this);
+                    Log.d(LOG_PREFIX, "Renderer: Range: Original View    : " + seekBar.toString());
                     measurementType.setView(seekBar);
                     // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
                     // the database EntityPrimitive name.
@@ -144,13 +151,17 @@ public class ReminderActivity extends ThemedActivity {
                             ResourcesCompat.getDrawable(resources, styleID, null));
                     seekBar.setMax(measurementType.totalValues);
                     seekBar.setProgress(measurementType.normalDefault);
+                    Log.d(LOG_PREFIX, "Renderer: Range: Assigning mType " +
+                            Integer.toString(measurementType.id) + ": " +
+                            "View " + measurementType.view.toString());
+
                     row.addView(seekBar, rowParams);
                     break;
 
                 case "number":
                     TextView number = new TextView(this);
-                    //number.setPaintFlags(number.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                    //number.setBackground(android:background="?attr/editTextBackground"
+                    measurementType.setView(number);
+                    Log.d(LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
 
                     /* Can't find an easier way to do this - insane */
                     int[] attrs = new int[] { R.attr.editTextBackground};
@@ -159,8 +170,6 @@ public class ReminderActivity extends ThemedActivity {
                     ta.recycle();
                     number.setBackgroundDrawable(drawableFromTheme);
 
-                    //TextInputEditText number = new TextInputEditText(this);
-                    measurementType.setView(number);
                     number.setGravity(Gravity.CENTER_HORIZONTAL);
                     TextViewCompat.setTextAppearance(number,
                             android.R.style.TextAppearance_DeviceDefault_Medium);
@@ -170,14 +179,24 @@ public class ReminderActivity extends ThemedActivity {
                     MeasurementTextClickListener listener =
                             new MeasurementTextClickListener(this, number, measurementType, dialogThemeID);
                     number.setOnClickListener(listener);
+
+                    //TextInputEditText number = new TextInputEditText(this);
+                    Log.d(LOG_PREFIX, "Renderer: Number: Assigning mType " +
+                            Integer.toString(measurementType.id) + ": " +
+                            "View " + measurementType.view.toString());
+
                     row.addView(number, rowParams);
                     break;
 
                 case "text":
                     TextInputEditText text = new TextInputEditText(this);
+                    Log.d(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
+                    measurementType.setView(text);
                     TextViewCompat.setTextAppearance(text,
                             android.R.style.TextAppearance_DeviceDefault_Medium);
-                    measurementType.setView(text);
+                    Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
+                            Integer.toString(measurementType.id) + ": " +
+                            "View " + measurementType.view.toString());
                     row.addView(text, rowParams);
                     break;
 

@@ -13,7 +13,7 @@ public class MeasurementTypes {
 
     public MeasurementTypes(SQLiteDatabase db){
         Log.d(LOG_PREFIX, "Enter MeasurementTypes");
-        types = new ArrayList<MeasurementType>();
+        types = new ArrayList<>();
 
         Cursor cursor = db.rawQuery(
                 "SELECT " +

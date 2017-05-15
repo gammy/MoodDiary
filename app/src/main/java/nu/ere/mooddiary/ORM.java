@@ -4,6 +4,7 @@ package nu.ere.mooddiary;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 // Thread-safe singleton with lazy initialization:
 // It's instantiated on first invocation only.
@@ -16,15 +17,12 @@ public final class ORM extends Database {
     private static MeasurementTypes measurementTypes = null;
     private static ReminderTimes reminders = null;
 
-    public static long lastSave = 0;
-
-    SharedPreferences preferences;
-
     private ORM(Context context) {
         super(context);
         Log.d(LOG_PREFIX, "Create");
         db = getWritableDatabase();
         onUpgrade(db, 0, 0); // FIXME Debugging - trash db to force creation
+        Toast.makeText(context, "New ORM instance", Toast.LENGTH_SHORT).show();
         loadObjects();
     }
 

@@ -8,10 +8,17 @@ import android.util.Log;
 public final class EntityPrimitives {
     private static final String LOG_PREFIX = "EntityPrimitives";
     public ArrayList<EntityPrimitive> entities;
+    private SQLiteDatabase db = null;
 
     public EntityPrimitives(SQLiteDatabase db){
         Log.d(LOG_PREFIX, "Enter EntityPrimitives");
-        entities = new ArrayList<EntityPrimitive>();
+        this.db = db;
+        reload();
+    }
+
+    public void reload() {
+        Log.d(LOG_PREFIX, "Enter reload");
+        entities = new ArrayList<>();
 
         Cursor cursor = db.rawQuery("SELECT id, name, enabled FROM EntityPrimitives", null);
         int added = 0;
@@ -21,7 +28,7 @@ public final class EntityPrimitives {
                     cursor.getInt(0),
                     cursor.getString(1),
                     cursor.getInt(2)
-                    );
+            );
             entities.add(primitive);
             Log.d(LOG_PREFIX, "Add primitive: " + cursor.getString(1));
             added++;

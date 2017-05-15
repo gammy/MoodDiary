@@ -15,6 +15,11 @@ public final class ReminderTimes {
     public ReminderTimes(ORM orm){
         Log.d(LOG_PREFIX, "Enter ReminderTimes");
         this.orm = orm;
+        reload();
+    }
+
+    public void reload() {
+        Log.d(LOG_PREFIX, "Enter reload");
 
         // Populate ReminderTimes
         Cursor cursor;
