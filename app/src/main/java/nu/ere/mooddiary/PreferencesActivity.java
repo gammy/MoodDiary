@@ -157,12 +157,17 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
             case ReminderEditMode.CREATE:
                 Log.d(LOG_PREFIX, "CREATE reminder");
                 Util.addReminder(this, bundle);
+                prefReminders.removeAll();
+                createReminderPreferences();
                 Toast.makeText(this, "TODO: Create", Toast.LENGTH_SHORT).show();
+                // FIXME: Reload activity! (Re-render UI)
                 break;
 
             case ReminderEditMode.CHANGE:
                 Log.d(LOG_PREFIX, "UPDATE reminder");
                 Util.updateReminder(this, bundle);
+                prefReminders.removeAll();
+                createReminderPreferences();
                 break;
 
             default:
