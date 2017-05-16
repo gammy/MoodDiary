@@ -23,7 +23,7 @@ public class MainActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
-        Util.installAlarms(this);
+        Alarms.installAlarms(this);
     }
 
     public void initUI() {
@@ -119,7 +119,7 @@ public class MainActivity extends ThemedActivity {
                 return true;
 
             case R.id.action_test_alarm:
-                Util.alarmTest(this);
+                Alarms.alarmTest(this);
                 return true;
 
             default:
