@@ -1,13 +1,16 @@
 package nu.ere.mooddiary;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,10 +27,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+import static java.security.AccessController.getContext;
+
 public class ReminderActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
+    SharedPreferences sharedPrefs;
+    SharedPreferences.Editor prefEditor;
     private ORM orm;
-    private int reminderID;
+    private int reminderID = -1;
     private ArrayList<MeasurementType> measurementTypes = null;
 
     @Override
@@ -36,23 +43,25 @@ public class ReminderActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
 
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefEditor = sharedPrefs.edit();
+
         if (savedInstanceState == null) {
             Intent intent = getIntent();
-            //PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
             Bundle extras = intent.getExtras();
             if(extras == null) {
                 reminderID = -1;
             } else {
                 reminderID = extras.getInt("reminder_id");
+                prefEditor.putInt("reminder_id", reminderID);
+                prefEditor.commit();
             }
         } else {
-            Log.d(LOG_PREFIX, "Disappoint: getting serializable copy of intent extra");
-            // FIXME causes crash on screen reorient: ticket 6b000d4cb67470a302b1241a83ee09e0bdf4a327 (85)
-            // reminderID = Integer.parseInt((String) savedInstanceState.getSerializable("reminder_id"));
+            reminderID = sharedPrefs.getInt("reminder_id", -1);
         }
 
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
+
         if(reminderID == -1) {
             throw new NoSuchElementException("Caller didn't provide a reminderid");
         }
@@ -82,10 +91,11 @@ public class ReminderActivity extends ThemedActivity {
         Button saveButton = (Button) findViewById(R.id.reminderSaveButton);
         TextView thanksView = (TextView) findViewById(R.id.reminderThanksTextView);
 
-        renderReminderEventTypes(R.id.reminderLayout, dialogThemeID);
+        renderReminderEventTypes(R.id.reminderLayout);
 
         // The saveClickListener below will terminate this activity once it's done.
-        saveButton.setOnClickListener(new SaveClickListener(this, measurementTypes, thanksView, true));
+        saveButton.setOnClickListener(
+                new SaveClickListener(this, measurementTypes, thanksView, true));
     }
 
     /**
@@ -94,9 +104,8 @@ public class ReminderActivity extends ThemedActivity {
      * minute primitives, and rendering everything.
      *
      * @param layout The layout resource to be used as main container where all Views are created
-     * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
      */
-    public void renderReminderEventTypes(int layout, int dialogThemeID) {
+    public void renderReminderEventTypes(int layout) {
         Log.d(LOG_PREFIX, "Enter renderReminderEventTypes");
         Resources resources = getResources();
 
@@ -178,7 +187,7 @@ public class ReminderActivity extends ThemedActivity {
 
                     number.setText(Long.toString(measurementType.normalDefault));
                     MeasurementTextClickListener listener =
-                            new MeasurementTextClickListener(this, number, measurementType, dialogThemeID);
+                            new MeasurementTextClickListener(this, number, measurementType, themeID);
                     number.setOnClickListener(listener);
 
                     //TextInputEditText number = new TextInputEditText(this);

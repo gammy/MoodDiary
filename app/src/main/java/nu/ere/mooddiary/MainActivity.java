@@ -2,7 +2,6 @@ package nu.ere.mooddiary;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +23,6 @@ public class MainActivity extends ThemedActivity {
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
-        orm.testReminders();
         Util.installAlarms(this);
     }
 
@@ -51,26 +49,10 @@ public class MainActivity extends ThemedActivity {
      */
     public void renderEventSelect(int layout) {
         Log.d(LOG_PREFIX, "Enter renderEventSelect");
-        Resources resources = this.getResources();
         ORM orm = ORM.getInstance(this);
 
         // Get our main (scrollable) view, where we are to programmatically add our EntryTypes
         LinearLayout entryLayout = (LinearLayout) this.findViewById(layout);
-
-        /*
-        // Create a table
-        TableLayout table = new TableLayout(this);
-        table.setColumnStretchable(1, true); // Stretch the rightmost column (holding sliders etc)
-
-        TableRow rowTitle = new TableRow(this);
-        rowTitle.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-
-        TableRow.LayoutParams rowParams = new TableRow.LayoutParams();
-        rowParams.span = 1;
-
-        rowParams.topMargin    = (int) resources.getDimension(R.dimen.entry_padding_top);
-        rowParams.bottomMargin = (int) resources.getDimension(R.dimen.entry_padding_bottom);
-        */
 
         // Walk our measurement types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
