@@ -121,9 +121,10 @@ public class CustomDialogs {
     /**
      *
      * @param activity The calling activity (i.e `this` in your Activity)
+     * @param view
      * @param measurementType
      * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
-     * @return
+     * @return NumberPicker
      */
     public static NumberPicker showNumberDialog(Activity activity,
                                                 TextView view,

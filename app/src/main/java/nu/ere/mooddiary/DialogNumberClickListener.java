@@ -2,6 +2,8 @@ package nu.ere.mooddiary;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -39,8 +41,6 @@ class DialogNumberClickListener implements DialogInterface.OnClickListener {
             default:
                 break;
         }
-
-
     }
 
     public void setView(TextView view) {
@@ -57,6 +57,10 @@ class DialogNumberClickListener implements DialogInterface.OnClickListener {
         }
 
         view.setText(text);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putInt(measurementType.name, numberPicker.getValue());
+        editor.apply();
     }
 }
 

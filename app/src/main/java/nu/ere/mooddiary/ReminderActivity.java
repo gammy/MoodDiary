@@ -10,8 +10,9 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -26,8 +27,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
-import static java.security.AccessController.getContext;
 
 public class ReminderActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
@@ -54,7 +53,7 @@ public class ReminderActivity extends ThemedActivity {
             } else {
                 reminderID = extras.getInt("reminder_id");
                 prefEditor.putInt("reminder_id", reminderID);
-                prefEditor.commit();
+                prefEditor.apply();
             }
         } else {
             reminderID = sharedPrefs.getInt("reminder_id", -1);
@@ -160,7 +159,12 @@ public class ReminderActivity extends ThemedActivity {
                     seekBar.setProgressDrawable(
                             ResourcesCompat.getDrawable(resources, styleID, null));
                     seekBar.setMax(measurementType.totalValues);
-                    seekBar.setProgress(measurementType.normalDefault);
+                    seekBar.setProgress(sharedPrefs.getInt(measurementType.name,
+                            measurementType.normalDefault));
+
+                    SeekBarChangeListener seekBarChangeListener = new SeekBarChangeListener();
+                    seekBarChangeListener.setPreference(prefEditor, measurementType.name);
+                    seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
                     Log.d(LOG_PREFIX, "Renderer: Range: Assigning mType " +
                             Integer.toString(measurementType.id) + ": " +
                             "View " + measurementType.view.toString());
@@ -185,11 +189,12 @@ public class ReminderActivity extends ThemedActivity {
                             android.R.style.TextAppearance_DeviceDefault_Medium);
                     //number.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
 
-                    number.setText(Long.toString(measurementType.normalDefault));
+                    number.setText(Integer.toString(
+                            sharedPrefs.getInt(measurementType.name,
+                                               measurementType.normalDefault)));
                     MeasurementTextClickListener listener =
                             new MeasurementTextClickListener(this, number, measurementType, themeID);
                     number.setOnClickListener(listener);
-
                     //TextInputEditText number = new TextInputEditText(this);
                     Log.d(LOG_PREFIX, "Renderer: Number: Assigning mType " +
                             Integer.toString(measurementType.id) + ": " +
@@ -200,8 +205,13 @@ public class ReminderActivity extends ThemedActivity {
 
                 case "text":
                     TextInputEditText text = new TextInputEditText(this);
-                    Log.d(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
                     measurementType.setView(text);
+                    Log.d(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
+                    //measurementType.setView(text);
+                    text.setText(sharedPrefs.getString(measurementType.name, ""));
+                    TextChangedListener textChangedListener = new TextChangedListener();
+                    textChangedListener.setPreference(prefEditor, measurementType.name);
+                    text.addTextChangedListener(textChangedListener);
                     TextViewCompat.setTextAppearance(text,
                             android.R.style.TextAppearance_DeviceDefault_Medium);
                     Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +

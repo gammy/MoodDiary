@@ -11,8 +11,6 @@ public class MeasurementTextClickListener implements OnClickListener {
     public int dialogThemeID;
     public TextView textView = null;
 
-    //TextInputEditText view;
-
     public MeasurementTextClickListener(Activity activity,
                                         TextView textView,
                                         MeasurementType measurementType,

@@ -114,7 +114,7 @@ public class MainActivity extends ThemedActivity {
 
             case R.id.action_test_reminder_activity:
                 i = new Intent(MainActivity.this, ReminderActivity.class);
-                i.putExtra("reminder_id", 1);
+                i.putExtra("reminder_id", 3);
                 startActivity(i);
                 return true;
 

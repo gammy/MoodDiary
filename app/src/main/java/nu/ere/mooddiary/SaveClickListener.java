@@ -1,6 +1,8 @@
 package nu.ere.mooddiary;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +30,7 @@ public class SaveClickListener implements OnClickListener {
                              boolean harakiri) {
         Log.d(LOG_PREFIX, "Enter SaveClickListener");
 
+
         this.activity = activity;
         this.view = view;
         this.measurementTypes = measurementTypes;
@@ -47,13 +50,18 @@ public class SaveClickListener implements OnClickListener {
         Log.d(LOG_PREFIX, "CLICK, save!");
         Log.d(LOG_PREFIX, "Number of types to save: " + Integer.toString(measurementTypes.size()));
 
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+
         for(int i = 0; i < measurementTypes.size(); i++) {
             MeasurementType measurementType = measurementTypes.get(i);
+            editor.remove(measurementType.name);
             Log.d(LOG_PREFIX, " mType " + Integer.toString(measurementType.id) + ", " +
                 "View " + measurementType.view.toString());
 
         }
         Util.saveEvents(activity, measurementTypes);
+        editor.apply();
 
         in.setAnimationListener(splash);
         view.startAnimation(in);
