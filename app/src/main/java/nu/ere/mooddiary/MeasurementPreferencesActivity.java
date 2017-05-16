@@ -26,6 +26,13 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
     PreferenceScreen measurementScreen;
     private int oldID = -1;
 
+    /* What we need to show:
+     *          Name: Farts        (EditBox)
+     *          Type: range_center (Popup radio buttons?)
+     * Minimum value: 0_           (numberbox)
+     * Maximum value: 100          (numberbox)
+     * Default value: 0            (numberbox)
+     */
     public void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);

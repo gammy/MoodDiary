@@ -160,6 +160,14 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Add a new entityPrimitive
+     *
+     * @param name      A string identifier for this primitive
+     * @param isNumber  Whether or not this primitive will hold numbers or (presumably) text
+     *                  (this has
+     * ...// - Save widget data down to the entrylist
+     */
     public void addPrimitive(String name, boolean isNumber) {
         Log.d(LOG_PREFIX, "INSERT INTO EntityPrimitives (name, isNumber) VALUES (?, ?)");
         String sql = "INSERT INTO EntityPrimitives (name, isNumber) VALUES (?, ?)";
@@ -367,7 +375,7 @@ public class Database extends SQLiteOpenHelper {
         db.endTransaction();
     }
 
-    /**
+     /**
      * Delete a new reminder (i.e delete reminderTime, and all associated reminderGroups)
      *
      * @param reminderTimeId
