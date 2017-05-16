@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
@@ -69,6 +72,15 @@ public class ReminderActivity extends ThemedActivity {
         measurementTypes = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
 
         initUI();
+
+        // Notification chime test
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //Util.raiseNotification(this);
     }
 

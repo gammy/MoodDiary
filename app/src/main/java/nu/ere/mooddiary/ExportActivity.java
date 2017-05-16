@@ -1,14 +1,25 @@
 package nu.ere.mooddiary;
 import org.bostonandroid.preference.DatePreference;
 
+import android.Manifest;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 
 public class ExportActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "ExportActivity";
@@ -59,6 +70,12 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
     public void createSQLPreferences() {
         Log.d(LOG_PREFIX, "Enter createSQLPreferences");
+        prefSQL.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                return exportDatabase();
+            }
+        });
     }
 
     public void createCSVPreferences() {
@@ -69,9 +86,9 @@ public class ExportActivity extends ThemedPreferenceActivity {
         PreferenceCategory datesCategory = new PreferenceCategory(this);
         PreferenceCategory saveCategory = new PreferenceCategory(this);
 
-        typesCategory.setTitle(getApplicationContext().getString(R.string.title_category_types));
-        datesCategory.setTitle(getApplicationContext().getString(R.string.title_category_dates));
-        saveCategory.setTitle(getApplicationContext().getString(R.string.title_category_save));
+        typesCategory.setTitle(getString(R.string.title_category_types));
+        datesCategory.setTitle(getString(R.string.title_category_dates));
+        saveCategory.setTitle(getString(R.string.title_category_save));
 
         prefCSV.addPreference(datesCategory);
         prefCSV.addPreference(typesCategory);
@@ -82,7 +99,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
         datePrefBeg.setKey("csv_edit_time_beg");
         datePrefBeg.setPositiveButtonText(R.string.submit);
         datePrefBeg.setNegativeButtonText(R.string.cancel);
-        datePrefBeg.setTitle(getApplicationContext().getString(R.string.title_date_from));
+        datePrefBeg.setTitle(getString(R.string.title_date_from));
         datesCategory.addPreference(datePrefBeg);
 
         // Date end widget
@@ -90,7 +107,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
         datePrefEnd.setKey("csv_edit_time_end");
         datePrefEnd.setPositiveButtonText(R.string.submit);
         datePrefEnd.setNegativeButtonText(R.string.cancel);
-        datePrefEnd.setTitle(getApplicationContext().getString(R.string.title_date_to));
+        datePrefEnd.setTitle(getString(R.string.title_date_to));
         datesCategory.addPreference(datePrefEnd);
 
         // minute list
@@ -126,6 +143,85 @@ public class ExportActivity extends ThemedPreferenceActivity {
             cb.setTitle(e.name);
             cb.setChecked(e.enabled == 1);
             screen.addPreference(cb);
+        }
+    }
+
+    // Based on http://stackoverflow.com/a/19093736/417115
+    public boolean exportDatabase() {
+        Log.d(LOG_PREFIX, "Enter exportDatabase");
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                1 /* Callback id */);
+
+        // http://stackoverflow.com/a/6942735/417115
+        String state = Environment.getExternalStorageState();
+        Log.d(LOG_PREFIX, "sdcard state: " + state);
+
+        if(Environment.MEDIA_MOUNTED.equals(state)) {
+            Log.d(LOG_PREFIX, "sdcard mounted and writable");
+        } else if(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            Log.d(LOG_PREFIX, "sdcard mounted readonly");
+        }
+
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            }
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    1 /* Code */);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(LOG_PREFIX, "We have write permissions");
+
+                    String name = this.orm.getDatabaseName();
+
+                    String sourcePath = "//data//" + this.getPackageName() + "//databases//" + name;
+                    String targetPath = "Download" + "/" + name + ".sqlite3";
+
+                    File sd = Environment.getExternalStorageDirectory();
+                    File data = Environment.getDataDirectory();
+
+                    File currentDB = new File(data, sourcePath);
+                    File backupDB  = new File(sd,   targetPath);
+
+                    if (currentDB.exists()) {
+                        try {
+                            FileChannel src = new FileInputStream(currentDB).getChannel();
+                            FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                            dst.transferFrom(src, 0, src.size());
+                            src.close();
+                            dst.close();
+                        } catch (Exception e) {
+                            Log.d(LOG_PREFIX, e.getMessage());
+                            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    } else{
+                        Log.d(LOG_PREFIX, "FIXME: " + sourcePath + ": No such file");
+                    }
+
+                    Toast.makeText(this, "Exported!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d(LOG_PREFIX, "NEIN!!!");
+                }
+            }
         }
     }
 }
