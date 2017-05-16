@@ -1,6 +1,5 @@
 package nu.ere.mooddiary;
 
-import android.preference.Preference;
 import android.view.View;
 
 public class MeasurementType {

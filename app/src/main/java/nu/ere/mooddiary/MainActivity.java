@@ -1,7 +1,5 @@
 package nu.ere.mooddiary;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -14,8 +12,6 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-
-import java.util.Calendar;
 
 public class MainActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "MainActivity";

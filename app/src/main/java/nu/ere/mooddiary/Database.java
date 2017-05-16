@@ -46,9 +46,6 @@ public class Database extends SQLiteOpenHelper {
                     ")"
         );
 
-
-        /*************************************************************************/
-
         // Primitives (overdesign much?)
         db.execSQL(
                 "CREATE TABLE EntityPrimitives " +
@@ -139,18 +136,25 @@ public class Database extends SQLiteOpenHelper {
         // Reminders
 
         ArrayList<Integer> reminderEventList = new ArrayList<>();
-        reminderEventList.add(1);
-        reminderEventList.add(5);
-        reminderEventList.add(9);
-        //addReminder(10, 0, reminderEventList); // 10am
-        addReminder(14, 59, reminderEventList); // 10am
+        reminderEventList.add(1); // Mood
+        reminderEventList.add(2); // Anxiety
+        reminderEventList.add(3); // Irritability
+        reminderEventList.add(5); // Sleep
+        addReminder(10, 0, reminderEventList); // 10am
 
         reminderEventList = new ArrayList<>();
         reminderEventList.add(1); // Mood
         reminderEventList.add(2); // Anxiety
         reminderEventList.add(3); // Irritability
-        //addReminder(15, 0, reminderEventList); // 3pm
-        addReminder(15, 0, reminderEventList); // 10am
+        addReminder(15, 0, reminderEventList); // 3pm
+
+        reminderEventList = new ArrayList<>();
+        reminderEventList.add(1); // Mood
+        reminderEventList.add(2); // Anxiety
+        reminderEventList.add(3); // Irritability
+        reminderEventList.add(6); // Alcohol
+        reminderEventList.add(9); // Note
+        addReminder(21, 0, reminderEventList); // 9pm
     }
 
     @Override
@@ -251,22 +255,6 @@ public class Database extends SQLiteOpenHelper {
     }
 
     /**
-     * Delete a new reminder (i.e delete reminderTime, and all associated reminderGroups)
-     *
-     * @param reminderTimeId
-     */
-    public void deleteReminder(int reminderTimeId) {
-        Log.d(LOG_PREFIX, "Enter deleteReminder");
-        db.beginTransaction();
-
-        db.delete("ReminderGroups", "reminderTime = ?", new String[] {Integer.toString(reminderTimeId)});
-        db.delete("ReminderTimes", "id = ?", new String[] {Integer.toString(reminderTimeId)});
-
-        db.setTransactionSuccessful();
-        db.endTransaction();
-    }
-
-    /**
      * Add a new reminder (and associated groups)
      *
      * @param hour    Hour in 24-hour format
@@ -311,6 +299,102 @@ public class Database extends SQLiteOpenHelper {
             statement.executeInsert();
         }
         statement.close();
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    /**
+     * Change a new reminder (with associated groups)
+     * This is a bit different from just doing delete/add, since that will screw up the
+     * ordering. We have to reuse the original id.
+     *
+     * @param reminderTimeId
+     * @param hour    Hour in 24-hour format
+     * @param minute  Minute
+     * @param typeIDs A simple arraylist of eventTypeID integers
+     */
+    public void changeReminder(int reminderTimeId, int hour, int minute, ArrayList<Integer> typeIDs) {
+        Log.d(LOG_PREFIX, "Enter changeReminder" );
+        Cursor cursor;
+        String sql;
+        SQLiteStatement statement;
+
+        // remember old id
+        // get the groups, keep reminderId
+        // delete the groups
+
+        db.beginTransaction();
+
+        Log.d(LOG_PREFIX, "SELECT reminderGroup FROM ReminderTimes WHERE id = " +
+                Integer.toString(reminderTimeId));
+
+        cursor = db.rawQuery("SELECT reminderGroup FROM ReminderTimes WHERE id = " +
+                Integer.toString(reminderTimeId), null);
+        cursor.moveToFirst();
+        int oldReminderGroup = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
+
+        Log.d(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderTime = " +
+                Integer.toString(reminderTimeId));
+        db.delete("ReminderGroups", "reminderTime = ?", new String[]
+                {Integer.toString(reminderTimeId)});
+
+        Log.d(LOG_PREFIX, "INSERT INTO ReminderTimes (reminderGroup, hour, minute) VALUES (" +
+                Integer.toString(oldReminderGroup) + ", " +
+                Integer.toString(hour) + ", " +
+                Integer.toString(minute) + ")");
+
+        sql = "UPDATE ReminderTimes SET reminderGroup = ?, hour = ?, minute = ? WHERE id = ?";
+        statement = db.compileStatement(sql);
+        statement.bindLong(1, oldReminderGroup);
+        statement.bindLong(2, hour);
+        statement.bindLong(3, minute);
+        statement.bindLong(4, reminderTimeId);
+        statement.executeUpdateDelete();
+        statement.close();
+
+        // UPDATE ReminderGroups SET reminderTime = <new> WHERE reminderTime = <old>
+        // Insert associated events
+        sql = "INSERT INTO ReminderGroups (reminderTime, type) VALUES (?, ?)";
+        statement = db.compileStatement(sql);
+
+        for(int i = 0; i < typeIDs.size(); i++) {
+            int eventTypeID = typeIDs.get(i);
+            Log.d(LOG_PREFIX, "addReminder: INSERT INTO ReminderGroups (reminderTime, type)" +
+                    "VALUES (" +
+                    Integer.toString(oldReminderGroup) + ", " +
+                    Integer.toString(eventTypeID) + ")");
+            statement.bindLong(1, oldReminderGroup);
+            statement.bindLong(2, eventTypeID);
+            statement.executeInsert();
+        }
+        statement.close();
+        cursor.close();
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    /**
+     * Delete a new reminder (i.e delete reminderTime, and all associated reminderGroups)
+     *
+     * @param reminderTimeId
+     */
+    public void deleteReminder(int reminderTimeId) {
+        Log.d(LOG_PREFIX, "Enter deleteReminder");
+        db.beginTransaction();
+
+        reminderTimeId -= 1;
+
+        Log.d(LOG_PREFIX, "DELETE FROM ReminderTimes WHERE id = " +
+                Integer.toString(reminderTimeId));
+        db.delete("ReminderTimes", "id = ?", new String[]
+                {Integer.toString(reminderTimeId)});
+
+        Log.d(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderTime = " +
+                Integer.toString(reminderTimeId));
+        db.delete("ReminderGroups", "reminderTime = ?", new String[] {
+                Integer.toString(reminderTimeId)});
 
         db.setTransactionSuccessful();
         db.endTransaction();

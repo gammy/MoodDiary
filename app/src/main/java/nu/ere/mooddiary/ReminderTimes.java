@@ -1,7 +1,6 @@
 package nu.ere.mooddiary;
 
 import android.database.Cursor;
-import android.support.annotation.IntegerRes;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -23,14 +22,13 @@ public final class ReminderTimes {
 
         // Populate ReminderTimes
         Cursor cursor;
+        Log.d(LOG_PREFIX, "SELECT id, reminderGroup, hour, minute FROM ReminderTimes");
         cursor = orm.db.rawQuery("SELECT id, reminderGroup, hour, minute FROM ReminderTimes", null);
 
         reminderTimes = new ArrayList<>();
 
         // Walk through each reminder and collate the associated measurementTypes
         while(cursor.moveToNext()) {
-            Log.d(LOG_PREFIX, "reminderTimes: looping ReminderTimes");
-
             int id     = cursor.getInt(cursor.getColumnIndex("id"));
             int group  = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
             int hour   = cursor.getInt(cursor.getColumnIndex("hour"));
@@ -40,7 +38,7 @@ public final class ReminderTimes {
             reminderTimes.add(reminderTime);
 
             Log.d(LOG_PREFIX,
-                    "Reminder id" + Integer.toString(id) + ", " +
+                    "  ReminderTime " + Integer.toString(id) + ", " +
                     "group " + Integer.toString(group) + ", " +
                     "time = " + Integer.toString(hour) + ":" + Integer.toString(minute));
         }
@@ -48,7 +46,7 @@ public final class ReminderTimes {
         cursor.close();
     }
 
-    public ReminderTime getByID(long id) {
+    public ReminderTime getByID(int id) {
         for(int i = 0; i < reminderTimes.size(); i++) {
             ReminderTime r = reminderTimes.get(i);
             if(r.id == id) {

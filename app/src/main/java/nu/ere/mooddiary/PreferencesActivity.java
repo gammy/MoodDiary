@@ -143,7 +143,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
         if (resultCode != RESULT_OK) {
             Log.d(LOG_PREFIX, "Bad resultCode: do nothing");
-            Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
+            Toast.makeText(this, this.getString(R.string.toast_cancelled), Toast.LENGTH_SHORT).show();
             return;
         }
 

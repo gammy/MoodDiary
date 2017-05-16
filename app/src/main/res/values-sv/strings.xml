@@ -34,4 +34,6 @@
     <string name="toast_saved">Sparat</string>
     <string name="delete">Ta bort</string>
     <string name="title_category_delete">Ta bort</string>
+    <string name="toast_deleted">Borttagen</string>
+    <string name="toast_cancelled">Avbrutet</string>
 </resources>

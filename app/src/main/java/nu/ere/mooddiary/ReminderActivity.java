@@ -116,6 +116,7 @@ public class ReminderActivity extends ThemedActivity {
         rowParams.topMargin    = (int) resources.getDimension(R.dimen.entry_padding_top);
         rowParams.bottomMargin = (int) resources.getDimension(R.dimen.entry_padding_bottom);
 
+        // FIXME not guaranteed correct order (list isn't sorted?)
         // Walk our measurement types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
         for(int i = 0; i < measurementTypes.size(); i++) {

@@ -197,9 +197,27 @@ public class Util {
         Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
     }
 
+    // FIXME untested!
+    public static void clearAlarms(Activity activity) {
+        Log.d(LOG_PREFIX, "Enter clearAlarms" );
+        ORM orm = ORM.getInstance(activity);
+        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
+        ArrayList<ReminderTime> reminderTimes = orm.getReminderTimes().reminderTimes;
+        for(int i = 0; i < reminderTimes.size(); i++) {
+            Intent reminderIntent = new Intent(activity, ReminderActivity.class);
+            PendingIntent pendingIntent =
+                    PendingIntent.getActivity(activity, i /* Alarm ID */,
+                            reminderIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            alarmManager.cancel(pendingIntent);
+        }
+        Log.d(LOG_PREFIX, Long.toString(reminderTimes.size()) + " alarms installed");
+    }
+
     public static void installAlarms(Activity activity) {
         Log.d(LOG_PREFIX, "Enter installAlarms" );
+        clearAlarms(activity);
         ORM orm = ORM.getInstance(activity);
+        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
 
         ArrayList<ReminderTime> reminderTimes = orm.getReminderTimes().reminderTimes;
 
@@ -228,9 +246,8 @@ public class Util {
             }
 
             // Set up the alarm
-            AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
             PendingIntent pendingIntent =
-                    PendingIntent.getActivity(activity, i /* "Unique" Request code */,
+                    PendingIntent.getActivity(activity, i /* Alarm ID */,
                             reminderIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
@@ -312,13 +329,14 @@ public class Util {
 
         orm.addReminder(hour, minute, types);
         orm.getReminderTimes().reload();
+        installAlarms(activity);
 
-        Toast.makeText(activity, "Saved changes", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
+        Toast.makeText(activity, activity.getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
         return(true);
     }
 
     public static boolean updateReminder(PreferencesActivity activity, Bundle bundle) {
-        Log.d(LOG_PREFIX, "Enter updateReminder (TODO)");
+        Log.d(LOG_PREFIX, "Enter updateReminder");
         ORM orm = ORM.getInstance(activity);
 
         int reminderTimeId = bundle.getInt(BundleExtraKey.REMINDER_TIME_ID);
@@ -327,17 +345,20 @@ public class Util {
 
         int changeMode = bundle.getInt(BundleExtraKey.REMINDER_MODE);
 
-        orm.deleteReminder(reminderTimeId);
-
         if(changeMode == ReminderEditMode.CHANGE) {
             Log.d(LOG_PREFIX, "About to update reminderTimeId " + Integer.toString(reminderTimeId));
             ArrayList<Integer> types = bundle.getIntegerArrayList(BundleExtraKey.REMINDER_TYPES);
-            orm.addReminder(hour, minute, types);
+            Toast.makeText(activity, activity.getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
+            orm.changeReminder(reminderTimeId, hour, minute, types);
+        } else if(changeMode == ReminderEditMode.DELETE) {
+            Log.d(LOG_PREFIX, "About to DELETE reminderTimeId " + Integer.toString(reminderTimeId));
+            Toast.makeText(activity, activity.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show();
+            orm.deleteReminder(reminderTimeId);
         }
 
         orm.getReminderTimes().reload();
+        installAlarms(activity);
 
-        Toast.makeText(activity, "Saved changes", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
         return(true);
     }
 

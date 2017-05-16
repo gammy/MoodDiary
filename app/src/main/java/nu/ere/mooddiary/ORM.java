@@ -2,7 +2,6 @@
 package nu.ere.mooddiary;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,7 +16,7 @@ public final class ORM extends Database {
     private static MeasurementTypes measurementTypes = null;
     private static ReminderTimes reminders = null;
 
-    private ORM(Context context) {
+    public ORM(Context context) {
         super(context);
         Log.d(LOG_PREFIX, "Create");
         db = getWritableDatabase();

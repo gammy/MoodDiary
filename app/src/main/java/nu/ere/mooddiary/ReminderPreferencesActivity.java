@@ -3,19 +3,14 @@ package nu.ere.mooddiary;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.util.Log;
-import android.util.Property;
-import android.widget.CheckBox;
 import android.widget.Toast;
-
 import org.bostonandroid.preference.TimePreference;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -165,6 +160,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
                     Log.d(LOG_PREFIX, "Enter onPreferenceClick pre-delete bundle");
                     Intent rIntent = getIntent();
                     bundle.putInt(BundleExtraKey.REMINDER_MODE, ReminderEditMode.DELETE);
+                    bundle.putInt(BundleExtraKey.REMINDER_TIME_ID, oldID);
                     rIntent.putExtras(bundle);
                     setResult(Activity.RESULT_OK, rIntent);
                     finish();
