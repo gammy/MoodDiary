@@ -34,14 +34,14 @@ public class MeasurementTypes {
         while(cursor.moveToNext()) {
 
             MeasurementType type = new MeasurementType(
-                    cursor.getInt(0),   // id
-                    cursor.getInt(1),   // order
-                    cursor.getString(2), // name
-                    cursor.getInt(3),   // entity type (primitive)
-                    cursor.getInt(4),   // minimum
-                    cursor.getInt(5),   // maximum
-                    cursor.getInt(6),   // default
-                    cursor.getInt(7)    // enabled
+                    cursor.getInt(cursor.getColumnIndex("id")),
+                    cursor.getInt(cursor.getColumnIndex("ui_order")),
+                    cursor.getString(cursor.getColumnIndex("name")),
+                    cursor.getInt(cursor.getColumnIndex("entity")),
+                    cursor.getInt(cursor.getColumnIndex("val_min")),
+                    cursor.getInt(cursor.getColumnIndex("val_max")),
+                    cursor.getInt(cursor.getColumnIndex("val_dfl")),
+                    cursor.getInt(cursor.getColumnIndex("enabled"))
             );
             types.add(type);
             Log.d(LOG_PREFIX, "Add type: " + type.name +

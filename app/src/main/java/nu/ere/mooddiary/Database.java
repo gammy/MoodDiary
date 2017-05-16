@@ -136,24 +136,30 @@ public class Database extends SQLiteOpenHelper {
         // Reminders
 
         ArrayList<Integer> reminderEventList = new ArrayList<>();
-        reminderEventList.add(1); // Mood
-        reminderEventList.add(2); // Anxiety
-        reminderEventList.add(3); // Irritability
-        reminderEventList.add(5); // Sleep
+        reminderEventList.add(1);
+        //reminderEventList.add(1); // Mood
+        //reminderEventList.add(2); // Anxiety
+        //reminderEventList.add(3); // Irritability
+        //reminderEventList.add(5); // Sleep
         addReminder(10, 0, reminderEventList); // 10am
 
         reminderEventList = new ArrayList<>();
-        reminderEventList.add(1); // Mood
-        reminderEventList.add(2); // Anxiety
-        reminderEventList.add(3); // Irritability
+        reminderEventList.add(1);
+        reminderEventList.add(2);
+        //reminderEventList.add(1); // Mood
+        //reminderEventList.add(2); // Anxiety
+        //reminderEventList.add(3); // Irritability
         addReminder(15, 0, reminderEventList); // 3pm
 
         reminderEventList = new ArrayList<>();
-        reminderEventList.add(1); // Mood
-        reminderEventList.add(2); // Anxiety
-        reminderEventList.add(3); // Irritability
-        reminderEventList.add(6); // Alcohol
-        reminderEventList.add(9); // Note
+        reminderEventList.add(1);
+        reminderEventList.add(2);
+        reminderEventList.add(3);
+        //reminderEventList.add(1); // Mood
+        //reminderEventList.add(2); // Anxiety
+        //reminderEventList.add(3); // Irritability
+        //reminderEventList.add(6); // Alcohol
+        //reminderEventList.add(9); // Note
         addReminder(21, 0, reminderEventList); // 9pm
     }
 

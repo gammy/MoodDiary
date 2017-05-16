@@ -54,14 +54,15 @@ public class OverviewActivity extends ThemedActivity {
                 Long.toString(entityPrimitiveCount) + " entity primitives\n\n";
 
         Cursor cursor =
-                orm.db.rawQuery("SELECT date, value FROM Events ORDER BY date DESC", null);
+                orm.db.rawQuery("SELECT date, value, type FROM Events ORDER BY date DESC", null);
         cursor.moveToFirst();
 
         while(cursor.moveToNext()) {
-            long unixTime = cursor.getLong(0);
-            String value  = cursor.getString(1);
+            long unixTime = cursor.getLong(cursor.getColumnIndex("date"));
+            String value  = cursor.getString(cursor.getColumnIndex("value"));
+            String type   = cursor.getString(cursor.getColumnIndex("type"));
             java.util.Date time = new java.util.Date((long) unixTime * 1000);
-            text += time.toString() + ": " + value + "\n";
+            text += time.toString() + ": id " + type +  " = \"" + value + "\"\n";
         }
 
         view.setText(text);

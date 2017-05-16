@@ -1,6 +1,7 @@
 package nu.ere.mooddiary;
 
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 public class AlarmInstallerActivity extends ThemedActivity {
@@ -14,6 +15,6 @@ public class AlarmInstallerActivity extends ThemedActivity {
         orm = ORM.getInstance(this);
         Log.d(LOG_PREFIX, "Installing alarms");
         Alarms.installAlarms(this);
-        this.finish();
+        ActivityCompat.finishAffinity(this);
     }
 }

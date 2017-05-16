@@ -29,7 +29,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_test_alarm"
-        android:orderInCategory="500"
+        android:orderInCategory="600"
         android:title="Alarm test"
         app:showAsAction="never" />
 </menu>

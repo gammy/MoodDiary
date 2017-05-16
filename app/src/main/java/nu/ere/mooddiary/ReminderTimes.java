@@ -59,24 +59,43 @@ public final class ReminderTimes {
 
     public ArrayList<MeasurementType> getTypesByReminderTimeID(int reminderTimeID) {
         Log.d(LOG_PREFIX, "Enter getTypesByReminderTimeID");
-        Log.d(LOG_PREFIX, "Caller is looking for types for reminderTimeID " +
-                Integer.toString(reminderTimeID));
         ArrayList<MeasurementType> reminderMeasurementTypes = new ArrayList<>();
 
+        Cursor cursor;
+        String iStr = Integer.toString(reminderTimeID);
+        String sql;
+
         /* First get reminder *TIME* ID from ReminderTimes, *THEN* look for that */
-        Cursor cursor = orm.db.rawQuery("SELECT reminderGroup FROM ReminderTimes WHERE id = " +
-                Integer.toString(reminderTimeID), null);
+        sql = "SELECT reminderGroup FROM ReminderTimes WHERE id = ?";
+        cursor = orm.db.rawQuery(sql, new String[] { iStr });
         cursor.moveToFirst();
+        if(cursor.getCount() == 0) {
+            throw new IndexOutOfBoundsException(
+                    "Found no reminderGroup in ReminderTimes for id " +
+                            Integer.toString(reminderTimeID));
+        }
         int reminderGroup = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
+        String gStr = Integer.toString(reminderGroup);
 
+        // This query is a bit more complex, as we need the result in the correct ui_order so that
+        // it displays in the specified order on the screen.
+        sql = "SELECT " +
+                 "type " +
+              "FROM " +
+                 "ReminderGroups " +
+              "LEFT OUTER JOIN MeasurementTypes ON "+
+                 "ReminderGroups.type = MeasurementTypes.id " +
+              "WHERE " +
+                 "ReminderGroups.reminderGroup = ?" +
+              "ORDER BY " +
+                 "MeasurementTypes.ui_order ASC";
 
-        cursor = orm.db.rawQuery("SELECT type FROM ReminderGroups WHERE reminderGroup = " +
-                Integer.toString(reminderGroup), null);
+        cursor = orm.db.rawQuery(sql, new String[] { gStr });
 
         // Get all measurement types associated with this reminder
         while (cursor.moveToNext()) {
             int measurementTypeId = cursor.getInt(cursor.getColumnIndex("type"));
-            Log.d(LOG_PREFIX, "   associated measurement type: " + Integer.toString(measurementTypeId));
+            Log.d(LOG_PREFIX, "  associated type: " + Integer.toString(measurementTypeId));
             MeasurementType measurementType = orm.getMeasurementTypes().getByID(measurementTypeId);
             reminderMeasurementTypes.add(measurementType);
         }

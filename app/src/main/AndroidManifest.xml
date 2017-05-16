@@ -79,6 +79,7 @@
         <activity
             android:name=".ReminderActivity"
             android:label="Mood Diary Reminder"
+            android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Dialog" >
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
@@ -89,6 +90,7 @@
         <activity
             android:name=".AlarmInstallerActivity"
             android:label="Mood Diary Cold Boot Alarm Installer"
+            android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Dialog" >
             <!-- Not sure if these are needed here -->
             <intent-filter>
