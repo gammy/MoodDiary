@@ -77,7 +77,7 @@ public final class ReminderTimes {
         int reminderGroup = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
         String gStr = Integer.toString(reminderGroup);
 
-        // This query is a bit more complex, as we need the result in the correct ui_order so that
+        // This query is a bit more complex, as we need the result in the correct listOrder so that
         // it displays in the specified order on the screen.
         sql = "SELECT " +
                  "type " +
@@ -88,7 +88,7 @@ public final class ReminderTimes {
               "WHERE " +
                  "ReminderGroups.reminderGroup = ?" +
               "ORDER BY " +
-                 "MeasurementTypes.ui_order ASC";
+                 "MeasurementTypes.listOrder ASC";
 
         cursor = orm.db.rawQuery(sql, new String[] { gStr });
 

@@ -30,9 +30,14 @@
     <string name="title_category_delete">Delete</string>     <!-- delCategory -->
     <string name="title_date_from">From date</string>        <!-- datePrefBeg-->
     <string name="title_date_to">To date</string>            <!-- datePrefBeg-->
+
     <string name="title_category_old_reminders">Reminders</string> <!-- oldCategory -->
     <string name="title_category_time">Time</string>               <!-- timeCategory -->
-    <string name="title_category_new">New</string>
+    <string name="title_category_new_reminder">New</string>
+
+    <string name="title_category_old_types">Measurement types</string>
+    <string name="title_category_new_type">New</string>
+    <string name="action_preference_measurements">Add a new measurement type</string>
 
     <!-- Dialog boxes -->
     <string name="submit">OK</string>

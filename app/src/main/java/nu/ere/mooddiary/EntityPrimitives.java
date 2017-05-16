@@ -20,14 +20,15 @@ public final class EntityPrimitives {
         Log.d(LOG_PREFIX, "Enter reload");
         entities = new ArrayList<>();
 
-        Cursor cursor = db.rawQuery("SELECT id, name, enabled FROM EntityPrimitives", null);
+        Cursor cursor = db.rawQuery("SELECT id, name, isNumber, enabled FROM EntityPrimitives", null);
         int added = 0;
 
         while(cursor.moveToNext()) {
             EntityPrimitive primitive = new EntityPrimitive(
-                    cursor.getInt(0),
-                    cursor.getString(1),
-                    cursor.getInt(2)
+                    cursor.getInt(cursor.getColumnIndex("id")),
+                    cursor.getString(cursor.getColumnIndex("name")),
+                    cursor.getInt(cursor.getColumnIndex("isNumber")),
+                    cursor.getInt(cursor.getColumnIndex("enabled"))
             );
             entities.add(primitive);
             Log.d(LOG_PREFIX, "Add primitive: " + cursor.getString(1));

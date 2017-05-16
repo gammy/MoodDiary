@@ -18,29 +18,29 @@ public class MeasurementTypes {
         Cursor cursor = db.rawQuery(
                 "SELECT " +
                     "id, " +
-                    "ui_order, " +
+                    "listOrder, " +
                     "name, " +
                     "entity, " +
-                    "val_min, " +
-                    "val_max, " +
-                    "val_dfl, " +
+                    "minValue, " +
+                    "maxValue, " +
+                    "defaultValue, " +
                     "enabled " +
                 "FROM " +
                     "MeasurementTypes " +
                 "ORDER BY " +
-                    "ui_order ASC", null);
+                    "listOrder ASC", null);
         int added = 0;
 
         while(cursor.moveToNext()) {
 
             MeasurementType type = new MeasurementType(
                     cursor.getInt(cursor.getColumnIndex("id")),
-                    cursor.getInt(cursor.getColumnIndex("ui_order")),
+                    cursor.getInt(cursor.getColumnIndex("listOrder")),
                     cursor.getString(cursor.getColumnIndex("name")),
                     cursor.getInt(cursor.getColumnIndex("entity")),
-                    cursor.getInt(cursor.getColumnIndex("val_min")),
-                    cursor.getInt(cursor.getColumnIndex("val_max")),
-                    cursor.getInt(cursor.getColumnIndex("val_dfl")),
+                    cursor.getInt(cursor.getColumnIndex("minValue")),
+                    cursor.getInt(cursor.getColumnIndex("maxValue")),
+                    cursor.getInt(cursor.getColumnIndex("defaultValue")),
                     cursor.getInt(cursor.getColumnIndex("enabled"))
             );
             types.add(type);

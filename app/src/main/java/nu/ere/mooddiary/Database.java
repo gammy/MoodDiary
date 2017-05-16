@@ -2,6 +2,7 @@ package nu.ere.mooddiary;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -46,12 +47,13 @@ public class Database extends SQLiteOpenHelper {
                     ")"
         );
 
-        // Primitives (overdesign much?)
+        // Primitives
         db.execSQL(
                 "CREATE TABLE EntityPrimitives " +
                 "(" +
-                    "id            INTEGER PRIMARY KEY, " +
+                    "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "name          STRING NOT NULL, " +
+                    "isNumber      INTEGER NOT NULL, " +
                     "enabled       INTEGER DEFAULT 1 " +
                 ")"
         );
@@ -61,14 +63,14 @@ public class Database extends SQLiteOpenHelper {
                 "CREATE TABLE MeasurementTypes " +
                 "(" +
                     "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "ui_order      INTEGER DEFAULT 0, " + // ui display order
+                    "listOrder     INTEGER DEFAULT 0, " + // ui display order
                     "name          STRING NOT NULL, " +
                     "entity        INTEGER, " +
-                    "val_min       INTEGER DEFAULT 0, " +
-                    "val_max       INTEGER DEFAULT 100, " +
-                    "val_dfl       INTEGER DEFAULT 0, " +
-                    "metadata      STRING," +
-                    "enabled       INTEGER DEFAULT 1," +
+                    "minValue      INTEGER DEFAULT 0, " +
+                    "maxValue      INTEGER DEFAULT 100, " +
+                    "defaultValue  INTEGER DEFAULT 0, " +
+                    "metadata      STRING, " +
+                    "enabled       INTEGER DEFAULT 1, " +
                         "FOREIGN KEY(entity) REFERENCES EntityPrimitives(id)" +
                 ")"
         );
@@ -90,35 +92,15 @@ public class Database extends SQLiteOpenHelper {
         // Primitives
         // (These placeholder ID_'s are later loaded by EntityPrimitives - any code after
         //  this can just use EntityPrimitives.get..)
-        int ID_RANGE_NORMAL = 1;
+        int ID_RANGE_NORMAL = 1; // Assuming the primary key in EntityPrimitives is 1! :)
         int ID_RANGE_CENTER = 2;
         int ID_NUMBER       = 3;
         int ID_TEXT         = 4;
-        db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (" +
-                Integer.toString(ID_RANGE_NORMAL) + ", 'range_normal')");
-        db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (" +
-                Integer.toString(ID_RANGE_CENTER) + ", 'range_center')");
-        db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (" +
-                Integer.toString(ID_NUMBER) + ", 'number')");
-        db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (" +
-                Integer.toString(ID_TEXT) + ", 'text')");
-        /*
-        db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (2, 'radio')");
-        db.execSQL("INSERT INTO EntityPrimitives (id, name) VALUES (3, 'dropdown')");
-        db.execSQL("INSERT INTO EntityPrimitives (id// TODO:, name) VALUES (4, 'checkbox')");
-        */
 
-        // Measurement Types
-        /* The original values for these were based on a hand-written form provided by
-           affektiva mottagningen:
-
-            addMeasurementType(db, ID_RANGE,  0, "Mood",                  -3,   3, 0, "");
-            addMeasurementType(db, ID_RANGE,  1, "Anxiety",                0,   3, 0, "");
-            addMeasurementType(db, ID_RANGE,  2, "Irritability",           0,   3, 0, "");
-            addMeasurementType(db, ID_RANGE,  3, "Lack of Concentration",  0,   3, 0, "");
-            addMeasurementType(db, ID_NUMBER, 4, "Sleep (hours)",          0, 100, 0, "");
-            addMeasurementType(db, ID_NUMBER, 5, "Alcohol (units)",        0, 100, 0, "");
-        */
+        addPrimitive("range_normal", true);
+        addPrimitive("range_center", true);
+        addPrimitive("number",       true);
+        addPrimitive("text",        false);
 
         addMeasurementType(ID_RANGE_CENTER,  0, "Mood",               -50,    50, 0, "");
         addMeasurementType(ID_RANGE_NORMAL,  1, "Anxiety",              0,   100, 0, "");
@@ -178,6 +160,15 @@ public class Database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void addPrimitive(String name, boolean isNumber) {
+        Log.d(LOG_PREFIX, "INSERT INTO EntityPrimitives (name, isNumber) VALUES (?, ?)");
+        String sql = "INSERT INTO EntityPrimitives (name, isNumber) VALUES (?, ?)";
+        SQLiteStatement statement = db.compileStatement(sql);
+        statement.bindString(1, name);
+        statement.bindLong(  2, isNumber ? 1 : 0);
+        statement.executeInsert();
+    }
+
     /**
      * Insert a new measurement type into the MeasurementTypes table
      *
@@ -198,11 +189,11 @@ public class Database extends SQLiteOpenHelper {
                          "MeasurementTypes " +
                      "(" +
                          "entity, " +
-                         "ui_order, " +
+                         "listOrder, " +
                          "name, " +
-                         "val_min, " +
-                         "val_max, " +
-                         "val_dfl, " +
+                         "minValue, " +
+                         "maxValue, " +
+                         "defaultValue, " +
                          "metadata" +
                       ") " +
                       "VALUES (?, ?, ?, ?, ?, ?, ?)";

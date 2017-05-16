@@ -20,7 +20,7 @@ public final class ORM extends Database {
         super(context);
         Log.d(LOG_PREFIX, "Create");
         db = getWritableDatabase();
-        //onUpgrade(db, 0, 0); // FIXME Debugging - trash db to force creation
+        onUpgrade(db, 0, 0); // FIXME Debugging - trash db to force creation
         Toast.makeText(context, "New ORM instance", Toast.LENGTH_SHORT).show();
         loadObjects();
     }

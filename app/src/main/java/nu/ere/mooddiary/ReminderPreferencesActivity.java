@@ -44,12 +44,12 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             default:
                 throw new NoSuchElementException(Integer.toString(editMode) + ": Invalid mode");
 
-            case ReminderEditMode.CREATE:
+            case PreferenceEditMode.REMINDER_CREATE:
                 Log.d(LOG_PREFIX, "Our mission: CREATE reminder");
                 break;
 
-            case ReminderEditMode.CHANGE:
-            case ReminderEditMode.DELETE:
+            case PreferenceEditMode.REMINDER_CHANGE:
+            case PreferenceEditMode.REMINDER_DELETE:
                 Log.d(LOG_PREFIX, "Our mission: EDIT / DELETE reminder");
                 oldID = intent.getIntExtra(BundleExtraKey.REMINDER_TIME_ID, -1);
                 Log.d(LOG_PREFIX, "oldID: " + Integer.toString(oldID));
@@ -81,7 +81,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
 
         reminderScreen.addPreference(timeCategory);
         reminderScreen.addPreference(typeCategory);
-        if(editMode == ReminderEditMode.CHANGE) {
+        if(editMode == PreferenceEditMode.REMINDER_CHANGE) {
             reminderScreen.addPreference(delCategory);
         }
         reminderScreen.addPreference(saveCategory);
@@ -118,7 +118,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
 
         ArrayList<MeasurementType> enabledReminderMeasurementTypes = null;
 
-        if(editMode == ReminderEditMode.CHANGE) {
+        if(editMode == PreferenceEditMode.REMINDER_CHANGE) {
             enabledReminderMeasurementTypes =
                     orm.getReminderTimes().getTypesByReminderTimeID(oldID);
         }
@@ -137,7 +137,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             cb.setChecked(false); // Default off
 
             // Improve this code please
-            if(editMode == ReminderEditMode.CHANGE) {
+            if(editMode == PreferenceEditMode.REMINDER_CHANGE) {
                 cb.setChecked(false);
                 for (int j = 0; j < enabledReminderMeasurementTypes.size(); j++) {
                     MeasurementType chkType = enabledReminderMeasurementTypes.get(j);
@@ -151,7 +151,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         }
 
         // If we're editing an existing reminder, add the option to delete it with a button
-        if(editMode == ReminderEditMode.CHANGE) {
+        if(editMode == PreferenceEditMode.REMINDER_CHANGE) {
             Preference delButton = new Preference(this);
             delButton.setTitle(R.string.delete);
             delButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -159,7 +159,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     Log.d(LOG_PREFIX, "Enter onPreferenceClick pre-delete bundle");
                     Intent rIntent = getIntent();
-                    bundle.putInt(BundleExtraKey.REMINDER_MODE, ReminderEditMode.DELETE);
+                    bundle.putInt(BundleExtraKey.REMINDER_MODE, PreferenceEditMode.REMINDER_DELETE);
                     bundle.putInt(BundleExtraKey.REMINDER_TIME_ID, oldID);
                     rIntent.putExtras(bundle);
                     setResult(Activity.RESULT_OK, rIntent);
