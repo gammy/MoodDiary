@@ -63,8 +63,15 @@ public final class ReminderTimes {
                 Integer.toString(reminderTimeID));
         ArrayList<MeasurementType> reminderMeasurementTypes = new ArrayList<>();
 
-        Cursor cursor = orm.db.rawQuery("SELECT type FROM ReminderGroups WHERE reminderTime = " +
+        /* First get reminder *TIME* ID from ReminderTimes, *THEN* look for that */
+        Cursor cursor = orm.db.rawQuery("SELECT reminderGroup FROM ReminderTimes WHERE id = " +
                 Integer.toString(reminderTimeID), null);
+        cursor.moveToFirst();
+        int reminderGroup = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
+
+
+        cursor = orm.db.rawQuery("SELECT type FROM ReminderGroups WHERE reminderGroup = " +
+                Integer.toString(reminderGroup), null);
 
         // Get all measurement types associated with this reminder
         while (cursor.moveToNext()) {

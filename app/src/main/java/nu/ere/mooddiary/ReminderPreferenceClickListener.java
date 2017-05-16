@@ -1,12 +1,14 @@
 package nu.ere.mooddiary;
 
 import android.preference.Preference;
+import android.util.Log;
+import android.widget.Toast;
 
 class OnReminderTimePreferenceClickListener implements Preference.OnPreferenceClickListener {
-    public int reminderTimeID = 0;
+    public int reminderTimeId = 0;
 
-    public OnReminderTimePreferenceClickListener(int reminderTimeID) {
-        this.reminderTimeID = reminderTimeID;
+    public OnReminderTimePreferenceClickListener(int reminderTimeId) {
+        this.reminderTimeId = reminderTimeId;
     }
 
     @Override

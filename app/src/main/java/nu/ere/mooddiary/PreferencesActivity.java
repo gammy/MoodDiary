@@ -94,6 +94,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         this.prefReminders.addPreference(oldCategory);
         this.prefReminders.addPreference(addCategory);
 
+        //orm.getReminderTimes().reload();
+
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
         for(int i = 0; i < orm.getReminderTimes().reminderTimes.size(); i++) {
             ReminderTime reminder = orm.getReminderTimes().reminderTimes.get(i);
@@ -109,7 +111,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
                     in.putExtra(BundleExtraKey.REMINDER_MODE, ReminderEditMode.CHANGE);
-                    in.putExtra(BundleExtraKey.REMINDER_TIME_ID, this.reminderTimeID);
+                    in.putExtra(BundleExtraKey.REMINDER_TIME_ID, this.reminderTimeId);
+                    Log.d(LOG_PREFIX, "Sending reminderTimeId: " + Integer.toString(this.reminderTimeId));
                     startActivityForResult(in, ReminderEditMode.CHANGE);
                     return true;
                 }

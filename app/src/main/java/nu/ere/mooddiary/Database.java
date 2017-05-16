@@ -29,9 +29,9 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(
                 "CREATE TABLE ReminderGroups " +
                     "(" +
-                        "id           INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "reminderTime INTEGER NOT NULL, " +
-                        "type         INTEGER NOT NULL, " +
+                        "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "reminderGroup INTEGER NOT NULL, " +
+                        "type          INTEGER NOT NULL, " +
                         "FOREIGN KEY(type) REFERENCES MeasurementTypes(id)" +
                     ")"
         );
@@ -210,7 +210,7 @@ public class Database extends SQLiteOpenHelper {
         statement.bindLong(  6, (long) dfl);
         statement.bindString(7, meta);
 
-        long rowId = statement.executeInsert();
+        statement.executeInsert();
     }
 
     /**
@@ -288,7 +288,7 @@ public class Database extends SQLiteOpenHelper {
         statement.close();
 
         // Insert associated events
-        sql = "INSERT INTO ReminderGroups (reminderTime, type) VALUES (?, ?)";
+        sql = "INSERT INTO ReminderGroups (reminderGroup, type) VALUES (?, ?)";
         statement = db.compileStatement(sql);
 
         for(int i = 0; i < typeIDs.size(); i++) {
@@ -320,10 +320,6 @@ public class Database extends SQLiteOpenHelper {
         String sql;
         SQLiteStatement statement;
 
-        // remember old id
-        // get the groups, keep reminderId
-        // delete the groups
-
         db.beginTransaction();
 
         Log.d(LOG_PREFIX, "SELECT reminderGroup FROM ReminderTimes WHERE id = " +
@@ -334,9 +330,9 @@ public class Database extends SQLiteOpenHelper {
         cursor.moveToFirst();
         int oldReminderGroup = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
 
-        Log.d(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderTime = " +
+        Log.d(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderGroup = " +
                 Integer.toString(reminderTimeId));
-        db.delete("ReminderGroups", "reminderTime = ?", new String[]
+        db.delete("ReminderGroups", "reminderGroup = ?", new String[]
                 {Integer.toString(reminderTimeId)});
 
         Log.d(LOG_PREFIX, "INSERT INTO ReminderTimes (reminderGroup, hour, minute) VALUES (" +
@@ -353,14 +349,13 @@ public class Database extends SQLiteOpenHelper {
         statement.executeUpdateDelete();
         statement.close();
 
-        // UPDATE ReminderGroups SET reminderTime = <new> WHERE reminderTime = <old>
         // Insert associated events
-        sql = "INSERT INTO ReminderGroups (reminderTime, type) VALUES (?, ?)";
+        sql = "INSERT INTO ReminderGroups (reminderGroup, type) VALUES (?, ?)";
         statement = db.compileStatement(sql);
 
         for(int i = 0; i < typeIDs.size(); i++) {
             int eventTypeID = typeIDs.get(i);
-            Log.d(LOG_PREFIX, "addReminder: INSERT INTO ReminderGroups (reminderTime, type)" +
+            Log.d(LOG_PREFIX, "addReminder: INSERT INTO ReminderGroups (reminderGroup, type)" +
                     "VALUES (" +
                     Integer.toString(oldReminderGroup) + ", " +
                     Integer.toString(eventTypeID) + ")");
@@ -384,16 +379,14 @@ public class Database extends SQLiteOpenHelper {
         Log.d(LOG_PREFIX, "Enter deleteReminder");
         db.beginTransaction();
 
-        reminderTimeId -= 1;
-
         Log.d(LOG_PREFIX, "DELETE FROM ReminderTimes WHERE id = " +
                 Integer.toString(reminderTimeId));
         db.delete("ReminderTimes", "id = ?", new String[]
                 {Integer.toString(reminderTimeId)});
 
-        Log.d(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderTime = " +
+        Log.d(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderGroup = " +
                 Integer.toString(reminderTimeId));
-        db.delete("ReminderGroups", "reminderTime = ?", new String[] {
+        db.delete("ReminderGroups", "reminderGroup = ?", new String[] {
                 Integer.toString(reminderTimeId)});
 
         db.setTransactionSuccessful();
@@ -412,10 +405,10 @@ public class Database extends SQLiteOpenHelper {
         while(cursor.moveToNext()) {
             Log.d(LOG_PREFIX, "testReminders: looping ReminderTimes");
 
-            int id    = cursor.getInt(cursor.getColumnIndex("id"));
-            int group = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
-            int hour    = cursor.getInt(cursor.getColumnIndex("hour"));
-            int minute    = cursor.getInt(cursor.getColumnIndex("minute"));
+            int id     = cursor.getInt(cursor.getColumnIndex("id"));
+            int group  = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
+            int hour   = cursor.getInt(cursor.getColumnIndex("hour"));
+            int minute = cursor.getInt(cursor.getColumnIndex("minute"));
             Log.d(LOG_PREFIX,
                     "Reminder id" + Integer.toString(id) + ", " +
                     "group " + Integer.toString(group) + ", " +
@@ -425,7 +418,7 @@ public class Database extends SQLiteOpenHelper {
             Cursor rCursor;
             // ArrayList<MeasurementType> reminderEventTypes = new ArrayList<>();
 
-            rCursor = db.rawQuery("SELECT id, type FROM ReminderGroups WHERE reminderTime = " +
+            rCursor = db.rawQuery("SELECT id, type FROM ReminderGroups WHERE reminderGroup = " +
                             Long.toString(id), null);
 
             // Get all reminder types associated with this reminder
