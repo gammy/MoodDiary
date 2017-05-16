@@ -31,10 +31,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        prefReminders =
-                (PreferenceScreen) findPreference("preference_select_reminders");
-        prefEventTypes =
-                (PreferenceScreen) findPreference("preference_select_event_types");
+        prefReminders = (PreferenceScreen) findPreference("preference_select_reminders");
+        prefEventTypes = (PreferenceScreen) findPreference("preference_select_measurement_types");
 
         createMeasurementTypePreferences(); // When user clicks Settings -> Measurement Types, this is shown
         createReminderPreferences();  // When user clicks Settings -> Reminders, this is shown
@@ -90,8 +88,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
         this.prefReminders.addPreference(oldCategory);
         this.prefReminders.addPreference(addCategory);
-
-        //orm.getReminderTimes().reload();
 
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
         for(int i = 0; i < orm.getReminderTimes().reminderTimes.size(); i++) {
@@ -149,9 +145,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
         Bundle bundle = data.getExtras();
         Log.d(LOG_PREFIX, "Received bundle!");
-        Log.d(LOG_PREFIX, "Hour, Minute = " +
-                Integer.toString(bundle.getInt(BundleExtraKey.REMINDER_HOUR)) + ":" +
-                Integer.toString(bundle.getInt(BundleExtraKey.REMINDER_MINUTE)));
 
         switch (requestCode) {
             case ReminderEditMode.CREATE:

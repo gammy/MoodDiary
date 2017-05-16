@@ -11,9 +11,9 @@
     <!-- Event type selection shall be deprecated in the future I think, as
          each reminder should have its own list of types -->
     <PreferenceScreen
-        android:key="preference_select_event_types"
-        android:title="@string/title_preference_select_event_types"
-        android:summary="@string/summary_preference_select_event_types">
+        android:key="preference_select_measurement_types"
+        android:title="@string/title_preference_select_measurement_types"
+        android:summary="@string/summary_preference_select_measurement_types">
     </PreferenceScreen>
 
 
