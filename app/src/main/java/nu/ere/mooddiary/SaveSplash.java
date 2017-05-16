@@ -1,10 +1,7 @@
 package nu.ere.mooddiary;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.IntentCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;

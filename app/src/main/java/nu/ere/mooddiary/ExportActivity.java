@@ -131,7 +131,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
     // Function copied near-verbatim from PreferencesActivity :(
     public void createEventTypePreferences(PreferenceCategory screen) {
-        Log.d(LOG_PREFIX, "Enter createEventTypePreferences");
+        Log.d(LOG_PREFIX, "Enter createMeasurementTypePreferences");
 
         MeasurementTypes measurementTypes = orm.getMeasurementTypes();
 

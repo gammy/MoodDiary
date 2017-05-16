@@ -15,7 +15,6 @@ import android.widget.ScrollView;
 public class MainActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "MainActivity";
     private ORM orm;
-    SharedPreferences sharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +66,6 @@ public class MainActivity extends ThemedActivity {
 
             entryLayout.addView(measurementButton);
         }
-
     }
 
     @Override

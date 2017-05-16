@@ -11,9 +11,6 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
-// Note: Any key prefixed with "junk_" will *not* be used by the app, and is considered a
-//       necessary evil.
-
 public class PreferencesActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "PreferencesActivity";
     private ORM orm;
@@ -39,7 +36,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         prefEventTypes =
                 (PreferenceScreen) findPreference("preference_select_event_types");
 
-        createEventTypePreferences(); // When user clicks Settings -> Measurement Types, this is shown
+        createMeasurementTypePreferences(); // When user clicks Settings -> Measurement Types, this is shown
         createReminderPreferences();  // When user clicks Settings -> Reminders, this is shown
     }
 
@@ -66,8 +63,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
     */
 
     // "Level 2"
-    public void createEventTypePreferences() {
-        Log.d(LOG_PREFIX, "Enter createEventTypePreferences");
+    public void createMeasurementTypePreferences() {
+        Log.d(LOG_PREFIX, "Enter createMeasurementTypePreferences");
 
         MeasurementTypes measurementTypes = orm.getMeasurementTypes();
 
