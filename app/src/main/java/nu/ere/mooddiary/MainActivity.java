@@ -58,8 +58,6 @@ public class MainActivity extends ThemedActivity {
         // Add them to the main layout.
         for(int i = 0; i < orm.getMeasurementTypes().types.size(); i++) {
             MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
-            EntityPrimitive primitive = measurementType.getPrimitive(orm.getPrimitives());
-
             AppCompatButton measurementButton = new AppCompatButton(this);
             measurementButton.setText(measurementType.name);
 
