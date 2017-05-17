@@ -33,7 +33,6 @@ public final class ORM extends Database {
            instance = new ORM(context.getApplicationContext());
         } else {
             Log.d(LOG_PREFIX, "reusing old instance");
-            // FIXME reload objects here..?
         }
         return instance;
     }
