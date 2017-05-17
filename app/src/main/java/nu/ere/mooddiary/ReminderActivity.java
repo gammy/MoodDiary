@@ -76,11 +76,6 @@ public class ReminderActivity extends ThemedActivity {
             reminderID = sharedPrefs.getInt("reminder_id", -1);
         }
 
-        Log.d(LOG_PREFIX, "DING DING DING DING DING DING DIIIIIIIIIIIIIIIIIIIIIIIING");
-        Log.d(LOG_PREFIX, "DING DING DING DING DING DING DIIIIIIIIIIIIIIIIIIIIIIIING");
-        Log.d(LOG_PREFIX, "DING DING DING DING DING DING DIIIIIIIIIIIIIIIIIIIIIIIING");
-        Log.d(LOG_PREFIX, "DING DING DING DING DING DING DIIIIIIIIIIIIIIIIIIIIIIIING");
-
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
 
         if(reminderID == -6000) {

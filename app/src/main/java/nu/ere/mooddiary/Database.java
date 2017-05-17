@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class Database extends SQLiteOpenHelper {
     private static final String LOG_PREFIX = "Database";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "moodDiary";
     public static SQLiteDatabase db;
 
@@ -116,17 +116,28 @@ public class Database extends SQLiteOpenHelper {
         addPrimitive("number",       true);
         addPrimitive("text",        false);
 
-        addMeasurementType(ID_RANGE_CENTER,  0, "Mood",               -50,    50, 0, "");
-        addMeasurementType(ID_RANGE_NORMAL,  1, "Anxiety",              0,   100, 0, "");
-        addMeasurementType(ID_RANGE_NORMAL,  2, "Irritability",         0,   100, 0, "");
-        addMeasurementType(ID_RANGE_NORMAL,  3, "Lack of Focus",        0,   100, 0, "");
-        addMeasurementType(ID_NUMBER,        4, "Sleep (hours)",        0,   100, 0, "");
-        addMeasurementType(ID_NUMBER,        5, "Alcohol (units)",      0,   100, 0, "");
+        addMeasurementType(ID_RANGE_CENTER,  0, "Mood",               -50,    50, 0, "gammy");
+        addMeasurementType(ID_RANGE_NORMAL,  1, "Anxiety",              0,   100, 0, "gammy");
+        addMeasurementType(ID_RANGE_NORMAL,  2, "Irritability",         0,   100, 0, "gammy");
+        addMeasurementType(ID_RANGE_NORMAL,  3, "Lack of Focus",        0,   100, 0, "gammy");
+        addMeasurementType(ID_NUMBER,        4, "Sleep (hours)",        0,   100, 0, "gammy");
+        addMeasurementType(ID_NUMBER,        5, "Alcohol (units)",      0,   100, 0, "gammy");
+        addMeasurementType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "gammy");
+        addMeasurementType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "gammy");
+        addMeasurementType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "gammy");
+        addMeasurementType(ID_TEXT,          8, "Note",                -1,   -1, -1, "gammy"); // FIXME hack..
 
-        addMeasurementType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "");
-        addMeasurementType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "");
-        addMeasurementType(ID_TEXT,          8, "Note",                -1,   -1, -1, ""); // FIXME hack..
+        // humör
+        // oro /ångest/,
+        // ork/energi,
+        // depp,
+        // paranoia eller typ hur uppskruvad jag känner mig.
+        // Och några som redan finns med som sömn och alkohol t.ex
 
+        addMeasurementType(ID_RANGE_CENTER,  9, "Humör",              -50,    50, 0, "tomten");
+        addMeasurementType(ID_RANGE_NORMAL, 10, "Ångest",               0,   100, 0, "tomten");
+        addMeasurementType(ID_RANGE_NORMAL, 11, "Energi",               0,   100, 0, "tomten");
+        addMeasurementType(ID_RANGE_NORMAL, 11, "Paranoia",             0,   100, 0, "tomten");
         // The idea here being that a user can add new types from the UI at some point
 
         // Reminders
@@ -162,14 +173,19 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(LOG_PREFIX, "Enter onUpgrade: Trashing everything" );
-        // FIXME Drop older tables if they existed
-        db.execSQL("DROP TABLE IF EXISTS Reminders"); // OLD, no longer exists in schema
-        db.execSQL("DROP TABLE IF EXISTS ReminderGroups");
-        db.execSQL("DROP TABLE IF EXISTS ReminderTimes");
-        db.execSQL("DROP TABLE IF EXISTS EntityPrimitives");
-        db.execSQL("DROP TABLE IF EXISTS MeasurementTypes");
-        db.execSQL("DROP TABLE IF EXISTS Events");
-        // Creating tables again
+
+        if(oldVersion == 2 && newVersion == 3) {
+            // DANGER WILL ROBINSON!
+            // Oldest implementation of onUpgrade starts here
+            db.execSQL("DROP TABLE IF EXISTS Reminders"); // OLD, no longer exists in schema
+            db.execSQL("DROP TABLE IF EXISTS ReminderGroups");
+            db.execSQL("DROP TABLE IF EXISTS ReminderTimes");
+            db.execSQL("DROP TABLE IF EXISTS EntityPrimitives");
+            db.execSQL("DROP TABLE IF EXISTS MeasurementTypes");
+            db.execSQL("DROP TABLE IF EXISTS Events");
+        } else if(oldVersion == 3 && newVersion == 4) {
+
+        } // and so on
         onCreate(db);
     }
 
