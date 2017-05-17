@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+// FIXME this entire class is bullshit. CAVEAT EMPTOR.
 public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "MeasurePref..Activity";
     private ORM orm;
