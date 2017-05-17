@@ -53,13 +53,14 @@
 
     <!-- About -->
     <string name="action_donate">Thanks, here\'s a dollar!</string>
-    <string name="text_about" translatable="false">by Kristian Gunstone\n\nThis is my go at making a mood tracking app for Android.\nIt\'s my first official Android as well as Java app, so there\'s been a lot to learn. I\'m sure the code can be massively improved with some care and attention from someone who might know better; perhaps that will be the future me. As I\'ve had an immediate need for this app - not finding anything satisfactory on play - it\'s been rapidly developed, using some ideas I thought up years ago.\n\nThe idea comes from a paper-submission form I\'ve used, which had fields for writing down certain things such as mood in a scale from \'very depressed\' to \'very elevated\', anxiety level, and a few more. After that, I continued using a similar system, but in textfiles. I didn\'t need much more; only analyzing the data was left out. For that I wrote some elaborate python scripts to parse the text and write json, but it just got a bit out of hand; boredom preceeded necessity.\n\nNow I\'ve fallen behind on the logging because of the effort in adding an entry, or not being near a computer with the files, and that\'s not cool.\n\nSo, here it is. The app itself is pretty simple: add a few measurements you want to note down, and a reminder or two. At the specified time, Mood Diary will appear, asking you to submit the measurements. When it\'s time to interpret the data, export the entire database, or make a custom CSV which you can import to your favourite spreadsheet or plotting software.</string>
     <string name="paypal_action_link" translatable="false">https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=CJT9T3PU5BRZ2&amp;lc=SE&amp;item_name=Mood%20Diary&amp;item_number=MoodDiaryApp&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted</string>
 
     <!-- Toasts -->
     <string name="toast_saved">Saved</string>
     <string name="toast_deleted">Removed</string>
     <string name="toast_cancelled">Cancelled</string>
+    <string name="title_activity_new_about">NewAbout</string>
+    <string name="action_settings">Settings</string>
 </resources>
 
 

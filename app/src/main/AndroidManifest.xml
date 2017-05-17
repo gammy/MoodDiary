@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="nu.ere.mooddiary">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="nu.ere.mooddiary">
 
     <!-- We need write permission to export the database / CSV file -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <!-- We need to a boot completed callback to reinstall alarms after phone reboot -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -14,107 +15,115 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".PreferencesActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.PREFERENCE" />
+                <action android:name="android.intent.action.ASSIST"/>
+
+                <category android:name="android.intent.category.PREFERENCE"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ReminderPreferencesActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.PREFERENCE" />
+                <action android:name="android.intent.action.ASSIST"/>
+
+                <category android:name="android.intent.category.PREFERENCE"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MeasurementPreferencesActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.PREFERENCE" />
+                <action android:name="android.intent.action.ASSIST"/>
+
+                <category android:name="android.intent.category.PREFERENCE"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ExportActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.PREFERENCE" />
+                <action android:name="android.intent.action.ASSIST"/>
+
+                <category android:name="android.intent.category.PREFERENCE"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".AboutActivity"
             android:label="About Mood Diary"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.INFO" />
+                <action android:name="android.intent.action.ASSIST"/>
+
+                <category android:name="android.intent.category.INFO"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".OverviewActivity"
             android:label="Mood Diary Overview"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.INFO" />
+                <action android:name="android.intent.action.ASSIST"/>
+
+                <category android:name="android.intent.category.INFO"/>
             </intent-filter>
         </activity>
 
         <!-- android:theme="@style/AppTheme.NoActionBar" -->
         <activity
             android:name=".ReminderActivity"
-            android:label="Mood Diary Reminder"
             android:excludeFromRecents="true"
-            android:theme="@android:style/Theme.Dialog" >
+            android:label="Mood Diary Reminder"
+            android:theme="@android:style/Theme.Dialog">
             <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.INFO" />
+                <action android:name="android.intent.action.ASSIST"/>
+
+                <category android:name="android.intent.category.INFO"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".AlarmInstallerActivity"
-            android:label="Mood Diary Cold Boot Alarm Installer"
             android:excludeFromRecents="true"
-            android:theme="@android:style/Theme.Dialog" >
+            android:label="Mood Diary Cold Boot Alarm Installer"
+            android:theme="@android:style/Theme.Dialog">
+
             <!-- Not sure if these are needed here -->
             <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.INFO" />
+                <action android:name="android.intent.action.ASSIST"/>
+
+                <category android:name="android.intent.category.INFO"/>
             </intent-filter>
         </activity>
 
         <receiver android:name=".BootupAlarmInstallReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".NewAbout"
+            android:label="@string/title_activity_new_about"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

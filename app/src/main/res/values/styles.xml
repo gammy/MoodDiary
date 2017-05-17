@@ -13,8 +13,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <!-- Light -->
     <style name="AppThemeLight" parent="Theme.AppCompat.Light">
@@ -30,8 +31,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppThemeLight.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppThemeLight.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppThemeLight.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppThemeLight.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <!-- Dark -->
 
@@ -54,7 +56,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppThemeDark.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" /> <!-- afaik does nada -->
-    <style name="AppThemeDark.PopupOverlay" parent="android:Theme.Holo.Dialog" />
+    <style name="AppThemeDark.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/> <!-- afaik does nada -->
+    <style name="AppThemeDark.PopupOverlay" parent="android:Theme.Holo.Dialog"/>
 
 </resources>

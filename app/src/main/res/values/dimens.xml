@@ -2,4 +2,5 @@
     <!-- Used when programmatically building the event type table for MainActivity -->
     <dimen name="entry_padding_top">10dp</dimen>
     <dimen name="entry_padding_bottom">10dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
