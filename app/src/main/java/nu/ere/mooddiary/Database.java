@@ -2,7 +2,6 @@ package nu.ere.mooddiary;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -148,8 +147,7 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(LOG_PREFIX, "Enter onUpgrade: Trashing everything" );
-        // FIXME
-        // Drop older tables if they existed
+        // FIXME Drop older tables if they existed
         db.execSQL("DROP TABLE IF EXISTS Reminders"); // OLD, no longer exists in schema
         db.execSQL("DROP TABLE IF EXISTS ReminderGroups");
         db.execSQL("DROP TABLE IF EXISTS ReminderTimes");
