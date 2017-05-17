@@ -21,14 +21,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
@@ -78,7 +85,6 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
                 mType = orm.getMeasurementTypes().getByID(oldID);
                 Toast.makeText(this, "mType: " + Integer.toString(oldID), Toast.LENGTH_SHORT).show();
                 break;
-
         }
 
         bundle = new Bundle();
@@ -87,32 +93,77 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
         measurementScreen = getPreferenceManager().createPreferenceScreen(this);
 
         // Create categories
-        PreferenceCategory timeCategory = new PreferenceCategory(this);
+        PreferenceCategory nameCategory = new PreferenceCategory(this);
         PreferenceCategory typeCategory = new PreferenceCategory(this);
+        PreferenceCategory valuesCategory = new PreferenceCategory(this);
         PreferenceCategory saveCategory = new PreferenceCategory(this);
         PreferenceCategory delCategory  = new PreferenceCategory(this);
 
-        timeCategory.setTitle(getApplicationContext().getString(R.string.title_category_time));
-        typeCategory.setTitle(getApplicationContext().getString(R.string.title_category_types));
+        nameCategory.setTitle(getApplicationContext().getString(R.string.title_category_name));
+        typeCategory.setTitle(getApplicationContext().getString(R.string.title_category_type));
+        valuesCategory.setTitle(getApplicationContext().getString(R.string.title_category_values));
         saveCategory.setTitle(getApplicationContext().getString(R.string.title_category_save));
-        delCategory.setTitle(getApplicationContext().getString(R.string.title_category_delete));
+        delCategory.setTitle(getApplicationContext().getString(R.string.title_category_delete)); // FIXME hardcoded
 
-        measurementScreen.addPreference(timeCategory);
+        measurementScreen.addPreference(nameCategory);
+
+        // Name
+        EditTextPreference namePref = new EditTextPreference(this);
+        if(editMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
+            namePref.setText(mType.name);
+            namePref.setSummary(mType.name);
+        }
+
         measurementScreen.addPreference(typeCategory);
+        typeCategory.addPreference(buildPrimitivePreference());
+
+        measurementScreen.addPreference(valuesCategory);
+
+        // FIXME This will need some annoying conditions checks (min can't be more than max, etc)
+        // FIXME there is no preference number picker so I'm hastily resorting to pure text fields
+        // FIXME so, so stupid. Omg.
+        EditTextPreference minValuePicker = new EditTextPreference(this);
+        EditTextPreference maxValuePicker = new EditTextPreference(this);
+        EditTextPreference dflValuePicker = new EditTextPreference(this);
+
+        minValuePicker.setTitle("Minimum");
+        minValuePicker.setSummary("0");
+        minValuePicker.setText("0");
+        minValuePicker.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                return false;
+            }
+        });
+
+        maxValuePicker.setTitle("Maximum");
+        maxValuePicker.setSummary("10");
+        maxValuePicker.setText("10");
+
+        dflValuePicker.setTitle("Default");
+        dflValuePicker.setSummary("0");
+        dflValuePicker.setText("0");
+
+        valuesCategory.addPreference(minValuePicker);
+        valuesCategory.addPreference(maxValuePicker);
+        valuesCategory.addPreference(dflValuePicker);
+
+
+        // Add a delete section if this is an existing measurement
         if(editMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
             measurementScreen.addPreference(delCategory);
         }
         measurementScreen.addPreference(saveCategory);
 
-        if(mType != null) {
+        if(mType != null) { // New
             // FIXME
             //tempHour   = reminderTime.hour;
             //tempMinute = reminderTime.minute;
-        } else {
+        } else { // Change
             // FIXME
         }
 
-        //timeCategory.addPreference(timePref);
+        nameCategory.addPreference(namePref);
 
         // If we're editing an existing reminder, add the option to delete it with a button
         if(editMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
@@ -156,5 +207,30 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
 
         saveCategory.addPreference(saveButton);
         setPreferenceScreen(measurementScreen);
+    }
+
+    public ListPreference buildPrimitivePreference() {
+        ListPreference typeList = new ListPreference(this);
+
+        typeList.setTitle("Select type"); // FIXME hardcoded
+        typeList.setDialogTitle("Select type"); // FIXME hardcoded
+
+        List<String> entityListItems = new ArrayList<>();
+        List<String> entityListValues = new ArrayList<>();
+
+        for(EntityPrimitive primitive: orm.getPrimitives().entities) {
+            entityListItems.add(primitive.name);
+            entityListValues.add(Integer.toString(primitive.id));
+        }
+
+        CharSequence[] primitiveKeys =
+                entityListItems.toArray(new CharSequence[entityListItems.size()]);
+        CharSequence[] primitiveValues =
+                entityListValues.toArray(new CharSequence[entityListValues.size()]);
+
+        typeList.setEntries(primitiveKeys);
+        typeList.setEntryValues(primitiveValues);
+
+        return typeList;
     }
 }

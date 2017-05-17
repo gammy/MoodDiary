@@ -24,6 +24,10 @@
     <string name="dark_preference_theme_keys">Dark</string>
     <string name="light_preference_theme_keys">Light</string>
 
+    <string name="title_category_name">Name</string>
+    <string name="title_category_type">Type</string>
+    <string name="title_category_values">Constraints</string>
+
     <string name="title_category_types">Measurement types</string> <!-- typesCategory -->
     <string name="title_category_dates">Date range</string>  <!-- datesCategory -->
     <string name="title_category_save">Save</string>         <!-- saveCategory -->
