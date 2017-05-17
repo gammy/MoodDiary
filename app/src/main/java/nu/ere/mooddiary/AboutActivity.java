@@ -15,13 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package nu.ere.mooddiary;
 
-import nu.ere.mooddiary.BuildConfig;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -35,14 +32,14 @@ public class AboutActivity extends ThemedActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.aboutToolbar);
-        // FIXME if I try to use the toolbar, app crashes
-        setSupportActionBar(toolbar);
 
         setContentView(R.layout.content_about);
 
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
+
+        TextView versionTextView = (TextView) findViewById(R.id.versionTextView);
+        versionTextView.setText("v" + versionName + " build " + Integer.toString(versionCode));
 
         Button donateButton = (Button) findViewById(R.id.donateButton);
 
