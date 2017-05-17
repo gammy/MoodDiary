@@ -65,6 +65,7 @@ public class ReminderActivity extends ThemedActivity {
             Intent intent = getIntent();
             Bundle extras = intent.getExtras();
             if(extras == null) {
+                Log.d(LOG_PREFIX, "No state data from instance, and no extras passed?! :O");
                 reminderID = -1;
             } else {
                 reminderID = extras.getInt("reminder_id");
@@ -73,6 +74,18 @@ public class ReminderActivity extends ThemedActivity {
             }
         } else {
             reminderID = sharedPrefs.getInt("reminder_id", -1);
+        }
+
+        Log.d(LOG_PREFIX, "DING DING DING DING DING DING DIIIIIIIIIIIIIIIIIIIIIIIING");
+        Log.d(LOG_PREFIX, "DING DING DING DING DING DING DIIIIIIIIIIIIIIIIIIIIIIIING");
+        Log.d(LOG_PREFIX, "DING DING DING DING DING DING DIIIIIIIIIIIIIIIIIIIIIIIING");
+        Log.d(LOG_PREFIX, "DING DING DING DING DING DING DIIIIIIIIIIIIIIIIIIIIIIIING");
+
+        Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
+
+        if(reminderID == -6000) {
+            Log.d(LOG_PREFIX, "Test mode: Picking the first reminder reminder available");
+            reminderID = orm.getReminderTimes().getFirstReminderGroupId();
         }
 
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
