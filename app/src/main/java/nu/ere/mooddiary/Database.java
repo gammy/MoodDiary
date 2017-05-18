@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class Database extends SQLiteOpenHelper {
     private static final String LOG_PREFIX = "Database";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
     private static final String DB_NAME = "moodDiary";
     public static SQLiteDatabase db;
 
@@ -124,7 +124,6 @@ public class Database extends SQLiteOpenHelper {
         addMeasurementType(ID_NUMBER,        5, "Alcohol (units)",      0,   100, 0, "gammy");
         addMeasurementType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "gammy");
         addMeasurementType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "gammy");
-        addMeasurementType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "gammy");
         addMeasurementType(ID_TEXT,          8, "Note",                -1,   -1, -1, "gammy"); // FIXME hack..
 
         // humör
@@ -137,7 +136,7 @@ public class Database extends SQLiteOpenHelper {
         addMeasurementType(ID_RANGE_CENTER,  9, "Humör",              -50,    50, 0, "tomten");
         addMeasurementType(ID_RANGE_NORMAL, 10, "Ångest",               0,   100, 0, "tomten");
         addMeasurementType(ID_RANGE_NORMAL, 11, "Energi",               0,   100, 0, "tomten");
-        addMeasurementType(ID_RANGE_NORMAL, 11, "Paranoia",             0,   100, 0, "tomten");
+        addMeasurementType(ID_RANGE_NORMAL, 12, "Paranoia",             0,   100, 0, "tomten");
         // The idea here being that a user can add new types from the UI at some point
 
         // Reminders
@@ -183,10 +182,11 @@ public class Database extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS EntityPrimitives");
             db.execSQL("DROP TABLE IF EXISTS MeasurementTypes");
             db.execSQL("DROP TABLE IF EXISTS Events");
+            onCreate(db);
         } else if(oldVersion == 3 && newVersion == 4) {
-
+            db.execSQL("DELETE FROM MeasurementTypes WHERE id = 8");
+            db.execSQL("UPDATE MeasurementTypes SET listOrder = 12 WHERE id = 14");
         } // and so on
-        onCreate(db);
     }
 
     /**
