@@ -26,7 +26,7 @@ public final class ReminderTimes {
     public ArrayList<ReminderTime> reminderTimes;
     private ORM orm = null;
 
-    public ReminderTimes(ORM orm){
+    public ReminderTimes(ORM orm) {
         Log.d(LOG_PREFIX, "Enter ReminderTimes");
         this.orm = orm;
         reload();
@@ -43,10 +43,10 @@ public final class ReminderTimes {
         reminderTimes = new ArrayList<>();
 
         // Walk through each reminder and collate the associated measurementTypes
-        while(cursor.moveToNext()) {
-            int id     = cursor.getInt(cursor.getColumnIndex("id"));
-            int group  = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
-            int hour   = cursor.getInt(cursor.getColumnIndex("hour"));
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            int group = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
+            int hour = cursor.getInt(cursor.getColumnIndex("hour"));
             int minute = cursor.getInt(cursor.getColumnIndex("minute"));
 
             ReminderTime reminderTime = new ReminderTime(id, group, hour, minute);
@@ -54,18 +54,20 @@ public final class ReminderTimes {
 
             Log.d(LOG_PREFIX,
                     "  ReminderTime " + Integer.toString(id) + ", " +
-                    "group " + Integer.toString(group) + ", " +
-                    "time = " + Integer.toString(hour) + ":" + Integer.toString(minute));
+                            "group " + Integer.toString(group) + ", " +
+                            "time = " + Integer.toString(hour) + ":" + Integer.toString(minute));
         }
 
         cursor.close();
     }
 
+    // FIXME dangerous and kind of useless, isn't it? The id will be either invalid or point to the wrong thing!
+    // FIXME what's using this right now?
     public ReminderTime getByID(int id) {
-        for(int i = 0; i < reminderTimes.size(); i++) {
+        for (int i = 0; i < reminderTimes.size(); i++) {
             ReminderTime r = reminderTimes.get(i);
-            if(r.id == id) {
-                return(r);
+            if (r.id == id) {
+                return (r);
             }
         }
         throw new NoSuchElementException("Unable to find an ReminderTime with id " +
@@ -82,9 +84,9 @@ public final class ReminderTimes {
 
         /* First get reminder *TIME* ID from ReminderTimes, *THEN* look for that */
         sql = "SELECT reminderGroup FROM ReminderTimes WHERE id = ?";
-        cursor = orm.db.rawQuery(sql, new String[] { iStr });
+        cursor = orm.db.rawQuery(sql, new String[]{iStr});
         cursor.moveToFirst();
-        if(cursor.getCount() == 0) {
+        if (cursor.getCount() == 0) {
             throw new IndexOutOfBoundsException(
                     "Found no reminderGroup in ReminderTimes for id " +
                             Integer.toString(reminderTimeID));
@@ -95,17 +97,17 @@ public final class ReminderTimes {
         // This query is a bit more complex, as we need the result in the correct listOrder so that
         // it displays in the specified order on the screen.
         sql = "SELECT " +
-                 "type " +
-              "FROM " +
-                 "ReminderGroups " +
-              "LEFT OUTER JOIN MeasurementTypes ON "+
-                 "ReminderGroups.type = MeasurementTypes.id " +
-              "WHERE " +
-                 "ReminderGroups.reminderGroup = ?" +
-              "ORDER BY " +
-                 "MeasurementTypes.listOrder ASC";
+                "type " +
+                "FROM " +
+                "ReminderGroups " +
+                "LEFT OUTER JOIN MeasurementTypes ON " +
+                "ReminderGroups.type = MeasurementTypes.id " +
+                "WHERE " +
+                "ReminderGroups.reminderGroup = ?" +
+                "ORDER BY " +
+                "MeasurementTypes.listOrder ASC";
 
-        cursor = orm.db.rawQuery(sql, new String[] { gStr });
+        cursor = orm.db.rawQuery(sql, new String[]{gStr});
 
         // Get all measurement types associated with this reminder
         while (cursor.moveToNext()) {
@@ -117,6 +119,18 @@ public final class ReminderTimes {
 
         cursor.close();
 
-        return(reminderMeasurementTypes);
+        return (reminderMeasurementTypes);
+    }
+
+    public int getFirstReminderGroupId() {
+        Log.d(LOG_PREFIX, "Enter getFirstReminderGroupId");
+        Log.d(LOG_PREFIX, "SELECT MIN (reminderGroup) FROM ReminderTimes");
+        Cursor cursor =
+                orm.db.rawQuery("SELECT MIN (reminderGroup) AS first FROM ReminderTimes", null);
+        cursor.moveToFirst();
+        int id = cursor.getInt(cursor.getColumnIndex("first"));
+        Log.d(LOG_PREFIX, "id: " + Integer.toString(id));
+        cursor.close();
+        return id;
     }
 }

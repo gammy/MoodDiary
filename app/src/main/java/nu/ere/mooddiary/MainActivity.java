@@ -16,7 +16,6 @@
 package nu.ere.mooddiary;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
@@ -125,7 +124,7 @@ public class MainActivity extends ThemedActivity {
 
             case R.id.action_test_reminder_activity:
                 i = new Intent(MainActivity.this, ReminderActivity.class);
-                i.putExtra("reminder_id", 1);
+                i.putExtra("reminder_id", -6000 /* Magic number - pick first entry */);
                 startActivity(i);
                 return true;
 
