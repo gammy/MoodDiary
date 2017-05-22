@@ -16,6 +16,7 @@
 package nu.ere.mooddiary;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -160,8 +161,13 @@ public class Util {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(activity)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("My notification")
-                    .setContentText("Hello World!");
+                    .setContentTitle("Mood Diary") // FIXME hardcoded
+                    .setContentText("How are you?"); // FIXME hardcoded
+
+       mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
+       mBuilder.setLights(0xFFFF00FF, 500, 500);
+       mBuilder.setDefaults(Notification.DEFAULT_SOUND |
+                            Notification.DEFAULT_VIBRATE);
 
         mBuilder.setContentIntent(pendingIntent);
 

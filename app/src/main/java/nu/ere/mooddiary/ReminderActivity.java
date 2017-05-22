@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package nu.ere.mooddiary;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -94,15 +95,7 @@ public class ReminderActivity extends ThemedActivity {
 
         initUI();
 
-        // Notification chime test
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-            r.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //Util.raiseNotification(this);
+        Util.raiseNotification(this);
     }
 
     public void initUI() {
@@ -278,5 +271,21 @@ public class ReminderActivity extends ThemedActivity {
         lp.height = 1600;
         getWindowManager().updateViewLayout(view, lp);
         */
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(LOG_PREFIX, "Enter onDestroy");
+
+        Log.d(LOG_PREFIX, "Cancelling notification");
+        // Sets an ID for the notification
+        int mNotificationId = 1;
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.cancel(mNotificationId);
+        // Builds the notification and issues it.
+        //mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        super.onDestroy();
     }
 }
