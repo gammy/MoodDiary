@@ -12,7 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package nu.ere.mooddiary;
 
 import android.content.Intent;
@@ -45,34 +46,35 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        prefReminders = (PreferenceScreen) findPreference("preference_select_reminders");
-        prefMeasurementTypes = (PreferenceScreen) findPreference("preference_select_measurement_types");
+        prefReminders =
+                (PreferenceScreen) findPreference("preference_select_reminders");
+        prefMeasurementTypes =
+                (PreferenceScreen) findPreference("preference_select_measurement_types");
 
-        createMeasurementTypePreferences(); // When user clicks Settings -> Measurement Types, this is shown
+        PreferenceScreen prefExport = (PreferenceScreen) findPreference("preference_select_export");
+        prefExport.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent in = new Intent(PreferencesActivity.this, ExportActivity.class);
+                startActivity(in);
+                finish();
+                return true;
+            }
+        });
+
+        PreferenceScreen prefImport = (PreferenceScreen) findPreference("preference_select_import");
+        prefImport.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent in = new Intent(PreferencesActivity.this, ImportActivity.class);
+                startActivity(in);
+                finish();
+                return true;
+            }
+        });
         createReminderPreferences();  // When user clicks Settings -> Reminders, this is shown
+        createMeasurementTypePreferences(); // When user clicks Settings -> Measurement Types, this is shown
     }
-
-    /*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
-            new MyPreferenceFragment()).commit();
-    }
-
-
-    public static class MyPreferenceFragment extends PreferenceFragment
-    {
-        @Override
-        public void onCreate(final Bundle savedInstanceState)
-        {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preferences);
-            createReminderPreferences();
-            // PreferenceManager.setDefaultValues(this, R.xml.preferences, false); // ?
-        }
-    }
-    */
 
     // "Level 2"
     public void createMeasurementTypePreferences() {
@@ -112,10 +114,13 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                     new OnMeasurementPreferenceClickListener(mType.id) { // FIXME
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
-                            Intent in = new Intent(PreferencesActivity.this, MeasurementPreferencesActivity.class);
-                            in.putExtra(BundleExtraKey.MEASUREMENT_TYPE_MODE, PreferenceEditMode.MEASUREMENT_TYPE_CHANGE);
+                            Intent in = new Intent(PreferencesActivity.this,
+                                    MeasurementPreferencesActivity.class);
+                            in.putExtra(BundleExtraKey.MEASUREMENT_TYPE_MODE,
+                                    PreferenceEditMode.MEASUREMENT_TYPE_CHANGE);
                             in.putExtra(BundleExtraKey.MEASUREMENT_TYPE_ID, this.measurementTypeId);
-                            Log.d(LOG_PREFIX, "Sending mTypeId: " + Integer.toString(this.measurementTypeId));
+                            Log.d(LOG_PREFIX,
+                                    "Sending mTypeId: " + Integer.toString(this.measurementTypeId));
                             startActivityForResult(in, PreferenceEditMode.MEASUREMENT_TYPE_CHANGE);
                             return true;
                         }
@@ -131,8 +136,10 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                 new OnReminderTimePreferenceClickListener(-1) {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
-                        Intent in = new Intent(PreferencesActivity.this, MeasurementPreferencesActivity.class);
-                        in.putExtra(BundleExtraKey.MEASUREMENT_TYPE_MODE, PreferenceEditMode.MEASUREMENT_TYPE_CREATE);
+                        Intent in = new Intent(PreferencesActivity.this,
+                                MeasurementPreferencesActivity.class);
+                        in.putExtra(BundleExtraKey.MEASUREMENT_TYPE_MODE,
+                                PreferenceEditMode.MEASUREMENT_TYPE_CREATE);
                         startActivityForResult(in, PreferenceEditMode.MEASUREMENT_TYPE_CREATE);
                         return true;
                     }
@@ -148,8 +155,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         // Create categories
         PreferenceCategory oldCategory = new PreferenceCategory(this);
         PreferenceCategory addCategory = new PreferenceCategory(this);
-        oldCategory.setTitle(getApplicationContext().getString(R.string.title_category_old_reminders));
-        addCategory.setTitle(getApplicationContext().getString(R.string.title_category_new_reminder));
+        oldCategory.setTitle(getString(R.string.title_category_old_reminders));
+        addCategory.setTitle(getString(R.string.title_category_new_reminder));
 
         this.prefReminders.addPreference(oldCategory);
         this.prefReminders.addPreference(addCategory);
@@ -168,10 +175,13 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                     new OnReminderTimePreferenceClickListener(reminder.id) {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
-                    in.putExtra(BundleExtraKey.REMINDER_MODE, PreferenceEditMode.REMINDER_CHANGE);
+                    Intent in = new Intent(PreferencesActivity.this,
+                            ReminderPreferencesActivity.class);
+                    in.putExtra(BundleExtraKey.REMINDER_MODE,
+                            PreferenceEditMode.REMINDER_CHANGE);
                     in.putExtra(BundleExtraKey.REMINDER_TIME_ID, this.reminderTimeId);
-                    Log.d(LOG_PREFIX, "Sending reminderTimeId: " + Integer.toString(this.reminderTimeId));
+                    Log.d(LOG_PREFIX,
+                            "Sending reminderTimeId: " + Integer.toString(this.reminderTimeId));
                     startActivityForResult(in, PreferenceEditMode.REMINDER_CHANGE);
                     return true;
                 }
@@ -187,8 +197,10 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
             new OnReminderTimePreferenceClickListener(-1) {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent in = new Intent(PreferencesActivity.this, ReminderPreferencesActivity.class);
-                    in.putExtra(BundleExtraKey.REMINDER_MODE, PreferenceEditMode.REMINDER_CREATE);
+                    Intent in = new Intent(PreferencesActivity.this,
+                            ReminderPreferencesActivity.class);
+                    in.putExtra(BundleExtraKey.REMINDER_MODE,
+                            PreferenceEditMode.REMINDER_CREATE);
                     startActivityForResult(in, PreferenceEditMode.REMINDER_CREATE);
                     return true;
                 }
@@ -205,7 +217,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
         if (resultCode != RESULT_OK) {
             Log.d(LOG_PREFIX, "Bad resultCode: do nothing");
-            Toast.makeText(this, this.getString(R.string.toast_cancelled), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,
+                    this.getString(R.string.toast_cancelled), Toast.LENGTH_SHORT).show();
             return;
         }
 

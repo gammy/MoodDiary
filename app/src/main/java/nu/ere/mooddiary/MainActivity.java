@@ -104,11 +104,13 @@ public class MainActivity extends ThemedActivity {
                 startActivity(i);
                 return true;
 
+            /*
             // Load the Export screen
             case R.id.action_export:
                 i = new Intent(MainActivity.this, ExportActivity.class);
                 startActivity(i);
                 return true;
+                */
 
             // Load the Overview screen
            case R.id.action_overview:

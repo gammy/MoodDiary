@@ -5,7 +5,6 @@
         android:key="preference_select_reminders"
         android:title="@string/title_preference_select_reminders"
         android:summary="@string/summary_preference_select_reminders">
-        <!-- preference_add_edit_reminder screen should be built here -->
     </PreferenceScreen>
 
     <!-- Event type selection shall be deprecated in the future I think, as
@@ -16,6 +15,17 @@
         android:summary="@string/summary_preference_select_measurement_types">
     </PreferenceScreen>
 
+    <PreferenceScreen
+        android:key="preference_select_import"
+        android:title="@string/title_action_import"
+        android:summary="@string/summary_preference_import">
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="preference_select_export"
+        android:title="@string/title_action_export"
+        android:summary="@string/summary_preference_export">
+    </PreferenceScreen>
 
     <ListPreference
         android:key="preference_select_theme"

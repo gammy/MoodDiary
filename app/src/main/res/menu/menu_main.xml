@@ -7,11 +7,13 @@
         android:orderInCategory="100"
         android:title="@string/title_action_settings"
         app:showAsAction="never" />
+    <!--
     <item
         android:id="@+id/action_export"
         android:orderInCategory="200"
         android:title="@string/title_action_export"
         app:showAsAction="never" />
+        -->
     <item
         android:id="@+id/action_overview"
         android:orderInCategory="300"
