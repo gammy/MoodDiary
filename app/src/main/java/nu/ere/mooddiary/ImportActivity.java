@@ -16,7 +16,10 @@
  */
 package nu.ere.mooddiary;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -72,6 +75,12 @@ public class ImportActivity extends ThemedPreferenceActivity {
         String targetPath =
                 "//data//data//" + this.getPackageName() + "//databases//" + orm.getDatabaseName();
 
+        if(verifyDatabase() == false) {
+            Toast.makeText(this, "Import: Incompatible database!", Toast.LENGTH_LONG).show(); // FIXME hardcoded
+            finish();
+            return;
+        }
+
         File newDB = new File(sourcePath);
         File oldDB  = new File(targetPath);
 
@@ -93,6 +102,40 @@ public class ImportActivity extends ThemedPreferenceActivity {
         orm.reload(this);
         Toast.makeText(this, "Imported!", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
         finish();
+    }
+
+    public boolean verifyDatabase() {
+        Log.d(LOG_PREFIX, "Enter verifyDatabase");
+        SQLiteDatabase db = null;
+        String[] tables = {
+                "android_metadata",
+                "Events",
+                "EntityPrimitives",
+                "MeasurementTypes",
+                "ReminderGroups",
+                "ReminderTimes"
+        };
+
+        // Quick integrity / compatibility check
+        try {
+            db = SQLiteDatabase.openDatabase(filename, null, SQLiteDatabase.OPEN_READONLY);
+            for (String table: tables) {
+                Log.d(LOG_PREFIX, "Checking table: " + table);
+                Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + table, null);
+                cursor.moveToFirst();
+                cursor.getColumnCount();
+                cursor.close();
+            }
+            db.close();
+        } catch(SQLiteException e) {
+            Log.d(LOG_PREFIX, "EXCEPTION!");
+            Log.d(LOG_PREFIX, e.getMessage());
+            //database does't exist yet.
+            return false;
+        }
+
+        Log.d(LOG_PREFIX, "Database verified");
+        return true;
     }
 
 }
