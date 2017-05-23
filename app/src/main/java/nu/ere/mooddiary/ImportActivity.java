@@ -70,7 +70,7 @@ public class ImportActivity extends ThemedPreferenceActivity {
 
         String sourcePath = filename;
         String targetPath =
-                "//data//data//" + this.getPackageName() + "//databases//moodDiary.sqlite3";
+                "//data//data//" + this.getPackageName() + "//databases//" + orm.getDatabaseName();
 
         File newDB = new File(sourcePath);
         File oldDB  = new File(targetPath);
@@ -90,9 +90,8 @@ public class ImportActivity extends ThemedPreferenceActivity {
             return;
         }
 
-        Toast.makeText(this, "Imported!", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
         orm.reload(this);
-        orm.getWritableDatabase();
+        Toast.makeText(this, "Imported!", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
         finish();
     }
 

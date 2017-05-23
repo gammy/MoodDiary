@@ -86,7 +86,7 @@ public class OverviewActivity extends ThemedActivity {
               "ON " +
                   "Events.type = MeasurementTypes.id " +
               "ORDER BY " +
-                  "date ASC";
+                  "date DESC";
 
         Cursor cursor = orm.db.rawQuery(sql, null);
 

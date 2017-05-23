@@ -166,7 +166,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
         Log.d(LOG_PREFIX, "Enter exportDatabase");
 
         ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 1 /* Callback id */);
 
         // http://stackoverflow.com/a/6942735/417115

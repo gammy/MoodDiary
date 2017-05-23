@@ -55,7 +55,9 @@ public final class ORM extends Database {
     public static void reload(Context context) {
         Log.d(LOG_PREFIX, "Force reload");
         db.close();
-        instance = new ORM(context.getApplicationContext());
+        db.releaseReference();
+        instance = null;
+        getInstance(context);
     }
 
     public static EntityPrimitives getPrimitives() {return entityPrimitives;}
