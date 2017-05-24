@@ -12,7 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 /* New Reminder menu, containing a list of measurement types, a time, and a save button */
 package nu.ere.mooddiary;
 
@@ -43,7 +44,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
     private Calendar cal = null;
     private HashMap<Integer, CheckBoxPreference> tempTypeMap = null;
     private Bundle bundle;
-    PreferenceScreen reminderScreen;
+    PreferenceScreen screen;
     private int oldID = -1;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         bundle = new Bundle();
 
         // Create the main context
-        reminderScreen = getPreferenceManager().createPreferenceScreen(this);
+        screen = getPreferenceManager().createPreferenceScreen(this);
 
         // Create categories
         PreferenceCategory timeCategory = new PreferenceCategory(this);
@@ -94,12 +95,12 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         saveCategory.setTitle(getApplicationContext().getString(R.string.title_category_save));
         delCategory.setTitle(getApplicationContext().getString(R.string.title_category_delete));
 
-        reminderScreen.addPreference(timeCategory);
-        reminderScreen.addPreference(typeCategory);
+        screen.addPreference(timeCategory);
+        screen.addPreference(typeCategory);
         if(editMode == PreferenceEditMode.REMINDER_CHANGE) {
-            reminderScreen.addPreference(delCategory);
+            screen.addPreference(delCategory);
         }
-        reminderScreen.addPreference(saveCategory);
+        screen.addPreference(saveCategory);
 
         // Add a time view
         TimePreference timePref = new TimePreference(this, null);
@@ -217,6 +218,6 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         });
 
         saveCategory.addPreference(saveButton);
-        setPreferenceScreen(reminderScreen);
+        setPreferenceScreen(screen);
     }
 }

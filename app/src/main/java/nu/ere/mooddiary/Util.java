@@ -12,7 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package nu.ere.mooddiary;
 
 import android.app.Activity;
@@ -274,4 +275,46 @@ public class Util {
         return(true);
     }
 
+    public static boolean addMeasurementType(PreferencesActivity activity, Bundle bundle) {
+        Log.d(LOG_PREFIX, "Enter addMeasurementType");
+        ORM orm = ORM.getInstance(activity);
+
+        String name = bundle.getString(BundleExtraKey.MEASUREMENT_TYPE_NAME);
+        int entity  =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_ENTITY);
+        int order   =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_ORDER);
+        int min     =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_MINIMUM);
+        int max     =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_MAXIMUM);
+        int dfl     =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_DEFAULT);
+
+        orm.addMeasurementType(entity, order, name, min, max, dfl, "");
+        orm.reload(activity);
+
+        Toast.makeText(activity, activity.getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
+        return(true);
+    }
+
+    public static boolean updateMeasurementType(PreferencesActivity activity, Bundle bundle) {
+        Log.d(LOG_PREFIX, "Enter updateMeasurementType");
+        ORM orm = ORM.getInstance(activity);
+
+        int mTypeId    = bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_ID);
+        int changeMode = bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_MODE);
+
+        String name = bundle.getString(BundleExtraKey.MEASUREMENT_TYPE_NAME);
+        int order   =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_ORDER);
+
+        if(changeMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
+            Log.d(LOG_PREFIX, "About to update measurementTypeId " + Integer.toString(mTypeId));
+            Toast.makeText(activity, activity.getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
+            orm.changeMeasurementType(mTypeId, name, order);
+        } else if(changeMode == PreferenceEditMode.MEASUREMENT_TYPE_DELETE) {
+            Log.d(LOG_PREFIX, "About to DELETE mTypeId " + Integer.toString(mTypeId));
+            Toast.makeText(activity, activity.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show();
+            orm.deleteMeasurementType(mTypeId);
+        }
+
+        orm.reload(activity);
+
+        return(true);
+    }
 }

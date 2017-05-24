@@ -171,7 +171,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(LOG_PREFIX, "Enter onUpgrade: Trashing everything" );
+        Log.d(LOG_PREFIX, "Enter onUpgrade" );
 
         if(oldVersion == 2 && newVersion == 3) {
             // DANGER WILL ROBINSON!
@@ -247,6 +247,43 @@ public class Database extends SQLiteOpenHelper {
         statement.executeInsert();
     }
 
+    /**
+     * Modify a measurement type.
+     * Currently, on the the name can be changed.
+     *
+     * @param mTypeId
+     * @param String  The new name
+     * @param int     The new list order
+     */
+    public void changeMeasurementType(int mTypeId, String newName, int order) {
+        Log.d(LOG_PREFIX, "Enter changeMeasurementType" );
+        SQLiteStatement statement;
+
+        String sql = "UPDATE MeasurementTypes SET name = ?, listOrder = ? WHERE id = ?";
+        statement = db.compileStatement(sql);
+        statement.bindString(1, newName);
+        statement.bindLong(  2, order);
+        statement.bindLong(  3, mTypeId);
+        statement.executeUpdateDelete();
+        statement.close();
+    }
+
+    /**
+     * Delete a measurement type.
+     *
+     * @param mTypeId
+     */
+    public void deleteMeasurementType(int mTypeId) {
+        Log.d(LOG_PREFIX, "Enter deleteMeasurementType" );
+        SQLiteStatement statement;
+
+        //String sql = "UPDATE MeasurementTypes SET enabled = false WHERE id = ?";
+        String sql = "DELETE FROM MeasurementTypes WHERE id = ?";
+        statement = db.compileStatement(sql);
+        statement.bindLong(1, mTypeId);
+        statement.executeUpdateDelete();
+        statement.close();
+    }
     /**
      * Insert a list of events into the Events table
      * FIXME this stuff is a bit stupid

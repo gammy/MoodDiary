@@ -226,18 +226,34 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         Log.d(LOG_PREFIX, "Received bundle!");
 
         switch (requestCode) {
+            // Reminders
             case PreferenceEditMode.REMINDER_CREATE:
                 Log.d(LOG_PREFIX, "CREATE reminder");
                 Util.addReminder(this, bundle);
-                prefReminders.removeAll();
+                prefReminders.removeAll(); // For redraw
                 createReminderPreferences();
                 break;
 
             case PreferenceEditMode.REMINDER_CHANGE:
                 Log.d(LOG_PREFIX, "UPDATE reminder");
                 Util.updateReminder(this, bundle);
-                prefReminders.removeAll();
+                prefReminders.removeAll(); // For redraw
                 createReminderPreferences();
+                break;
+
+            // Measurement types
+            case PreferenceEditMode.MEASUREMENT_TYPE_CREATE:
+                Log.d(LOG_PREFIX, "CREATE measurement type");
+                Util.addMeasurementType(this, bundle);
+                prefMeasurementTypes.removeAll(); // For redraw
+                createMeasurementTypePreferences();
+                break;
+
+            case PreferenceEditMode.MEASUREMENT_TYPE_CHANGE:
+                Log.d(LOG_PREFIX, "UPDATE measurement type");
+                Util.updateMeasurementType(this, bundle);
+                prefMeasurementTypes.removeAll(); // For redraw
+                createMeasurementTypePreferences();
                 break;
 
             default:
