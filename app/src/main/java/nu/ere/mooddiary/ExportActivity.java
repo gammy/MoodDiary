@@ -232,7 +232,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
                         Log.d(LOG_PREFIX, "FIXME: " + sourcePath + ": No such file");
                     }
 
-                    Toast.makeText(this, "Exported!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.export_good), Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d(LOG_PREFIX, "NEIN!!!");
                 }

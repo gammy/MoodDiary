@@ -235,7 +235,7 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
     public ListPreference buildPrimitivePreference() {
         ListPreference typeList = new ListPreference(this);
 
-        typeList.setDialogTitle("Select type"); // FIXME hardcoded
+        typeList.setDialogTitle(getString(R.string.measurement_type_select_type));
 
         List<String> entityListItems = new ArrayList<>();
         List<String> entityListValues = new ArrayList<>();
@@ -290,9 +290,9 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
     }
 
     public void buildMinMaxDfl(PreferenceCategory category,  String min, String max, String dfl) {
-        prefMin = buildValuePicker("Minimum", Integer.parseInt(min)); // FIXME hardcoded
-        prefMax = buildValuePicker("Maximum", Integer.parseInt(max)); // FIXME hardcoded
-        prefDfl = buildValuePicker("Default", Integer.parseInt(dfl)); // FIXME hardcoded
+        prefMin = buildValuePicker(getString(R.string.select_minimum), Integer.parseInt(min));
+        prefMax = buildValuePicker(getString(R.string.select_maximum), Integer.parseInt(max));
+        prefDfl = buildValuePicker(getString(R.string.select_default), Integer.parseInt(dfl));
 
         category.addPreference(prefMin);
         category.addPreference(prefMax);

@@ -162,8 +162,8 @@ public class Util {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(activity)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Mood Diary") // FIXME hardcoded
-                    .setContentText("How are you?"); // FIXME hardcoded
+                    .setContentTitle(activity.getString(R.string.notification_title))
+                    .setContentText(activity.getString(R.string.notification_text));
 
        mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
        mBuilder.setLights(0xFFFF00FF, 500, 500);

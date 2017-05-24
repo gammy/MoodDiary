@@ -76,7 +76,7 @@ public class ImportActivity extends ThemedPreferenceActivity {
                 "//data//data//" + this.getPackageName() + "//databases//" + orm.getDatabaseName();
 
         if(verifyDatabase() == false) {
-            Toast.makeText(this, "Import: Incompatible database!", Toast.LENGTH_LONG).show(); // FIXME hardcoded
+            Toast.makeText(this, getString(R.string.import_bad_database), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -100,7 +100,7 @@ public class ImportActivity extends ThemedPreferenceActivity {
         }
 
         orm.reload(this);
-        Toast.makeText(this, "Imported!", Toast.LENGTH_SHORT).show(); // FIXME hardcoded
+        Toast.makeText(this, getString(R.string.import_good_database), Toast.LENGTH_SHORT).show();
         finish();
     }
 
