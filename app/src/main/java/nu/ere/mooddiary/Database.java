@@ -116,28 +116,21 @@ public class Database extends SQLiteOpenHelper {
         addPrimitive("number",       true);
         addPrimitive("text",        false);
 
-        addMeasurementType(ID_RANGE_CENTER,  0, "Mood",               -50,    50, 0, "gammy");
-        addMeasurementType(ID_RANGE_NORMAL,  1, "Anxiety",              0,   100, 0, "gammy");
-        addMeasurementType(ID_RANGE_NORMAL,  2, "Irritability",         0,   100, 0, "gammy");
-        addMeasurementType(ID_RANGE_NORMAL,  3, "Lack of Focus",        0,   100, 0, "gammy");
-        addMeasurementType(ID_NUMBER,        4, "Sleep (hours)",        0,   100, 0, "gammy");
-        addMeasurementType(ID_NUMBER,        5, "Alcohol (units)",      0,   100, 0, "gammy");
+        addMeasurementType(ID_RANGE_CENTER,  10, "Mood",               -50,    50, 0, "stock");
+        addMeasurementType(ID_RANGE_NORMAL,  20, "Anxiety",              0,   100, 0, "stock");
+        addMeasurementType(ID_RANGE_NORMAL,  30, "Irritability",         0,   100, 0, "stock");
+        addMeasurementType(ID_RANGE_NORMAL,  40, "Lack of Focus",        0,   100, 0, "stock");
+        addMeasurementType(ID_RANGE_CENTER,  50, "Energy",             -50,    50, 0, "stock");
+        addMeasurementType(ID_TEXT,          60, "Note",                -1,   -1, -1, "stock");
+        /*
         addMeasurementType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "gammy");
         addMeasurementType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "gammy");
-        addMeasurementType(ID_TEXT,          8, "Note",                -1,   -1, -1, "gammy"); // FIXME hack..
-
-        // humör
-        // oro /ångest/,
-        // ork/energi,
-        // depp,
-        // paranoia eller typ hur uppskruvad jag känner mig.
-        // Och några som redan finns med som sömn och alkohol t.ex
 
         addMeasurementType(ID_RANGE_CENTER,  9, "Humör",              -50,    50, 0, "tomten");
         addMeasurementType(ID_RANGE_NORMAL, 10, "Ångest",               0,   100, 0, "tomten");
         addMeasurementType(ID_RANGE_NORMAL, 11, "Energi",               0,   100, 0, "tomten");
         addMeasurementType(ID_RANGE_NORMAL, 12, "Paranoia",             0,   100, 0, "tomten");
-        // The idea here being that a user can add new types from the UI at some point
+        */
 
         // Reminders
 
@@ -251,9 +244,9 @@ public class Database extends SQLiteOpenHelper {
      * Modify a measurement type.
      * Currently, on the the name can be changed.
      *
-     * @param mTypeId
-     * @param String  The new name
-     * @param int     The new list order
+     * @param mTypeId  type ID
+     * @param newName  The new name
+     * @param order    The new list order
      */
     public void changeMeasurementType(int mTypeId, String newName, int order) {
         Log.d(LOG_PREFIX, "Enter changeMeasurementType" );
