@@ -83,6 +83,8 @@
     <string name="select_maximum">Maximum</string>
     <string name="select_default">Default</string>
     <string name="export_good">Exported!</string>
+    <string name="summary_is_disabled">Disabled</string>
+    <string name="measurement_type_state_enabled">Enabled</string>
 </resources>
 
 

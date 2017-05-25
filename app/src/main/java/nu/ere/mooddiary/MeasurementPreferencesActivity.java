@@ -169,7 +169,7 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
         if(editMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
             screen.addPreference(stateCategory);
             prefState = new CheckBoxPreference(this);
-            prefState.setTitle("Enabled"); // FIXME hardcoded
+            prefState.setTitle(getString(R.string.measurement_type_state_enabled));
             prefState.setChecked(mType.enabled == 1);
             stateCategory.addPreference(prefState);
         }

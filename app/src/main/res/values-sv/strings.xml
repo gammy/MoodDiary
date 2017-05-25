@@ -59,4 +59,7 @@
     <string name="action_preference_measurements">Lägg till ett nytt mått</string>
     <string name="export_good">Exporterad!</string>
     <string name="title_action_graph">Statistik</string>
+    <string name="title_category_state">Läge</string>
+    <string name="summary_is_disabled">Inaktiverad</string>
+    <string name="measurement_type_state_enabled">Aktiv</string>
 </resources>

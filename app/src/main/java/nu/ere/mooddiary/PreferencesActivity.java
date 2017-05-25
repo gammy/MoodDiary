@@ -101,11 +101,11 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
             oldType.setTitle(mType.name);
             if(mType.enabled == 0) {
-                oldType.setSummary("Disabled"); // FIXME hardcoded
+                oldType.setSummary(getString(R.string.summary_is_disabled));
             }
 
             Preference.OnPreferenceClickListener listener =
-                    new OnMeasurementPreferenceClickListener(mType.id) { // FIXME
+                    new OnMeasurementPreferenceClickListener(mType.id) {
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
                             Intent in = new Intent(PreferencesActivity.this,
