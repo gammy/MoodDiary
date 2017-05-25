@@ -26,6 +26,8 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class PreferencesActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "PreferencesActivity";
     private ORM orm;
@@ -157,8 +159,8 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
         // FIXME order by hhmm!
-        for(int i = 0; i < orm.getReminderTimes().reminderTimes.size(); i++) {
-            ReminderTime reminder = orm.getReminderTimes().reminderTimes.get(i);
+        ArrayList<ReminderTime> sortedReminders = orm.getReminderTimes().getSorted();
+        for(ReminderTime reminder: sortedReminders) {
             Log.d(LOG_PREFIX, "Load old reminderTimeId: " + Integer.toString(reminder.id));
 
             Preference oldReminder = new Preference(this);
@@ -220,7 +222,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         Log.d(LOG_PREFIX, "Received bundle!");
 
         switch (requestCode) {
-            // Reminders
             case PreferenceEditMode.REMINDER_CREATE:
                 Log.d(LOG_PREFIX, "CREATE reminder");
                 Util.addReminder(this, bundle);
@@ -235,7 +236,6 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                 createReminderPreferences();
                 break;
 
-            // Measurement types
             case PreferenceEditMode.MEASUREMENT_TYPE_CREATE:
                 Log.d(LOG_PREFIX, "CREATE measurement type");
                 Util.addMeasurementType(this, bundle);

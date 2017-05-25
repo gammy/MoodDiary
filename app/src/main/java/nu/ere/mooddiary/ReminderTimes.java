@@ -18,7 +18,14 @@ package nu.ere.mooddiary;
 import android.database.Cursor;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public final class ReminderTimes {
@@ -63,6 +70,7 @@ public final class ReminderTimes {
 
     // FIXME dangerous and kind of useless, isn't it? The id will be either invalid or point to the wrong thing!
     // FIXME what's using this right now?
+    // FIXME Are the above statements true? I don't think so. It works just fine.
     public ReminderTime getByID(int id) {
         for (int i = 0; i < reminderTimes.size(); i++) {
             ReminderTime r = reminderTimes.get(i);
@@ -100,7 +108,9 @@ public final class ReminderTimes {
                 "type " +
                 "FROM " +
                 "ReminderGroups " +
-                "LEFT OUTER JOIN MeasurementTypes ON " +
+                "LEFT OUTER JOIN " +
+                "MeasurementTypes " +
+                "ON " +
                 "ReminderGroups.type = MeasurementTypes.id " +
                 "WHERE " +
                 "ReminderGroups.reminderGroup = ?" +
@@ -133,4 +143,41 @@ public final class ReminderTimes {
         cursor.close();
         return id;
     }
+
+    public ArrayList<ReminderTime> getSorted() {
+        Log.d(LOG_PREFIX, "Enter getSorted");
+
+        ArrayList<ReminderTime> list = orm.getReminderTimes().reminderTimes;
+
+        Collections.sort(list, new Comparator<ReminderTime>() {
+            @Override
+            public int compare(ReminderTime o1, ReminderTime o2) {
+                Date o1Date = null;
+                Date o2Date = null;
+                DateFormat fmt = new SimpleDateFormat("HH:mm");
+
+                try {
+                    o1Date = fmt.parse(String.format("%02d:%02d", o1.hour, o1.minute));
+                    o2Date = fmt.parse(String.format("%02d:%02d", o2.hour, o2.minute));
+                } catch(Exception e) {
+                    Log.d(LOG_PREFIX, "Dateparser sez NO. Boooooooooooooom");
+                }
+
+                return o1Date.compareTo(o2Date);
+            }
+        });
+
+        for(ReminderTime r: reminderTimes) {
+            String timeText = String.format("%02d:%02d", r.hour, r.minute);
+            Log.d(LOG_PREFIX, "  reminder " + Integer.toString(r.id) + ": " + timeText);
+        }
+
+        return(list);
+    }
 }
+
+
+
+
+// https://stackoverflow.com/a/35672291/417115 by ΦXocę 웃 Пepeúpa ツ
+

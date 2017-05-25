@@ -76,7 +76,6 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
                 reminderTime = orm.getReminderTimes().getByID(oldID);
                 Toast.makeText(this, "reminderTime: " + Integer.toString(oldID), Toast.LENGTH_SHORT).show();
                 break;
-
         }
 
         bundle = new Bundle();
@@ -141,23 +140,21 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
 
         tempTypeMap = new HashMap<>();
 
-        // Add checkboxes for all enabled measurement types, and configure them appropriately if
+        // Add checkboxes for all measurement types, and configure them appropriately if
         // we are editing an existing reminder
-        for(int i = 0; i < measurementTypes.types.size(); i++) {
-            MeasurementType e = measurementTypes.types.get(i);
+        for(MeasurementType type: measurementTypes.types) {
             CheckBoxPreference cb = new CheckBoxPreference(this);
 
-            tempTypeMap.put(e.id, cb);
+            tempTypeMap.put(type.id, cb);
 
-            cb.setTitle(e.name);
+            cb.setTitle(type.name);
             cb.setChecked(false); // Default off
 
             // Improve this code please
             if(editMode == PreferenceEditMode.REMINDER_CHANGE) {
                 cb.setChecked(false);
-                for (int j = 0; j < enabledReminderMeasurementTypes.size(); j++) {
-                    MeasurementType chkType = enabledReminderMeasurementTypes.get(j);
-                    if(chkType.id == e.id) {
+                for(MeasurementType chkType: enabledReminderMeasurementTypes) {
+                    if(chkType.id == type.id) {
                         cb.setChecked(true);
                     }
                 }
