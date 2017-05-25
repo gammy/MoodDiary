@@ -84,9 +84,9 @@ public class Alarms {
                             reminderIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, pendingIntent);
+                    AlarmManager.INTERVAL_HOUR, pendingIntent);
 
             pDate = new java.util.Date(calendar.getTimeInMillis());
             Log.d(LOG_PREFIX, "  Alarm SET: " + pDate.toString());
