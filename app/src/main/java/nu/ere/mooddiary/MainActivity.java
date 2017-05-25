@@ -12,7 +12,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package nu.ere.mooddiary;
 
 import android.content.Intent;
@@ -104,13 +105,11 @@ public class MainActivity extends ThemedActivity {
                 startActivity(i);
                 return true;
 
-            /*
-            // Load the Export screen
-            case R.id.action_export:
-                i = new Intent(MainActivity.this, ExportActivity.class);
+            // Load the statistics screen
+            case R.id.action_graph:
+                i = new Intent(MainActivity.this, GraphActivity.class);
                 startActivity(i);
                 return true;
-                */
 
             // Load the Overview screen
            case R.id.action_overview:
