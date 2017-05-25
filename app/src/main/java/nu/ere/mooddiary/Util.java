@@ -52,31 +52,29 @@ public class Util {
         Resources resources = activity.getResources();
         ORM orm = ORM.getInstance(activity);
 
-        int evCount = orm.getMeasurementTypes().types.size();
-
-        for (int i = 0; i < evCount; i++) {
-            MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
+        ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
+        for(MeasurementType type: types) {
             Log.d(LOG_PREFIX, "resetEntries: to reset etype " +
-                    Long.toString(measurementType.id) + ", view id " + Long.toString(measurementType.view.getId()));
+                    Long.toString(type.id) + ", view id " + Long.toString(type.view.getId()));
 
 
-            switch (measurementType.getPrimitive(orm.getPrimitives()).name) {
+            switch (type.getPrimitive(orm.getPrimitives()).name) {
                 case "range_center":
                 case "range_normal":
-                    SeekBar seekBar = (SeekBar) measurementType.view;
-                    seekBar.setMax(measurementType.totalValues);
-                    seekBar.setProgress(measurementType.normalDefault);
+                    SeekBar seekBar = (SeekBar) type.view;
+                    seekBar.setMax(type.totalValues);
+                    seekBar.setProgress(type.normalDefault);
                     break;
 
                 case "text":
-                    TextInputEditText textInputEditText = (TextInputEditText) measurementType.view;
+                    TextInputEditText textInputEditText = (TextInputEditText) type.view;
                     textInputEditText.setText("");
                     break;
 
                 case "number":
                 default:
-                    TextView textView = (TextView) measurementType.view;
-                    textView.setText(Long.toString(measurementType.normalDefault));
+                    TextView textView = (TextView) type.view;
+                    textView.setText(Long.toString(type.normalDefault));
                     break;
             }
         }
@@ -86,10 +84,11 @@ public class Util {
         Log.d(LOG_PREFIX, "Enter saveEvents");
         ORM orm = ORM.getInstance(activity);
 
-        for(int i = 0; i < measurementTypes.size(); i++) {
-            MeasurementType measurementType = measurementTypes.get(i);
-            Log.d(LOG_PREFIX, " mType " + Integer.toString(measurementType.id) + ", " +
-                    "View " + measurementType.view.toString());
+        ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
+
+        for(MeasurementType type: types) {
+            Log.d(LOG_PREFIX, " mType " + Integer.toString(type.id) + ", " +
+                    "View " + type.view.toString());
 
         }
 
@@ -99,14 +98,11 @@ public class Util {
         int evCount = measurementTypes.size();
 
         // - Save widget data down to the entrylist
-        for(int i = 0; i < evCount; i++) {
-            Log.d(LOG_PREFIX, "Event " + Integer.toString(i));
-
-            MeasurementType measurementType = measurementTypes.get(i);
+        for(MeasurementType type: types) {
             String value;
 
             Log.d(LOG_PREFIX, "Get entity name");
-            String entity_name = measurementType.getPrimitive(orm.getPrimitives()).name;
+            String entity_name = type.getPrimitive(orm.getPrimitives()).name;
             Log.d(LOG_PREFIX, "Got it: " + entity_name);
 
             // Parse
@@ -117,28 +113,28 @@ public class Util {
                 case "range_center":
                 case "range_normal":
 //                    value = ""; // TODO
-                    SeekBar sBar = (SeekBar) measurementType.view;
+                    SeekBar sBar = (SeekBar) type.view;
                     Log.d(LOG_PREFIX, "About to read range getProgress on " + sBar.toString());
                     int progress = sBar.getProgress();
-                    value = Long.toString(measurementType.min + progress);
+                    value = Long.toString(type.min + progress);
                     //value = "0";
                     break;
 
                 case "text":
-                    TextInputEditText tView = (TextInputEditText) measurementType.view;
+                    TextInputEditText tView = (TextInputEditText) type.view;
                     Log.d(LOG_PREFIX, "About to read text getText on " + tView.toString());
                     value = tView.getText().toString();
                     break;
 
                 case "number":
-                    TextView nView = (TextView) measurementType.view;
+                    TextView nView = (TextView) type.view;
                     Log.d(LOG_PREFIX, "About to read number getText on " + nView.toString());
                     value = nView.getText().toString();
-                    value = Long.toString(measurementType.min + Long.parseLong(value, 10));
+                    value = Long.toString(type.min + Long.parseLong(value, 10));
             }
 
             // Add
-            entries.add(new nu.ere.mooddiary.Entry(measurementType.id, value));
+            entries.add(new nu.ere.mooddiary.Entry(type.id, value));
         }
 
         orm.addEntries(entries, true);
@@ -302,11 +298,12 @@ public class Util {
 
         String name = bundle.getString(BundleExtraKey.MEASUREMENT_TYPE_NAME);
         int order   =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_ORDER);
+        int enabled =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_ENABLED);
 
         if(changeMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
             Log.d(LOG_PREFIX, "About to update measurementTypeId " + Integer.toString(mTypeId));
             Toast.makeText(activity, activity.getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
-            orm.changeMeasurementType(mTypeId, name, order);
+            orm.changeMeasurementType(mTypeId, name, order, enabled);
         } else if(changeMode == PreferenceEditMode.MEASUREMENT_TYPE_DELETE) {
             Log.d(LOG_PREFIX, "About to DELETE mTypeId " + Integer.toString(mTypeId));
             Toast.makeText(activity, activity.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show();

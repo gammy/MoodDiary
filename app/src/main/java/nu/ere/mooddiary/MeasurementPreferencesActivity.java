@@ -21,12 +21,15 @@ package nu.ere.mooddiary;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
+import android.preference.TwoStatePreference;
 import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
 
     private int oldID = -1;
     EditTextPreference prefMin, prefMax, prefDfl, prefOrder;
+    CheckBoxPreference prefState;
     String valName = null;
     int valType = -1;
 
@@ -92,17 +96,19 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
         screen = getPreferenceManager().createPreferenceScreen(this);
 
         // Create categories
-        PreferenceCategory nameCategory = new PreferenceCategory(this);
-        PreferenceCategory typeCategory = new PreferenceCategory(this);
+        PreferenceCategory nameCategory         = new PreferenceCategory(this);
+        PreferenceCategory typeCategory         = new PreferenceCategory(this);
         final PreferenceCategory valuesCategory = new PreferenceCategory(this);
-        PreferenceCategory saveCategory = new PreferenceCategory(this);
-        PreferenceCategory delCategory  = new PreferenceCategory(this);
+        PreferenceCategory saveCategory         = new PreferenceCategory(this);
+        PreferenceCategory delCategory          = new PreferenceCategory(this);
+        PreferenceCategory stateCategory        = new PreferenceCategory(this);
 
         nameCategory.setTitle(getApplicationContext().getString(R.string.title_category_name));
         typeCategory.setTitle(getApplicationContext().getString(R.string.title_category_type));
         valuesCategory.setTitle(getApplicationContext().getString(R.string.title_category_values));
         saveCategory.setTitle(getApplicationContext().getString(R.string.title_category_save));
         delCategory.setTitle(getApplicationContext().getString(R.string.title_category_delete));
+        stateCategory.setTitle(getApplicationContext().getString(R.string.title_category_state));
 
         // Name
         screen.addPreference(nameCategory);
@@ -159,14 +165,23 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
                     Integer.toString(mType.dfl));
         }
 
+        // State
+        if(editMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
+            screen.addPreference(stateCategory);
+            prefState = new CheckBoxPreference(this);
+            prefState.setTitle("Enabled"); // FIXME hardcoded
+            prefState.setChecked(mType.enabled == 1);
+            stateCategory.addPreference(prefState);
+        }
+
         // Add a delete section if this is an existing measurement
         if(editMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
             screen.addPreference(delCategory);
         }
+
         screen.addPreference(saveCategory);
 
         nameCategory.addPreference(namePref);
-
         // If we're editing an existing reminder, add the option to delete it with a button
         if(editMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
             Preference delButton = new Preference(this);
@@ -215,6 +230,9 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
                 Intent rIntent = getIntent();
                 bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ID, oldID);
                 bundle.putString(BundleExtraKey.MEASUREMENT_TYPE_NAME, valName);
+                // `Enabled` only applies to CHANGE, not CREATE
+                bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ENABLED,
+                        prefState.isChecked() ? 1 : 0);
                 bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ENTITY, valType);
                 bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ORDER, valOrder);
                 bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_MINIMUM, valMinimum);

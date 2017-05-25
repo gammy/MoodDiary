@@ -88,7 +88,7 @@ public class GraphActivity extends ThemedActivity {
         colorTable.add(Color.rgb(214, 219, 148)); // 13
 
         ArrayList<LineGraphSeries<DataPoint>> seriesList = new ArrayList<>();
-        ArrayList<MeasurementType> mTypes = orm.getMeasurementTypes().types;
+        ArrayList<MeasurementType> mTypes = orm.getMeasurementTypes().getEnabledTypes();
 
         for(MeasurementType mType: mTypes ) {
             Log.d(LOG_PREFIX, "Walking Measurement Types: " + mType.name);

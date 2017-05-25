@@ -154,10 +154,10 @@ public class ReminderActivity extends ThemedActivity {
         // FIXME not guaranteed correct order (list isn't sorted?)
         // Walk our measurement types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
-        for(int i = 0; i < measurementTypes.size(); i++) {
-            //MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
-            MeasurementType measurementType = measurementTypes.get(i);
-            EntityPrimitive primitive = measurementType.getPrimitive(orm.getPrimitives());
+        ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
+
+        for(MeasurementType type: types) {
+            EntityPrimitive primitive = type.getPrimitive(orm.getPrimitives());
             Log.d(LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
 
             // Make a label
@@ -165,7 +165,7 @@ public class ReminderActivity extends ThemedActivity {
             TextViewCompat.setTextAppearance(label,
                     android.R.style.TextAppearance_DeviceDefault_Small);
             label.setGravity(Gravity.START);
-            label.setText(measurementType.name);
+            label.setText(type.name);
 
             TableRow row = new TableRow(this);
             // row.setBackgroundColor(Color.BLUE); // (debugging)
@@ -178,30 +178,29 @@ public class ReminderActivity extends ThemedActivity {
                 case "range_normal":
                     SeekBar seekBar = new SeekBar(this);
                     Log.d(LOG_PREFIX, "Renderer: Range: Original View    : " + seekBar.toString());
-                    measurementType.setView(seekBar);
+                    type.setView(seekBar);
                     // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
                     // the database EntityPrimitive name.
                     int styleID = resources.getIdentifier(primitive.name,
                             "drawable", this.getPackageName());
                     seekBar.setProgressDrawable(
                             ResourcesCompat.getDrawable(resources, styleID, null));
-                    seekBar.setMax(measurementType.totalValues);
-                    seekBar.setProgress(sharedPrefs.getInt(measurementType.name,
-                            measurementType.normalDefault));
+                    seekBar.setMax(type.totalValues);
+                    seekBar.setProgress(sharedPrefs.getInt(type.name, type.normalDefault));
 
                     SeekBarChangeListener seekBarChangeListener = new SeekBarChangeListener();
-                    seekBarChangeListener.setPreference(prefEditor, measurementType.name);
+                    seekBarChangeListener.setPreference(prefEditor, type.name);
                     seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
                     Log.d(LOG_PREFIX, "Renderer: Range: Assigning mType " +
-                            Integer.toString(measurementType.id) + ": " +
-                            "View " + measurementType.view.toString());
+                            Integer.toString(type.id) + ": " +
+                            "View " + type.view.toString());
 
                     row.addView(seekBar, rowParams);
                     break;
 
                 case "number":
                     TextView number = new TextView(this);
-                    measurementType.setView(number);
+                    type.setView(number);
                     Log.d(LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
 
                     /* Can't find an easier way to do this - insane */
@@ -217,33 +216,32 @@ public class ReminderActivity extends ThemedActivity {
                     //number.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
 
                     number.setText(Integer.toString(
-                            sharedPrefs.getInt(measurementType.name,
-                                               measurementType.normalDefault)));
+                            sharedPrefs.getInt(type.name,
+                                               type.normalDefault)));
                     MeasurementTextClickListener listener =
-                            new MeasurementTextClickListener(this, number, measurementType, themeID);
+                            new MeasurementTextClickListener(this, number, type, themeID);
                     number.setOnClickListener(listener);
                     //TextInputEditText number = new TextInputEditText(this);
                     Log.d(LOG_PREFIX, "Renderer: Number: Assigning mType " +
-                            Integer.toString(measurementType.id) + ": " +
-                            "View " + measurementType.view.toString());
+                            Integer.toString(type.id) + ": " +
+                            "View " + type.view.toString());
 
                     row.addView(number, rowParams);
                     break;
 
                 case "text":
                     TextInputEditText text = new TextInputEditText(this);
-                    measurementType.setView(text);
+                    type.setView(text);
                     Log.d(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
                     //measurementType.setView(text);
-                    text.setText(sharedPrefs.getString(measurementType.name, ""));
+                    text.setText(sharedPrefs.getString(type.name, ""));
                     TextChangedListener textChangedListener = new TextChangedListener();
-                    textChangedListener.setPreference(prefEditor, measurementType.name);
+                    textChangedListener.setPreference(prefEditor, type.name);
                     text.addTextChangedListener(textChangedListener);
                     TextViewCompat.setTextAppearance(text,
                             android.R.style.TextAppearance_DeviceDefault_Medium);
                     Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
-                            Integer.toString(measurementType.id) + ": " +
-                            "View " + measurementType.view.toString());
+                            Integer.toString(type.id) + ": " + "View " + type.view.toString());
                     row.addView(text, rowParams);
                     break;
 

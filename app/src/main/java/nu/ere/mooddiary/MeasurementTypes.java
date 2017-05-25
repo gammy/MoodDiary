@@ -12,12 +12,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package nu.ere.mooddiary;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
 import java.util.NoSuchElementException;
 import java.util.ArrayList;
 
@@ -61,7 +63,8 @@ public class MeasurementTypes {
             types.add(type);
             Log.d(LOG_PREFIX, "Add type: " + type.name +
                     "(id " + Long.toString(type.id) + ", " +
-                    "order " + Long.toString(type.order) + ")");
+                    "order " + Long.toString(type.order) + ") " +
+                    (type.enabled == 1 ? "" : " - disabled"));
             added++;
         }
 
@@ -71,10 +74,9 @@ public class MeasurementTypes {
     }
 
     public MeasurementType getByID(long id) {
-        for(int i = 0; i < types.size(); i++) {
-            MeasurementType e = types.get(i);
-            if(e.id == id) {
-                return(e);
+        for(MeasurementType m: types) {
+            if(m.id == id) {
+                return(m);
             }
         }
         throw new NoSuchElementException("Unable to find an MeasurementType with id " +
@@ -82,12 +84,21 @@ public class MeasurementTypes {
     }
 
     public MeasurementType getByName(String name) {
-        for(int i = 0; i < types.size(); i++) {
-            MeasurementType e = types.get(i);
-            if(e.name.equals(name)) {
-                return(e);
+        for(MeasurementType m: types) {
+            if(m.name.equals(name)) {
+                return(m);
             }
         }
         throw new NoSuchElementException("Unable to find an MeasurementType with name '" + name + "'");
+    }
+
+    public ArrayList<MeasurementType> getEnabledTypes() {
+        ArrayList<MeasurementType> list = new ArrayList<>();
+        for(MeasurementType m: types) {
+            if(m.enabled == 1) {
+                list.add(m);
+            }
+        }
+        return list;
     }
 }

@@ -24,7 +24,6 @@ public class MeasurementType {
     public int entity;
     public int min, max, dfl;
     public int enabled;
-
     public int totalValues;
     public int normalDefault;
 

@@ -81,17 +81,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         Log.d(LOG_PREFIX, "Enter createMeasurementTypePreferences");
 
         MeasurementTypes measurementTypes = orm.getMeasurementTypes();
-        /*
 
-        for(int i = 0; i < measurementTypes.types.size(); i++) {
-            MeasurementType e = measurementTypes.types.get(i);
-            CheckBoxPreference cb = new CheckBoxPreference(this);
-            cb.setKey("visible_event_" + Long.toString(e.id));
-            cb.setTitle(e.name);
-            cb.setChecked(e.enabled == 1);
-            prefMeasurementTypes.addPreference(cb);
-        }
-        */
         // Create categories
         PreferenceCategory oldCategory = new PreferenceCategory(this);
         PreferenceCategory addCategory = new PreferenceCategory(this);
@@ -103,13 +93,17 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         this.prefMeasurementTypes.addPreference(addCategory);
 
         // Make a list of existing measurement types - each entry can be clicked to open up a new/edit submenu
-        for(int i = 0; i < measurementTypes.types.size(); i++) {
-            MeasurementType mType = measurementTypes.types.get(i);
+
+        for(MeasurementType mType: measurementTypes.types) {
             Log.d(LOG_PREFIX, "Load old type id: " + Integer.toString(mType.id));
 
             Preference oldType = new Preference(this);
 
             oldType.setTitle(mType.name);
+            if(mType.enabled == 0) {
+                oldType.setSummary("Disabled"); // FIXME hardcoded
+            }
+
             Preference.OnPreferenceClickListener listener =
                     new OnMeasurementPreferenceClickListener(mType.id) { // FIXME
                         @Override

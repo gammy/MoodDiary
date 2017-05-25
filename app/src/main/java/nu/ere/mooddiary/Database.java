@@ -247,16 +247,23 @@ public class Database extends SQLiteOpenHelper {
      * @param mTypeId  type ID
      * @param newName  The new name
      * @param order    The new list order
+     * @param enabled
      */
-    public void changeMeasurementType(int mTypeId, String newName, int order) {
+    public void changeMeasurementType(int mTypeId, String newName, int order, int enabled) {
         Log.d(LOG_PREFIX, "Enter changeMeasurementType" );
-        SQLiteStatement statement;
 
-        String sql = "UPDATE MeasurementTypes SET name = ?, listOrder = ? WHERE id = ?";
-        statement = db.compileStatement(sql);
+        Log.d(LOG_PREFIX, "UPDATE MeasurementTypes SET "
+                + "name = " + newName  + ", "
+                + "listOrder = " + Integer.toString(order) + ", "
+                + "enabled = " + Integer.toString(enabled) + " "
+                + "WHERE id = " + Integer.toString(mTypeId));
+
+        String sql = "UPDATE MeasurementTypes SET name = ?, listOrder = ?, enabled = ? WHERE id = ?";
+        SQLiteStatement statement = db.compileStatement(sql);
         statement.bindString(1, newName);
         statement.bindLong(  2, order);
-        statement.bindLong(  3, mTypeId);
+        statement.bindLong(  3, enabled);
+        statement.bindLong(  4, mTypeId);
         statement.executeUpdateDelete();
         statement.close();
     }

@@ -33,4 +33,5 @@ final class BundleExtraKey {
     static final String MEASUREMENT_TYPE_MINIMUM = "measurement_type_min";
     static final String MEASUREMENT_TYPE_MAXIMUM = "measurement_type_max";
     static final String MEASUREMENT_TYPE_DEFAULT = "measurement_type_dfl";
+    static final String MEASUREMENT_TYPE_ENABLED = "measurement_type_enabled";
 }

@@ -17,6 +17,7 @@
 package nu.ere.mooddiary;
 
 import android.content.Intent;
+import android.icu.util.Measure;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,8 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "MainActivity";
@@ -70,13 +73,13 @@ public class MainActivity extends ThemedActivity {
 
         // Walk our measurement types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
-        for(int i = 0; i < orm.getMeasurementTypes().types.size(); i++) {
-            MeasurementType measurementType = orm.getMeasurementTypes().types.get(i);
+        ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
+        for(MeasurementType type: types) {
             AppCompatButton measurementButton = new AppCompatButton(this);
-            measurementButton.setText(measurementType.name);
+            measurementButton.setText(type.name);
 
             MeasurementButtonClickListener listener =
-                    new MeasurementButtonClickListener(this, measurementType, dialogThemeID);
+                    new MeasurementButtonClickListener(this, type, dialogThemeID);
             measurementButton.setOnClickListener(listener);
 
             entryLayout.addView(measurementButton);

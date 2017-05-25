@@ -37,6 +37,7 @@
     <string name="title_category_dates">Date range</string>  <!-- datesCategory -->
     <string name="title_category_save">Save</string>         <!-- saveCategory -->
     <string name="title_category_delete">Delete</string>     <!-- delCategory -->
+    <string name="title_category_state">State</string>
     <string name="title_date_from">From date</string>        <!-- datePrefBeg-->
     <string name="title_date_to">To date</string>            <!-- datePrefBeg-->
 
