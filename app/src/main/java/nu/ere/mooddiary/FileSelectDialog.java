@@ -1,5 +1,6 @@
 // Dialog interface by Kirill Mikhailov, based on an example by schwiz:
 // https://stackoverflow.com/a/13986063/417115
+// Some parts hacked together by me (Kristian)
 package nu.ere.mooddiary;
 
 import android.app.Activity;
@@ -14,7 +15,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShitDialog {
+public class FileSelectDialog {
 
     private static final String PARENT_DIR = "..";
     private final String TAG = getClass().getName();
@@ -24,6 +25,7 @@ public class ShitDialog {
     public interface FileSelectedListener {
         void fileSelected(File file);
     }
+
     public interface DirectorySelectedListener {
         void directorySelected(File directory);
     }
@@ -37,22 +39,22 @@ public class ShitDialog {
      * @param activity
      * @param initialPath
      */
-     public ShitDialog(Activity activity, File initialPath) {
-        this(activity, initialPath, null);
-     }
+    public FileSelectDialog(Activity activity, File initialPath) {
+       this(activity, initialPath, null);
+    }
 
-     public ShitDialog(Activity activity, File initialPath, String fileEndsWith) {
-        this.activity = activity;
-        setFileEndsWith(fileEndsWith);
+    public FileSelectDialog(Activity activity, File initialPath, String fileEndsWith) {
+       this.activity = activity;
+       setFileEndsWith(fileEndsWith);
 
-         if (! initialPath.exists()) {
-            initialPath = Environment.getExternalStorageDirectory();
-        }
+        if (! initialPath.exists()) {
+           initialPath = Environment.getExternalStorageDirectory();
+       }
 
-        loadFileList(initialPath);
-        dirListenerList = new ListenerList<ShitDialog.DirectorySelectedListener>();
-        fileListenerList = new ListenerList<ShitDialog.FileSelectedListener>();
-     }
+       loadFileList(initialPath);
+       dirListenerList = new ListenerList<FileSelectDialog.DirectorySelectedListener>();
+       fileListenerList = new ListenerList<FileSelectDialog.FileSelectedListener>();
+    }
 
     /**
      * @return file dialog
@@ -197,34 +199,34 @@ public class ShitDialog {
         Log.d(TAG, "Enter setFileEndsWith");
         this.fileEndsWith = fileEndsWith != null ? fileEndsWith.toLowerCase() : fileEndsWith;
     }
- }
+}
 
 class ListenerList<L> {
-private List<L> listenerList = new ArrayList<L>();
+    private List<L> listenerList = new ArrayList<L>();
 
-public interface FireHandler<L> {
-    void fireEvent(L listener);
+    public interface FireHandler<L> {
+        void fireEvent(L listener);
 }
 
-public void add(L listener) {
-    listenerList.add(listener);
-}
+    public void add(L listener) {
+                                      listenerList.add(listener);
+                                                                 }
 
-public void fireEvent(FireHandler<L> fireHandler) {
-    Log.d("?", "Enter fireEvent");
-    List<L> copy = new ArrayList<L>(listenerList);
-    for (L l : copy) {
-        fireHandler.fireEvent(l);
+    public void fireEvent(FireHandler<L> fireHandler) {
+        Log.d("?", "Enter fireEvent");
+        List<L> copy = new ArrayList<L>(listenerList);
+        for (L l : copy) {
+            fireHandler.fireEvent(l);
+        }
     }
-}
 
-public void remove(L listener) {
-    Log.d("?", "Enter remove");
-    listenerList.remove(listener);
-}
+    public void remove(L listener) {
+        Log.d("?", "Enter remove");
+        listenerList.remove(listener);
+    }
 
-public List<L> getListenerList() {
-    Log.d("?", "Enter getListenerList");
-    return listenerList;
-}
+    public List<L> getListenerList() {
+        Log.d("?", "Enter getListenerList");
+        return listenerList;
+    }
 }

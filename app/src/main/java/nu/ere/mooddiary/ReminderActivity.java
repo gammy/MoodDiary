@@ -84,7 +84,7 @@ public class ReminderActivity extends ThemedActivity {
             throw new NoSuchElementException("Caller didn't provide a reminderid");
         }
 
-        Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_LONG).show();
         measurementTypes = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
 
         initUI();

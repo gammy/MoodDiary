@@ -19,7 +19,6 @@ package nu.ere.mooddiary;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -41,8 +40,8 @@ public class ImportActivity extends ThemedPreferenceActivity {
         super.onCreate(savedInstanceState);
 
         File mPath = new File(Environment.getExternalStorageDirectory() + "//Download//");
-        ShitDialog fileDialog = new ShitDialog(this, mPath, ".sqlite3");
-        fileDialog.addFileListener(new ShitDialog.FileSelectedListener() {
+        FileSelectDialog fileDialog = new FileSelectDialog(this, mPath, ".sqlite3");
+        fileDialog.addFileListener(new FileSelectDialog.FileSelectedListener() {
             public void fileSelected(File file) {
                 Log.d(getClass().getName(), "selected file " + file.toString());
                 filename = file.toString();

@@ -74,7 +74,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
                         "reminderTimeId needs to be passed to this intent in this mode");
                 }
                 reminderTime = orm.getReminderTimes().getByID(oldID);
-                Toast.makeText(this, "reminderTime: " + Integer.toString(oldID), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "reminderTime: " + Integer.toString(oldID), Toast.LENGTH_SHORT).show();
                 break;
         }
 

@@ -86,7 +86,7 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
                         "measurement type id needs to be passed to this intent in this mode");
                 }
                 mType = orm.getMeasurementTypes().getByID(oldID);
-                Toast.makeText(this, "mType: " + Integer.toString(oldID), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "mType: " + Integer.toString(oldID), Toast.LENGTH_SHORT).show();
                 break;
         }
 
@@ -217,8 +217,8 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
                 String strDefault = prefDfl.getSummary().toString();
 
                 if(! testValues(valName, valType, strOrder, strMinimum, strMaximum, strDefault)) {
-                    Toast.makeText(MeasurementPreferencesActivity.this,
-                            "HrngGg Noo! Check and try again", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(MeasurementPreferencesActivity.this,
+                    //        "HrngGg Noo! Check and try again", Toast.LENGTH_LONG).show();
                     return false;
                 }
 
