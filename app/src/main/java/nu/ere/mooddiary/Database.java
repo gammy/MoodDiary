@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class Database extends SQLiteOpenHelper {
     private static final String LOG_PREFIX = "Database";
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
     private static final String DB_NAME = "moodDiary";
     public static SQLiteDatabase db;
 
@@ -179,7 +179,11 @@ public class Database extends SQLiteOpenHelper {
         } else if(oldVersion == 3 && newVersion == 4) {
             db.execSQL("DELETE FROM MeasurementTypes WHERE id = 8");
             db.execSQL("UPDATE MeasurementTypes SET listOrder = 12 WHERE id = 14");
-        } // and so on
+        } else if(oldVersion == 3 && newVersion == 5) {
+            // A bug in changeReminders requires us to trash all reminders
+            db.execSQL("DELETE FROM ReminderGroups");
+            db.execSQL("DELETE FROM ReminderTimes");
+        }
     }
 
     /**
@@ -400,11 +404,12 @@ public class Database extends SQLiteOpenHelper {
                 Integer.toString(reminderTimeId), null);
         cursor.moveToFirst();
         int oldReminderGroup = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
+        Log.d(LOG_PREFIX, "Result reminderGroup = " + Integer.toString(oldReminderGroup));
 
         Log.d(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderGroup = " +
-                Integer.toString(reminderTimeId));
+                Integer.toString(oldReminderGroup));
         db.delete("ReminderGroups", "reminderGroup = ?", new String[]
-                {Integer.toString(reminderTimeId)});
+                {Integer.toString(oldReminderGroup)});
 
         Log.d(LOG_PREFIX, "INSERT INTO ReminderTimes (reminderGroup, hour, minute) VALUES (" +
                 Integer.toString(oldReminderGroup) + ", " +

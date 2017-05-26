@@ -39,8 +39,8 @@ public final class ORM extends Database {
         Toast.makeText(context, "New ORM instance", Toast.LENGTH_SHORT).show();
 
         // DELETE stupid alarms
-        // instance.db.execSQL("DELETE FROM ReminderGroups");
-        // instance.db.execSQL("DELETE FROM ReminderTimes");
+        //instance.db.execSQL("DELETE FROM ReminderGroups");
+        //instance.db.execSQL("DELETE FROM ReminderTimes");
         loadObjects();
     }
 

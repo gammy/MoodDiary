@@ -230,9 +230,11 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
                 Intent rIntent = getIntent();
                 bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ID, oldID);
                 bundle.putString(BundleExtraKey.MEASUREMENT_TYPE_NAME, valName);
-                // `Enabled` only applies to CHANGE, not CREATE
-                bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ENABLED,
-                        prefState.isChecked() ? 1 : 0);
+                if(prefState != null) {
+                    // `Enabled` only applies to CHANGE, not CREATE
+                    bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ENABLED,
+                            prefState.isChecked() ? 1 : 0);
+                }
                 bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ENTITY, valType);
                 bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_ORDER, valOrder);
                 bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_MINIMUM, valMinimum);

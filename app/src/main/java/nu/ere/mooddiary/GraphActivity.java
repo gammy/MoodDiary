@@ -282,7 +282,9 @@ public class GraphActivity extends ThemedActivity {
             average += val;
         }
 
-        average /= values.size(); // FIXME double!
+        if(values.size() > 0) {
+            average /= values.size(); // FIXME double!
+        }
 
         minMaxAvg.put("minimum", minimum);
         minMaxAvg.put("maximum", maximum);
