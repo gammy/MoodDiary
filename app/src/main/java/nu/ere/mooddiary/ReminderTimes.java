@@ -175,9 +175,3 @@ public final class ReminderTimes {
         return(list);
     }
 }
-
-
-
-
-// https://stackoverflow.com/a/35672291/417115 by ΦXocę 웃 Пepeúpa ツ
-

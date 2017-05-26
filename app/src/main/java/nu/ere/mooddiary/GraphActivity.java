@@ -28,9 +28,12 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class GraphActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "GraphActivity";
@@ -87,8 +90,18 @@ public class GraphActivity extends ThemedActivity {
         colorTable.add(Color.rgb( 64, 191, 157)); // 12
         colorTable.add(Color.rgb(214, 219, 148)); // 13
 
-        ArrayList<LineGraphSeries<DataPoint>> seriesList = new ArrayList<>();
         ArrayList<MeasurementType> mTypes = orm.getMeasurementTypes().getEnabledTypes();
+
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        // I don't think DOTTED/DASHED lines work at all on real android hardware at this time.
+        // From what I've read, android can't do any kind of dot/dash in hardware accelerated
+        // mode, and graphView requires hardware acceleration. I see no way around it.
+
+        // Custom paint simply never ever works:
+        // Paint paint = new Paint();
+        // paint.setStyle(Paint.Style.STROKE);
+        // paint.setStrokeWidth(10);
+        // paint.setPathEffect(new DashPathEffect(new float[]{8, 5}, 0));
 
         for(MeasurementType mType: mTypes ) {
             Log.d(LOG_PREFIX, "Walking Measurement Types: " + mType.name);
@@ -115,17 +128,45 @@ public class GraphActivity extends ThemedActivity {
 
             Cursor cursor = orm.db.rawQuery(sql, null);
 
-            // Create a new series for this type
+            LinkedHashMap<Date, Integer> values = getValues(cursor, mType);
+            cursor.close();
+            LinkedHashMap<String, Integer> counts = getMinMaxAvg(values);
+
             Log.d(LOG_PREFIX, "Creating new series for " + mType.name);
+
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
             series.setTitle(mType.name);
             series.setDrawDataPoints(true);
-            //series.setDrawBackground(true);
-            series.setDataPointsRadius(8);
-            series.setColor(colorTable.get((mType.id) % 13));
-            series.setThickness(4 + mType.order);
-            //series.setBackgroundColor(Color.rgb(testR, testG, testB));
+            series.setColor(colorTable.get((mType.id) % colorTable.size()));
 
+            for(Map.Entry entry: values.entrySet()) {
+                Date k = (Date) entry.getKey();
+                Integer v = (Integer) entry.getValue();
+                DataPoint point = new DataPoint(k, v);
+                series.appendData(point, true, maxPoints);
+            }
+
+            if(mType.min < 0) {
+                Log.d(LOG_PREFIX,
+                        String.format("minimum(%d) < 0: Making BarGraph", counts.get("minimum")));
+                graph.getSecondScale().setMinY(mType.min);
+                graph.getSecondScale().setMaxY(mType.max);
+                series.setThickness(20 - mType.order);
+                series.setDataPointsRadius(20);
+                graph.getSecondScale().addSeries(series);
+                //series.setCustomPaint(paint); // Never works unfortunately
+            } else {
+                Log.d(LOG_PREFIX,
+                        String.format("minimum(%d) >= 0: Making LineGraph", counts.get("minimum")));
+                //series.setDrawBackground(true);
+                series.setThickness(4 + mType.order);
+                series.setDataPointsRadius(10);
+               // series.setDrawBackground(true);
+                //series.setBackgroundColor(Color.rgb(64, 64, 64));
+                graph.addSeries(series);
+            }
+
+            /*
             // Add events to the series
             while(cursor.moveToNext()) {
                 long longTime = cursor.getLong(cursor.getColumnIndex("date"));
@@ -139,9 +180,8 @@ public class GraphActivity extends ThemedActivity {
                 DataPoint point = new DataPoint(time, value);
                 series.appendData(point, true, maxPoints);
             }
+            */
 
-            // Add this series to the list
-            seriesList.add(series);
         }
         /*
         // Fetch `maxPoints` rows of events whose primitive is a number
@@ -173,19 +213,21 @@ public class GraphActivity extends ThemedActivity {
 
         Log.d(LOG_PREFIX, "Rendering graph");
 
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-
         // set date label formatter
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE");
+        DateAsXAxisLabelFormatter formatter = new DateAsXAxisLabelFormatter(this, dateFormat);
+        graph.getGridLabelRenderer().setLabelFormatter(formatter);
         graph.getGridLabelRenderer().setNumHorizontalLabels(6);
         graph.getGridLabelRenderer().setHumanRounding(false);
 
         graph.getLegendRenderer().setVisible(true);
-        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+        //graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.MIDDLE);
+        graph.getLegendRenderer().setFixedPosition(10, 10);
+        graph.getLegendRenderer().setBackgroundColor(Color.argb(25, 64, 64, 64));
 
         graph.getViewport().setScrollable(true);
         graph.getViewport().setScalable(true);
-        graph.getViewport().setScalableY(true);
+        //graph.getViewport().setScalableY(true);
 
         //graph.getViewport().setXAxisBoundsManual(true);
 
@@ -199,9 +241,56 @@ public class GraphActivity extends ThemedActivity {
         graph.getViewport().setMinX(oneWeekAgo);
         graph.getViewport().setMaxX(rightNow);
 
-        for(LineGraphSeries series: seriesList) {
-            Log.d(LOG_PREFIX, "Adding a series to the graph");
-            graph.addSeries(series);
+        //for(LineGraphSeries series: seriesList) {
+        //    Log.d(LOG_PREFIX, "Adding a series to the graph");
+        //    graph.addSeries(series);
+        //}
+    }
+
+    private LinkedHashMap<Date, Integer> getValues(Cursor cursor, MeasurementType mType) {
+        Log.d(LOG_PREFIX, "Enter getValues");
+        LinkedHashMap<Date, Integer> list = new LinkedHashMap<>();
+
+        while(cursor.moveToNext()) {
+            long longTime = cursor.getLong(cursor.getColumnIndex("date"));
+            Date time = new Date(longTime * 1000);
+            Integer value = Integer.parseInt(cursor.getString(cursor.getColumnIndex("value")));
+            Log.d(LOG_PREFIX, "Adding event " + mType.name
+                    + ", time " + Long.toString(longTime)
+                    + ", value " + Integer.toString(value));
+            list.put(time, value);
         }
+        return(list);
+    }
+
+    private LinkedHashMap<String, Integer> getMinMaxAvg(LinkedHashMap<Date, Integer> values) {
+        Log.d(LOG_PREFIX, "Enter getMinMaxAvg");
+
+        int minimum = 0;
+        int maximum = 0;
+        int average = 0;
+        LinkedHashMap<String, Integer> minMaxAvg = new LinkedHashMap<>();
+
+        for(Map.Entry v: values.entrySet()) {
+            Integer val = (Integer) v.getValue();
+            if(val < minimum) {
+                minimum = val;
+            }
+            if(val > maximum) {
+                maximum = val;
+            }
+            average += val;
+        }
+
+        average /= values.size(); // FIXME double!
+
+        minMaxAvg.put("minimum", minimum);
+        minMaxAvg.put("maximum", maximum);
+        minMaxAvg.put("average", average);
+
+        Log.d(LOG_PREFIX,
+                String.format("Minimum: %d, Maximum: %d, Average: %d", minimum, maximum, average));
+
+        return(minMaxAvg);
     }
 }

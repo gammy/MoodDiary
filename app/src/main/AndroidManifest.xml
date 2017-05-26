@@ -87,7 +87,7 @@
 
         <activity
             android:name=".GraphActivity"
-            android:label="Mood Diary Statistics"
+            android:label="Statistics (Experimental!)"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
@@ -97,7 +97,7 @@
 
         <activity
             android:name=".OverviewActivity"
-            android:label="Mood Diary Overview"
+            android:label="Overview"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
