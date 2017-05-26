@@ -17,7 +17,6 @@
 package nu.ere.mooddiary;
 
 import android.content.Intent;
-import android.icu.util.Measure;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
@@ -32,13 +31,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "MainActivity";
-    private ORM orm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
-        orm = ORM.getInstance(this);
         initUI();
         Alarms.installAlarms(this);
     }

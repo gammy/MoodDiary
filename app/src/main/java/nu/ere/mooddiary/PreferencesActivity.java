@@ -160,6 +160,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         // Make a list of existing reminders - each entry can be clicked to open up a new/edit submenu
         // FIXME order by hhmm!
         ArrayList<ReminderTime> sortedReminders = orm.getReminderTimes().getSorted();
+        //ArrayList<ReminderTime> sortedReminders = orm.getReminderTimes().reminderTimes;
         for(ReminderTime reminder: sortedReminders) {
             Log.d(LOG_PREFIX, "Load old reminderTimeId: " + Integer.toString(reminder.id));
 

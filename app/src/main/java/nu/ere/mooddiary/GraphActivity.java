@@ -78,11 +78,11 @@ public class GraphActivity extends ThemedActivity {
 
         colorTable.add(Color.rgb( 52, 122,  78)); // 1
         colorTable.add(Color.rgb(212, 110,  40)); // 2
-        colorTable.add(Color.rgb( 43,  68,  53)); // 3
+        colorTable.add(Color.rgb( 93,  88, 123)); // 3
         colorTable.add(Color.rgb(121, 189, 198)); // 4
         colorTable.add(Color.rgb(206, 188, 103)); // 5
-        colorTable.add(Color.rgb( 72,  59,  42)); // 6
-        colorTable.add(Color.rgb( 49, 250, 234)); // 7
+        colorTable.add(Color.rgb( 72,  99, 142)); // 6
+        colorTable.add(Color.rgb( 79, 250, 234)); // 7
         colorTable.add(Color.rgb(249, 110, 104)); // 8
         colorTable.add(Color.rgb( 93, 255,  28)); // 9
         colorTable.add(Color.rgb(160,  69, 142)); // 10
