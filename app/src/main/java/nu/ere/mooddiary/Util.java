@@ -80,11 +80,9 @@ public class Util {
         }
     }
 
-    public static void saveEvents(Activity activity, ArrayList<MeasurementType> measurementTypes) {
+    public static void saveEvents(Activity activity, ArrayList<MeasurementType> types) {
         Log.d(LOG_PREFIX, "Enter saveEvents");
         ORM orm = ORM.getInstance(activity);
-
-        ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
 
         for(MeasurementType type: types) {
             Log.d(LOG_PREFIX, " mType " + Integer.toString(type.id) + ", " +
@@ -95,7 +93,6 @@ public class Util {
         Log.d(LOG_PREFIX, "COMMENCING VIEW PARSE LOOP");
 
         ArrayList<Entry> entries = new ArrayList<>();
-        int evCount = measurementTypes.size();
 
         // - Save widget data down to the entrylist
         for(MeasurementType type: types) {

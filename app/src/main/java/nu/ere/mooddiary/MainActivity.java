@@ -124,8 +124,10 @@ public class MainActivity extends ThemedActivity {
                 return true;
 
             case R.id.action_test_reminder_activity:
+                Log.d(LOG_PREFIX, "Test mode: Picking the first available reminderTime");
                 i = new Intent(MainActivity.this, ReminderActivity.class);
-                i.putExtra("reminder_id", -6000 /* Magic number - pick first entry */);
+                i.putExtra("reminder_id",
+                        ORM.getInstance(this).getReminderTimes().getFirstReminderTimeId());
                 startActivity(i);
                 return true;
 

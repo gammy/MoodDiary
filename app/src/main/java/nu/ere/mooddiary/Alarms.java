@@ -100,7 +100,7 @@ public class Alarms {
         ORM orm = ORM.getInstance(activity);
 
         Intent reminderIntent = new Intent(activity, ReminderActivity.class);
-        reminderIntent.putExtra("reminder_id", 1);
+        reminderIntent.putExtra("reminder_id", orm.getReminderTimes().getFirstReminderTimeId());
 
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
         PendingIntent pendingIntent =

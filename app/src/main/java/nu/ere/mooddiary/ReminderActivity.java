@@ -80,14 +80,6 @@ public class ReminderActivity extends ThemedActivity {
 
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
 
-        if(reminderID == -6000) {
-            Log.d(LOG_PREFIX, "Test mode: Picking the first available reminderTime");
-            //reminderID = orm.getReminderTimes().getFirstReminderGroupId();
-            reminderID = orm.getReminderTimes().getFirstReminderTimeId();
-        }
-
-        Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
-
         if(reminderID == -1) {
             throw new NoSuchElementException("Caller didn't provide a reminderid");
         }
@@ -155,9 +147,16 @@ public class ReminderActivity extends ThemedActivity {
         // FIXME not guaranteed correct order (list isn't sorted?)
         // Walk our measurement types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
-        ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
+
+        // ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
+        ArrayList<MeasurementType> types =
+                orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
 
         for(MeasurementType type: types) {
+            if(type.enabled == 0) {
+                Log.d(LOG_PREFIX, "Renderer: SKIP disabled measurement type: " + type.id);
+                continue;
+            }
             EntityPrimitive primitive = type.getPrimitive(orm.getPrimitives());
             Log.d(LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
 
