@@ -31,7 +31,6 @@ import static android.content.Context.ALARM_SERVICE;
 public class Alarms {
     private static final String LOG_PREFIX = "Alarms";
 
-    // FIXME untested!
     public static void clearAlarms(Activity activity) {
         Log.d(LOG_PREFIX, "Enter clearAlarms" );
         ORM orm = ORM.getInstance(activity);

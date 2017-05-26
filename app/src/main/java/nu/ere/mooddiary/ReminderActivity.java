@@ -22,9 +22,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
@@ -41,7 +38,6 @@ import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -87,9 +83,8 @@ public class ReminderActivity extends ThemedActivity {
         //Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_LONG).show();
         measurementTypes = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
 
-        initUI();
-
         Util.raiseNotification(this);
+        initUI();
     }
 
     public void initUI() {

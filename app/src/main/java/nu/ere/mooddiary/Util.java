@@ -154,7 +154,7 @@ public class Util {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(activity)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_stat_name)
                     .setContentTitle(activity.getString(R.string.notification_title))
                     .setContentText(activity.getString(R.string.notification_text));
 
