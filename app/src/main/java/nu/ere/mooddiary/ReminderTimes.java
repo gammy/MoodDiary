@@ -144,6 +144,18 @@ public final class ReminderTimes {
         return id;
     }
 
+    public int getFirstReminderTimeId() {
+        Log.d(LOG_PREFIX, "Enter getFirstReminderTimeId");
+        Log.d(LOG_PREFIX, "SELECT MIN (id) FROM ReminderTimes");
+        Cursor cursor =
+                orm.db.rawQuery("SELECT MIN (id) AS first FROM ReminderTimes", null);
+        cursor.moveToFirst();
+        int id = cursor.getInt(cursor.getColumnIndex("first"));
+        Log.d(LOG_PREFIX, "id: " + Integer.toString(id));
+        cursor.close();
+        return id;
+    }
+
     public ArrayList<ReminderTime> getSorted() {
         Log.d(LOG_PREFIX, "Enter getSorted");
 

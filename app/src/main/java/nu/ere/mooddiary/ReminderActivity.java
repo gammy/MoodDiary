@@ -81,8 +81,9 @@ public class ReminderActivity extends ThemedActivity {
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
 
         if(reminderID == -6000) {
-            Log.d(LOG_PREFIX, "Test mode: Picking the first reminder reminder available");
-            reminderID = orm.getReminderTimes().getFirstReminderGroupId();
+            Log.d(LOG_PREFIX, "Test mode: Picking the first available reminderTime");
+            //reminderID = orm.getReminderTimes().getFirstReminderGroupId();
+            reminderID = orm.getReminderTimes().getFirstReminderTimeId();
         }
 
         Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
