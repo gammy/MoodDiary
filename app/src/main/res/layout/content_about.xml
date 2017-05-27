@@ -65,6 +65,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical|end"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="0dp"
                     android:text=""/>
 
                 <WebView
@@ -74,7 +76,7 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
