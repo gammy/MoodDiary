@@ -33,17 +33,31 @@ public class Alarms {
 
     public static void clearAlarms(Activity activity) {
         Log.d(LOG_PREFIX, "Enter clearAlarms" );
+        /*
         ORM orm = ORM.getInstance(activity);
+        */
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
+
+        Intent updateServiceIntent = new Intent(activity, ReminderActivity.class);
+        PendingIntent pendingUpdateIntent =
+                PendingIntent.getService(activity, 0, updateServiceIntent, 0);
+        try {
+            alarmManager.cancel(pendingUpdateIntent);
+        } catch (Exception e) {
+            Log.e(LOG_PREFIX, "AlarmManager exception during cancel: " + e.toString());
+        }
+
+        /*
         ArrayList<ReminderTime> reminderTimes = orm.getReminderTimes().reminderTimes;
         for(int i = 0; i < reminderTimes.size(); i++) {
             Intent reminderIntent = new Intent(activity, ReminderActivity.class);
             PendingIntent pendingIntent =
-                    PendingIntent.getActivity(activity, i /* Alarm ID */,
+                    PendingIntent.getActivity(activity, i , // id
                             reminderIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             alarmManager.cancel(pendingIntent);
         }
         Log.d(LOG_PREFIX, Long.toString(reminderTimes.size()) + " alarms installed");
+        */
     }
 
     public static void installAlarms(Activity activity) {
