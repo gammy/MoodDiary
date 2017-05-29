@@ -108,9 +108,9 @@
         <!-- android:theme="@style/AppTheme.NoActionBar" -->
         <activity
             android:name=".ReminderActivity"
-            android:label="Mood Diary Reminder"
             android:excludeFromRecents="true"
-            android:theme="@android:style/Theme.Dialog" >
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
                 <category android:name="android.intent.category.INFO" />

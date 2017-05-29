@@ -30,7 +30,9 @@ import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -42,7 +44,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-public class ReminderActivity extends ThemedActivity {
+public class ReminderActivity extends ThemedDialogActivity {
     private static final String LOG_PREFIX = "ReminderActivity";
     SharedPreferences sharedPrefs;
     SharedPreferences.Editor prefEditor;
@@ -91,8 +93,8 @@ public class ReminderActivity extends ThemedActivity {
         Log.d(LOG_PREFIX, "Enter initUI" );
 
         setContentView(R.layout.content_reminders);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.reminderToolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.reminderToolbar);
+        //setSupportActionBar(toolbar);
 
         // Ensure that no programmatically generated view within our ScrollView forces the
         // view to scroll down: We want the initial to view always to be at the top:
@@ -101,12 +103,15 @@ public class ReminderActivity extends ThemedActivity {
         view.setFocusableInTouchMode(true);
         view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
-        // Set up the save button, which, on click, saves the event and runs an animation
-        Button saveButton = (Button) findViewById(R.id.reminderSaveButton);
         TextView thanksView = (TextView) findViewById(R.id.reminderThanksTextView);
 
         renderReminderEventTypes(R.id.reminderLayout);
 
+        // Set up the save button, which, on click, saves the event and runs an animation
+        Button saveButton = new Button(this);
+        LinearLayout entryLayout = (LinearLayout) this.findViewById(R.id.reminderLayout);
+        entryLayout.addView(saveButton);
+        saveButton.setText(getString(R.string.submit));
         // The saveClickListener below will terminate this activity once it's done.
         saveButton.setOnClickListener(
                 new SaveClickListener(this, measurementTypes, thanksView, true));

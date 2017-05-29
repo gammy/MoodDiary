@@ -32,8 +32,11 @@
     </style>
 
     <style name="AppThemeLight.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-
     <style name="AppThemeLight.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppThemeLight.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
     <!-- Dark -->
 
@@ -58,5 +61,9 @@
 
     <style name="AppThemeDark.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/> <!-- afaik does nada -->
     <style name="AppThemeDark.PopupOverlay" parent="android:Theme.Holo.Dialog"/>
+    <style name="AppThemeDark.Dialog" parent="android:Theme.Holo.Dialog">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 
 </resources>
