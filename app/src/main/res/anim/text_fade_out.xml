@@ -9,8 +9,8 @@
     </alpha>
 
     <scale
-        android:fromXScale="3.0"
-        android:fromYScale="3.0"
+        android:fromXScale="2.2"
+        android:fromYScale="2.2"
         android:toXScale="0.1"
         android:toYScale="0.1"
         android:pivotX="50%"

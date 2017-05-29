@@ -21,14 +21,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
+import android.support.transition.Visibility;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,8 +96,9 @@ public class ReminderActivity extends ThemedDialogActivity {
         Log.d(LOG_PREFIX, "Enter initUI" );
 
         setContentView(R.layout.content_reminders);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.reminderToolbar);
-        //setSupportActionBar(toolbar);
+
+        // Get our main (scrollable) view, where we are to programmatically add our EntryTypes
+        LinearLayout entryLayout = (LinearLayout) this.findViewById(R.id.reminderLayout);
 
         // Ensure that no programmatically generated view within our ScrollView forces the
         // view to scroll down: We want the initial to view always to be at the top:
@@ -103,18 +107,44 @@ public class ReminderActivity extends ThemedDialogActivity {
         view.setFocusableInTouchMode(true);
         view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
-        TextView thanksView = (TextView) findViewById(R.id.reminderThanksTextView);
+        renderReminderEventTypes(entryLayout);
 
-        renderReminderEventTypes(R.id.reminderLayout);
 
+        /*
+    <TextView
+        android:id="@+id/reminderThanksTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="cursive"
+        android:gravity="center"
+        android:text="@string/fantastic_view"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="36sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1" />
+        */
+        TextView fantastic = new TextView(this);
+        fantastic.setText(getString(R.string.fantastic_view));
+        fantastic.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
+        fantastic.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
+        fantastic.setVisibility(View.INVISIBLE);
+        entryLayout.addView(fantastic);
+
+        // FIXME this never shows outside of the viewport for some fucking reason.
         // Set up the save button, which, on click, saves the event and runs an animation
         Button saveButton = new Button(this);
-        LinearLayout entryLayout = (LinearLayout) this.findViewById(R.id.reminderLayout);
-        entryLayout.addView(saveButton);
+
         saveButton.setText(getString(R.string.submit));
         // The saveClickListener below will terminate this activity once it's done.
         saveButton.setOnClickListener(
-                new SaveClickListener(this, measurementTypes, thanksView, true));
+                new SaveClickListener(this, measurementTypes, fantastic, true));
+        entryLayout.addView(saveButton);
+
     }
 
     /**
@@ -122,14 +152,10 @@ public class ReminderActivity extends ThemedDialogActivity {
      * This involves creating the encasing widgets (tables, etc), instantiating Views based on
      * minute primitives, and rendering everything.
      *
-     * @param layout The layout resource to be used as main container where all Views are created
      */
-    public void renderReminderEventTypes(int layout) {
+    public void renderReminderEventTypes(LinearLayout entryLayout) {
         Log.d(LOG_PREFIX, "Enter renderReminderEventTypes");
         Resources resources = getResources();
-
-        // Get our main (scrollable) view, where we are to programmatically add our EntryTypes
-        LinearLayout entryLayout = (LinearLayout) this.findViewById(layout);
 
         // Create a table
         TableLayout table = new TableLayout(this);
@@ -254,6 +280,7 @@ public class ReminderActivity extends ThemedDialogActivity {
         }
 
         entryLayout.addView(table);
+
     }
 
     @Override
