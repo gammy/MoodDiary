@@ -33,11 +33,10 @@ public class Alarms {
 
     public static void clearAlarms(Activity activity) {
         Log.d(LOG_PREFIX, "Enter clearAlarms" );
-        /*
         ORM orm = ORM.getInstance(activity);
-        */
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
 
+        /*
         Intent updateServiceIntent = new Intent(activity, ReminderActivity.class);
         PendingIntent pendingUpdateIntent =
                 PendingIntent.getService(activity, 0, updateServiceIntent, 0);
@@ -46,18 +45,19 @@ public class Alarms {
         } catch (Exception e) {
             Log.e(LOG_PREFIX, "AlarmManager exception during cancel: " + e.toString());
         }
+        */
 
-        /*
         ArrayList<ReminderTime> reminderTimes = orm.getReminderTimes().reminderTimes;
         for(int i = 0; i < reminderTimes.size(); i++) {
             Intent reminderIntent = new Intent(activity, ReminderActivity.class);
             PendingIntent pendingIntent =
                     PendingIntent.getActivity(activity, i , // id
                             reminderIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            Log.d(LOG_PREFIX, "  Cancelling alarm id" + Integer.toString(i));
             alarmManager.cancel(pendingIntent);
         }
         Log.d(LOG_PREFIX, Long.toString(reminderTimes.size()) + " alarms installed");
-        */
     }
 
     public static void installAlarms(Activity activity) {
@@ -68,11 +68,14 @@ public class Alarms {
 
         ArrayList<ReminderTime> reminderTimes = orm.getReminderTimes().reminderTimes;
 
+        java.util.Date pDate = new java.util.Date();
+        Log.d(LOG_PREFIX, "Time now : " + pDate.toString());
+
         for(int i = 0; i < reminderTimes.size(); i++) {
             ReminderTime reminderTime = reminderTimes.get(i);
 
             Intent reminderIntent = new Intent(activity, ReminderActivity.class);
-            Log.d(LOG_PREFIX, " reminder_id " + Integer.toString(reminderTime.id));
+            Log.d(LOG_PREFIX, "  reminder_id " + Integer.toString(reminderTime.id));
             reminderIntent.putExtra("reminder_id", reminderTime.id);
 
             // Set up time (and possibly adjust)
@@ -83,13 +86,10 @@ public class Alarms {
             calendar.set(Calendar.MINUTE,      reminderTime.minute);
             calendar.set(Calendar.SECOND, 0);
 
-            java.util.Date pDate = new java.util.Date();
-            Log.d(LOG_PREFIX, "  Time now : " + pDate.toString());
-
             // Adjust if the time's already passed
             if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
                 calendar.add(Calendar.DAY_OF_MONTH, 1); // Tomorrow
-                Log.d(LOG_PREFIX, "    Time has already passed: setting alarm for tomorrow");
+                Log.d(LOG_PREFIX, "  Time has already passed: setting alarm for tomorrow");
             }
 
             // Set up the alarm
@@ -98,7 +98,7 @@ public class Alarms {
                             reminderIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_HOUR, pendingIntent);
 
