@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -98,9 +99,17 @@ public class Alarms {
                             reminderIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             //alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_HOUR, pendingIntent);
+            //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+            //        calendar.getTimeInMillis(),
+            //        AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+                alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),pendingIntent);
+            } else{
+                alarmManager.set(
+                        AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
 
             pDate = new java.util.Date(calendar.getTimeInMillis());
             Log.d(LOG_PREFIX, "  Alarm SET: " + pDate.toString());

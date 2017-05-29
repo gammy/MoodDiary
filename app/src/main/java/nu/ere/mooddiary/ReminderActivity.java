@@ -94,6 +94,7 @@ public class ReminderActivity extends ThemedDialogActivity {
             }
         }
 
+        Alarms.installAlarms(this); // Reinstall 'em
         Util.raiseNotification(this);
         initUI();
     }
