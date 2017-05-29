@@ -71,6 +71,7 @@ public class SaveClickListener implements OnClickListener {
         for(int i = 0; i < measurementTypes.size(); i++) {
             MeasurementType measurementType = measurementTypes.get(i);
             editor.remove(measurementType.name);
+
             Log.d(LOG_PREFIX, " mType " + Integer.toString(measurementType.id) + ", " +
                 "View " + measurementType.view.toString());
 

@@ -86,7 +86,13 @@ public class ReminderActivity extends ThemedDialogActivity {
         }
 
         //Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_LONG).show();
-        measurementTypes = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
+        ArrayList<MeasurementType> mTmp = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
+        measurementTypes = new ArrayList<>();
+        for(MeasurementType type: mTmp) {
+            if(type.enabled == 1) {
+                measurementTypes.add(type);
+            }
+        }
 
         Util.raiseNotification(this);
         initUI();
@@ -179,10 +185,6 @@ public class ReminderActivity extends ThemedDialogActivity {
                 orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
 
         for(MeasurementType type: types) {
-            if(type.enabled == 0) {
-                Log.d(LOG_PREFIX, "Renderer: SKIP disabled measurement type: " + type.id);
-                continue;
-            }
             EntityPrimitive primitive = type.getPrimitive(orm.getPrimitives());
             Log.d(LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
 

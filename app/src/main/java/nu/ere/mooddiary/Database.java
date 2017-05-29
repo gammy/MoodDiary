@@ -122,43 +122,27 @@ public class Database extends SQLiteOpenHelper {
         addMeasurementType(ID_RANGE_NORMAL,  40, "Lack of Focus",        0,   100, 0, "stock");
         addMeasurementType(ID_RANGE_CENTER,  50, "Energy",             -50,    50, 0, "stock");
         addMeasurementType(ID_TEXT,          60, "Note",                -1,   -1, -1, "stock");
-        /*
-        addMeasurementType(ID_NUMBER,        6, "Lamotrigine (100mg)",  0,   50,  0, "gammy");
-        addMeasurementType(ID_NUMBER,        7, "Sertraline (25mg)",    0,   50,  0, "gammy");
-
-        addMeasurementType(ID_RANGE_CENTER,  9, "Humör",              -50,    50, 0, "tomten");
-        addMeasurementType(ID_RANGE_NORMAL, 10, "Ångest",               0,   100, 0, "tomten");
-        addMeasurementType(ID_RANGE_NORMAL, 11, "Energi",               0,   100, 0, "tomten");
-        addMeasurementType(ID_RANGE_NORMAL, 12, "Paranoia",             0,   100, 0, "tomten");
-        */
 
         // Reminders
 
         ArrayList<Integer> reminderEventList = new ArrayList<>();
-        reminderEventList.add(1);
-        //reminderEventList.add(1); // Mood
-        //reminderEventList.add(2); // Anxiety
-        //reminderEventList.add(3); // Irritability
-        //reminderEventList.add(5); // Sleep
+        reminderEventList.add(1); // Mood
+        reminderEventList.add(2); // Anxiety
+        reminderEventList.add(3); // Irritability
         addReminder(10, 0, reminderEventList); // 10am
 
         reminderEventList = new ArrayList<>();
-        reminderEventList.add(1);
-        reminderEventList.add(2);
-        //reminderEventList.add(1); // Mood
-        //reminderEventList.add(2); // Anxiety
-        //reminderEventList.add(3); // Irritability
+        reminderEventList.add(1); // Mood
+        reminderEventList.add(2); // Anxiety
+        reminderEventList.add(3); // Irritability
         addReminder(15, 0, reminderEventList); // 3pm
 
         reminderEventList = new ArrayList<>();
-        reminderEventList.add(1);
-        reminderEventList.add(2);
-        reminderEventList.add(3);
-        //reminderEventList.add(1); // Mood
-        //reminderEventList.add(2); // Anxiety
-        //reminderEventList.add(3); // Irritability
-        //reminderEventList.add(6); // Alcohol
-        //reminderEventList.add(9); // Note
+        reminderEventList.add(1); // Mood
+        reminderEventList.add(2); // Anxiety
+        reminderEventList.add(3); // Irritability
+        reminderEventList.add(6); // Alcohol
+        reminderEventList.add(9); // Note
         addReminder(21, 0, reminderEventList); // 9pm
     }
 
@@ -179,7 +163,7 @@ public class Database extends SQLiteOpenHelper {
         } else if(oldVersion == 3 && newVersion == 4) {
             db.execSQL("DELETE FROM MeasurementTypes WHERE id = 8");
             db.execSQL("UPDATE MeasurementTypes SET listOrder = 12 WHERE id = 14");
-        } else if(oldVersion == 3 && newVersion == 5) {
+        } else if(oldVersion == 4 && newVersion == 5) {
             // A bug in changeReminders requires us to trash all reminders
             db.execSQL("DELETE FROM ReminderGroups");
             db.execSQL("DELETE FROM ReminderTimes");
