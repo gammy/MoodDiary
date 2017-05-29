@@ -79,6 +79,7 @@ public class MeasurementTypes {
                 return(m);
             }
         }
+
         throw new NoSuchElementException("Unable to find an MeasurementType with id " +
                 Long.toString(id));
     }

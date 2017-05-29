@@ -281,12 +281,20 @@ public class Database extends SQLiteOpenHelper {
         Log.d(LOG_PREFIX, "Enter deleteMeasurementType" );
         SQLiteStatement statement;
 
-        //String sql = "UPDATE MeasurementTypes SET enabled = false WHERE id = ?";
+        // Delete measurement
         String sql = "DELETE FROM MeasurementTypes WHERE id = ?";
         statement = db.compileStatement(sql);
         statement.bindLong(1, mTypeId);
         statement.executeUpdateDelete();
         statement.close();
+
+        // Delete relations
+        sql = "DELETE FROM reminderGroups WHERE type = ?";
+        statement = db.compileStatement(sql);
+        statement.bindLong(1, mTypeId);
+        statement.executeUpdateDelete();
+        statement.close();
+
     }
     /**
      * Insert a list of events into the Events table
