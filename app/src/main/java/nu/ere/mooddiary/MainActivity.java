@@ -40,6 +40,14 @@ public class MainActivity extends ThemedActivity {
         Alarms.installAlarms(this);
     }
 
+    // If the user adds a new measurement type, we need to re-render the buttons.
+    @Override
+    protected void onRestart() {
+        Log.d(LOG_PREFIX, "Enter onRestart");
+        super.onRestart();
+        initUI();
+    }
+
     public void initUI() {
         Log.d(LOG_PREFIX, "Enter initUI" );
 

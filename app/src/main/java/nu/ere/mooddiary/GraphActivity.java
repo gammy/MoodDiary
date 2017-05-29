@@ -41,7 +41,7 @@ public class GraphActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_PREFIX, "Create");
+        Log.d(LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
@@ -151,7 +151,7 @@ public class GraphActivity extends ThemedActivity {
                         String.format("minimum(%d) < 0: Making BarGraph", counts.get("minimum")));
                 graph.getSecondScale().setMinY(mType.min);
                 graph.getSecondScale().setMaxY(mType.max);
-                series.setThickness(20 - mType.order);
+                series.setThickness(14);
                 series.setDataPointsRadius(20);
                 graph.getSecondScale().addSeries(series);
                 //series.setCustomPaint(paint); // Never works unfortunately
@@ -159,7 +159,7 @@ public class GraphActivity extends ThemedActivity {
                 Log.d(LOG_PREFIX,
                         String.format("minimum(%d) >= 0: Making LineGraph", counts.get("minimum")));
                 //series.setDrawBackground(true);
-                series.setThickness(4 + mType.order);
+                series.setThickness(8);
                 series.setDataPointsRadius(10);
                // series.setDrawBackground(true);
                 //series.setBackgroundColor(Color.rgb(64, 64, 64));
