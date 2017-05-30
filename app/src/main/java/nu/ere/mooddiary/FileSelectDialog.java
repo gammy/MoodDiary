@@ -177,8 +177,10 @@ public class FileSelectDialog {
                 }
             };
             String[] fileList1 = path.list(filter);
-            for (String file : fileList1) {
-                r.add(file);
+            if(fileList1 != null) {
+                for (String file : fileList1) {
+                    r.add(file);
+                }
             }
         }
         fileList = (String[]) r.toArray(new String[]{});

@@ -1,32 +1,52 @@
 apply plugin: 'com.android.application'
 
+buildscript {
+    repositories {
+        maven { url 'http://repo1.maven.org/maven2' }
+    }
+    dependencies {
+        classpath 'org.ajoberstar:grgit:1.4.+'
+    }
+}
+
+ext {
+    git = org.ajoberstar.grgit.Grgit.open()
+    gitVersionCode = git.tag.list().size()
+    gitVersionName = "${git.describe()}"
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
 
+    /*
     def versionPropsFile = file('version.properties')
 
-    // Taken from: http://stackoverflow.com/a/21405744/417115
+    // Inspired by : http://stackoverflow.com/a/21405744/417115
     if (versionPropsFile.canRead()) {
+
+
         def Properties versionProps = new Properties()
-
         versionProps.load(new FileInputStream(versionPropsFile))
-
-        def code = versionProps['VERSION_CODE'].toInteger() + 1
-
-        versionProps['VERSION_CODE'] = code.toString()
-        versionProps.store(versionPropsFile.newWriter(), null)
+        def code = versionProps['VERSION_CODE'];
 
         defaultConfig {
             applicationId "nu.ere.mooddiary"
             minSdkVersion 15
             targetSdkVersion 25
             versionCode code
-            versionName "0.2"
+            versionName code
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         }
     } else {
         throw new GradleException("Could not read version.properties!")
+    }
+    */
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode gitVersionCode
+        versionName gitVersionName
     }
 
     buildTypes {
@@ -51,3 +71,4 @@ dependencies {
     compile 'com.jjoe64:graphview:4.2.1'
     testCompile 'junit:junit:4.12'
 }
+

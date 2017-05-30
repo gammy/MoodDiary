@@ -39,7 +39,7 @@ public class AboutActivity extends ThemedActivity {
         String versionName = BuildConfig.VERSION_NAME;
 
         TextView versionTextView = (TextView) findViewById(R.id.versionTextView);
-        versionTextView.setText("v" + versionName + " build " + Integer.toString(versionCode));
+        versionTextView.setText("v" + versionName + "-" + Integer.toString(versionCode));
 
         Button donateButton = (Button) findViewById(R.id.donateButton);
 
