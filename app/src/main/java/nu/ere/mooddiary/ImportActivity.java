@@ -16,11 +16,15 @@
  */
 package nu.ere.mooddiary;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -39,17 +43,7 @@ public class ImportActivity extends ThemedPreferenceActivity {
         Log.d(LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
 
-        File mPath = new File(Environment.getExternalStorageDirectory() + "//Download//");
-        FileSelectDialog fileDialog = new FileSelectDialog(this, mPath, ".sqlite3");
-        fileDialog.addFileListener(new FileSelectDialog.FileSelectedListener() {
-            public void fileSelected(File file) {
-                Log.d(getClass().getName(), "selected file " + file.toString());
-                filename = file.toString();
-                importDatabase();
-            }
-        });
-
-        fileDialog.showDialog();
+        start();
     }
 
     public void importDatabase() {
@@ -135,6 +129,69 @@ public class ImportActivity extends ThemedPreferenceActivity {
 
         Log.d(LOG_PREFIX, "Database verified");
         return true;
+    }
+
+    // Based on http://stackoverflow.com/a/19093736/417115
+    public boolean start() {
+        Log.d(LOG_PREFIX, "Enter exportDatabase");
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                1 /* Callback id */);
+
+        // http://stackoverflow.com/a/6942735/417115
+        String state = Environment.getExternalStorageState();
+        Log.d(LOG_PREFIX, "sdcard state: " + state);
+
+        if(Environment.MEDIA_MOUNTED.equals(state)) {
+            Log.d(LOG_PREFIX, "sdcard mounted and writable");
+        } else if(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            Log.d(LOG_PREFIX, "sdcard mounted readonly");
+        }
+
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            }
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS}, // ???
+                    1 /* Code */);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(LOG_PREFIX, "We have read permissions");
+
+                    File mPath = new File(Environment.getExternalStorageDirectory() + "//Download//");
+                    FileSelectDialog fileDialog = new FileSelectDialog(this, mPath, ".sqlite3");
+                    fileDialog.addFileListener(new FileSelectDialog.FileSelectedListener() {
+                        public void fileSelected(File file) {
+                            Log.d(getClass().getName(), "selected file " + file.toString());
+                            filename = file.toString();
+                            importDatabase();
+                        }
+                    });
+
+                    fileDialog.showDialog();
+                } else {
+                    Log.d(LOG_PREFIX, "NEIN!!!");
+                }
+            }
+        }
     }
 
 }
