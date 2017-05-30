@@ -303,7 +303,8 @@ public class ReminderActivity extends ThemedDialogActivity {
     }
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
+        super.onDestroy();
         Log.d(LOG_PREFIX, "Enter onDestroy");
 
         Log.d(LOG_PREFIX, "Cancelling notification");
@@ -313,6 +314,5 @@ public class ReminderActivity extends ThemedDialogActivity {
         NotificationManager mNotifyMgr =
                 (NotificationManager) this.getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.cancel(mNotificationId);
-        super.onStop();
     }
 }
