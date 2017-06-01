@@ -88,8 +88,11 @@ public class ReminderActivity extends ThemedDialogActivity {
         //Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_LONG).show();
         ArrayList<MeasurementType> mTmp = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
         measurementTypes = new ArrayList<>();
+        Log.d(LOG_PREFIX, "Starting measurement type walk");
         for(MeasurementType type: mTmp) {
+            Log.d(LOG_PREFIX, String.format("  Type %s enabled = %d", type.name, type.enabled));
             if(type.enabled == 1) {
+                Log.d(LOG_PREFIX, String.format("    Added %s", type.name));
                 measurementTypes.add(type);
             }
         }
@@ -177,15 +180,10 @@ public class ReminderActivity extends ThemedDialogActivity {
         rowParams.topMargin    = (int) resources.getDimension(R.dimen.entry_padding_top);
         rowParams.bottomMargin = (int) resources.getDimension(R.dimen.entry_padding_bottom);
 
-        // FIXME not guaranteed correct order (list isn't sorted?)
         // Walk our measurement types and create the appropriate text and entry widget (slider, etc).
         // Add them to the main layout.
 
-        // ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
-        ArrayList<MeasurementType> types =
-                orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
-
-        for(MeasurementType type: types) {
+        for(MeasurementType type: measurementTypes) {
             EntityPrimitive primitive = type.getPrimitive(orm.getPrimitives());
             Log.d(LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
 
