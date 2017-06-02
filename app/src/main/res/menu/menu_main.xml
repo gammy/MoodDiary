@@ -28,6 +28,11 @@
         android:title="Reminder activity test"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_test_reminder_activity_nosave"
+        android:orderInCategory="550"
+        android:title="Reminder activity test (nosave)"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_test_alarm"
         android:orderInCategory="600"
         android:title="Alarm test"

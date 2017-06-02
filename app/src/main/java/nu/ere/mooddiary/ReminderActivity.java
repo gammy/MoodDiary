@@ -50,6 +50,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private ORM orm;
     private int reminderID = -1;
     private ArrayList<MeasurementType> measurementTypes = null;
+    private boolean nosave = false; // Debug option
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class ReminderActivity extends ThemedDialogActivity {
                 Log.d(LOG_PREFIX, "No state data from instance, and no extras passed?! :O");
                 reminderID = -1;
             } else {
+                nosave = extras.getBoolean("nosave", false);
                 reminderID = extras.getInt("reminder_id");
                 prefEditor.putInt("reminder_id", reminderID);
                 prefEditor.apply();
@@ -147,8 +149,14 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         saveButton.setText(getString(R.string.submit));
         // The saveClickListener below will terminate this activity once it's done.
-        saveButton.setOnClickListener(
-                new SaveClickListener(this, measurementTypes, fantastic, true));
+        if(nosave) {
+            ArrayList<MeasurementType> nothing = new ArrayList<>();
+            saveButton.setOnClickListener(
+                    new SaveClickListener(this, nothing, fantastic, true));
+        } else {
+            saveButton.setOnClickListener(
+                    new SaveClickListener(this, measurementTypes, fantastic, true));
+        }
         entryLayout.addView(saveButton);
 
     }
