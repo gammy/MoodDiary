@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class Database extends SQLiteOpenHelper {
     private static final String LOG_PREFIX = "Database";
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 6;
     private static final String DB_NAME = "moodDiary";
     public static SQLiteDatabase db;
 
@@ -110,11 +110,13 @@ public class Database extends SQLiteOpenHelper {
         int ID_RANGE_CENTER = 2;
         int ID_NUMBER       = 3;
         int ID_TEXT         = 4;
+        int ID_TOGGLE       = 5;
 
         addPrimitive("range_normal", true);
         addPrimitive("range_center", true);
         addPrimitive("number",       true);
         addPrimitive("text",        false);
+        addPrimitive("toggle",       true);
 
         addMeasurementType(ID_RANGE_CENTER,  10, "Mood",               -50,    50,  0, "stock"); //1
         addMeasurementType(ID_RANGE_CENTER,  20, "Energy",             -50,    50,  0, "stock"); //2
@@ -123,6 +125,7 @@ public class Database extends SQLiteOpenHelper {
         addMeasurementType(ID_RANGE_NORMAL,  50, "Concentration",        0,   100,  0, "stock"); //5
         addMeasurementType(ID_NUMBER,        60, "Alcohol (units)",      0,   100,  0, "stock"); //6
         addMeasurementType(ID_TEXT,          70, "Note",                -1,   -1,  -1, "stock"); //7
+        addMeasurementType(ID_TOGGLE,        80, "Medication",           0,    1,   0, "stock"); //8
 
         // Reminders
 
@@ -149,7 +152,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(LOG_PREFIX, "Enter onUpgrade" );
+        Log.d(LOG_PREFIX, String.format("Enter onUpgrade (%d -> %d)", oldVersion, newVersion));
 
         if(oldVersion == 2 && newVersion == 3) {
             // DANGER WILL ROBINSON!
@@ -168,6 +171,8 @@ public class Database extends SQLiteOpenHelper {
             // A bug in changeReminders requires us to trash all reminders
             db.execSQL("DELETE FROM ReminderGroups");
             db.execSQL("DELETE FROM ReminderTimes");
+        } else if(oldVersion == 5 && newVersion == 6) {
+            db.execSQL("INSERT INTO EntityPrimitives (name, isNumber) VALUES (\"toggle\", 1)");
         }
     }
 

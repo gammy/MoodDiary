@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -37,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -183,7 +185,7 @@ public class ReminderActivity extends ThemedDialogActivity {
             label.setText(type.name);
 
             TableRow row = new TableRow(this);
-            // row.setBackgroundColor(Color.BLUE); // (debugging)
+            //row.setBackgroundColor(Color.BLUE); // (debugging)
             row.addView(label, rowParams);
 
             // Make the appropriate widget
@@ -260,6 +262,17 @@ public class ReminderActivity extends ThemedDialogActivity {
                     row.addView(text, rowParams);
                     break;
 
+                case "toggle":
+                    CheckBox checkBox = new CheckBox(this);
+                    type.setView(checkBox);
+                    checkBox.setChecked(sharedPrefs.getBoolean(type.name, type.dfl == 1));
+                    ToggleChangeListener toggleChangeListener = new ToggleChangeListener();
+                    toggleChangeListener.setPreference(prefEditor, type.name);
+                    checkBox.setOnCheckedChangeListener(toggleChangeListener);
+                    Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
+                            Integer.toString(type.id) + ": " + "View " + type.view.toString());
+                    row.addView(checkBox, rowParams);
+                    break;
                 default:
                     break;
 
@@ -270,22 +283,6 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         entryLayout.addView(table);
 
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        /*
-        final View view = getWindow().getDecorView();
-        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) view.getLayoutParams();
-
-        lp.gravity = Gravity.CENTER;
-
-        lp.width = 1000;
-        lp.height = 1600;
-        getWindowManager().updateViewLayout(view, lp);
-        */
     }
 
     @Override
