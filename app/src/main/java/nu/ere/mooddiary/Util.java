@@ -44,45 +44,96 @@ public class Util {
     private static final String LOG_PREFIX = "Util";
 
     /**
-     * Walk through all measurement types and reset (zero) any Views.
-     * Expected to be called after the views have actually been instantiated
-     * (i.e via renderReminderEventTypes)
+     * Raise a notification and flash the LED
      *
-     * @param activity The calling activity (i.e `this` in your Activity)
+     * @param activity Calling activity
      */
-    public static void resetEntries(Activity activity) {
-        Log.d(LOG_PREFIX, "Enter resetEntries");
-        Resources resources = activity.getResources();
-        ORM orm = ORM.getInstance(activity);
+    public static void raiseNotification(Activity activity) {
+        Intent resultIntent = new Intent(activity, ReminderActivity.class);
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(
+                        activity,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
 
-        ArrayList<MeasurementType> types = orm.getMeasurementTypes().getEnabledTypes();
-        for(MeasurementType type: types) {
-            Log.d(LOG_PREFIX, "resetEntries: to reset etype " +
-                    Long.toString(type.id) + ", view id " + Long.toString(type.view.getId()));
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(activity)
+                        .setSmallIcon(R.drawable.ic_stat_name)
+                        .setContentTitle(activity.getString(R.string.notification_title))
+                        .setContentText(activity.getString(R.string.notification_text));
 
+        mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
+        mBuilder.setLights(0xFFFF00FF, 500, 500); // FIXME hardcoded
+        mBuilder.setDefaults(Notification.DEFAULT_SOUND |
+                Notification.DEFAULT_VIBRATE);
 
-            switch (type.getPrimitive(orm.getPrimitives()).name) {
-                case "range_center":
-                case "range_normal":
-                    SeekBar seekBar = (SeekBar) type.view;
-                    seekBar.setMax(type.totalValues);
-                    seekBar.setProgress(type.normalDefault);
-                    break;
+        mBuilder.setContentIntent(pendingIntent);
 
-                case "text":
-                    TextInputEditText textInputEditText = (TextInputEditText) type.view;
-                    textInputEditText.setText("");
-                    break;
-
-                case "number":
-                default:
-                    TextView textView = (TextView) type.view;
-                    textView.setText(Long.toString(type.normalDefault));
-                    break;
-            }
-        }
+        // Sets an ID for the notification
+        int mNotificationId = 1;
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) activity.getSystemService(NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
+    /**
+     * Provide a fancypants string representing time in the user's desired locale
+     *
+     * @param context Calling context
+     * @param hour Hour in 24hr format (0-23)
+     * @param minute Minute in 24hr format (0-59)
+     * @return String
+     */
+    public static String toHumanTime(Context context, int hour, int minute) {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.setTime(new java.util.Date());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+
+        /*
+        Log.d(LOG_PREFIX, "toHumanTime: Alarm set for: " +
+                String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + ":" +
+                String.valueOf(calendar.get(Calendar.MINUTE)) + ":" +
+                String.valueOf(calendar.get(Calendar.SECOND))
+        );
+        */
+
+        long millis = calendar.getTimeInMillis();
+        // Log.d(LOG_PREFIX, "in milliseconds: " + Long.toString(millis));
+        String timeString = DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_TIME);
+        //Log.d(LOG_PREFIX, "Human: " + timeString);
+
+        return timeString;
+    }
+
+
+    public static void saveSingleEntry(Activity activity,
+                                       MeasurementType measurementType,
+                                       String value) {
+        // Ugly, but it works. This saves a single entry from the main view
+        Entry entry = new Entry(measurementType.id, value);
+        ORM orm = ORM.getInstance(activity);
+        ArrayList<Entry> entryList = new ArrayList<>();
+        entryList.add(entry);
+        orm.addEntries(entryList, true);
+        String text = activity.getString(R.string.toast_saved);
+        Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Walk through the provided measurement types and add them to the database
+     *
+     * @param activity Calling activity
+     * @param types  Arraylist of measurement types
+     */
     public static void saveEvents(Activity activity, ArrayList<MeasurementType> types) {
         Log.d(LOG_PREFIX, "Enter saveEvents");
         ORM orm = ORM.getInstance(activity);
@@ -140,94 +191,13 @@ public class Util {
         orm.addEntries(entries, true);
     }
 
-    public static void raiseNotification(Activity activity) {
-        /** Notification test ***********************/
-
-        Intent resultIntent = new Intent(activity, ReminderActivity.class);
-        // ..
-        // Because clicking the notification opens a new ("special") activity, there's
-        // no need to create an artificial back stack.
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(
-                        activity,
-                        0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(activity)
-                    .setSmallIcon(R.drawable.ic_stat_name)
-                    .setContentTitle(activity.getString(R.string.notification_title))
-                    .setContentText(activity.getString(R.string.notification_text));
-
-       mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
-       mBuilder.setLights(0xFFFF00FF, 500, 500);
-       mBuilder.setDefaults(Notification.DEFAULT_SOUND |
-                            Notification.DEFAULT_VIBRATE);
-
-        mBuilder.setContentIntent(pendingIntent);
-
-        // Sets an ID for the notification
-        int mNotificationId = 1;
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) activity.getSystemService(NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
-    }
-
-    public static String toHumanTime(Context context, int hour, int minute) {
-        Calendar calendar = Calendar.getInstance();
-
-        calendar.setTime(new java.util.Date());
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, 0);
-
-        /*
-        Log.d(LOG_PREFIX, "toHumanTime: Alarm set for: " +
-                String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + ":" +
-                String.valueOf(calendar.get(Calendar.MINUTE)) + ":" +
-                String.valueOf(calendar.get(Calendar.SECOND))
-        );
-        */
-
-        long millis = calendar.getTimeInMillis();
-        // Log.d(LOG_PREFIX, "in milliseconds: " + Long.toString(millis));
-        String timeString = DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_TIME);
-        //Log.d(LOG_PREFIX, "Human: " + timeString);
-
-        return timeString;
-    }
-
-    public static void saveSingleEntry(Activity activity,
-                                       MeasurementType measurementType,
-                                       String value) {
-        // Ugly, but it works. This saves a single entry from the main view
-        Entry entry = new Entry(measurementType.id, value);
-        ORM orm = ORM.getInstance(activity);
-        ArrayList<Entry> entryList = new ArrayList<>();
-        entryList.add(entry);
-        orm.addEntries(entryList, true);
-        String text = activity.getString(R.string.toast_saved);
-        Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
-    }
-
-    public static String buildIntString(ArrayList<Integer> list) {
-        // The String object in Java < 8 doesn't have a .join method, so we have to do this
-        // shit instead.
-        StringBuilder stringBuilder = new StringBuilder();
-        String separator = ""; // No separator on first iteration
-        for(Integer integer : list) {
-            stringBuilder.append(integer.toString());
-            stringBuilder.append(separator);
-            separator = ",";
-        }
-
-        return stringBuilder.toString();
-    }
-
+    /**
+     * Add a reminderTime to the database and reload the alarms
+     *
+     * @param activity Calling preference activity
+     * @param bundle The bundle containing reminder metadata
+     * @return boolean always true
+     */
     public static boolean addReminder(PreferencesActivity activity, Bundle bundle) {
         Log.d(LOG_PREFIX, "Enter addReminder");
         ORM orm = ORM.getInstance(activity);
@@ -244,6 +214,13 @@ public class Util {
         return(true);
     }
 
+    /**
+     * Update(change) a reminderTime and reload the alarms
+     *
+     * @param activity Calling preference activity
+     * @param bundle The bundle containing reminder metadata
+     * @return boolean always true
+     */
     public static boolean updateReminder(PreferencesActivity activity, Bundle bundle) {
         Log.d(LOG_PREFIX, "Enter updateReminder");
         ORM orm = ORM.getInstance(activity);
@@ -271,6 +248,13 @@ public class Util {
         return(true);
     }
 
+    /**
+     * Add a measurementType to the database
+     *
+     * @param activity Calling preference activity
+     * @param bundle The bundle containing reminder metadata
+     * @return boolean always true
+     */
     public static boolean addMeasurementType(PreferencesActivity activity, Bundle bundle) {
         Log.d(LOG_PREFIX, "Enter addMeasurementType");
         ORM orm = ORM.getInstance(activity);
@@ -289,6 +273,13 @@ public class Util {
         return(true);
     }
 
+    /**
+     * Update(change) a measurementType
+     *
+     * @param activity Calling preference activity
+     * @param bundle The bundle containing reminder metadata
+     * @return boolean always true
+     */
     public static boolean updateMeasurementType(PreferencesActivity activity, Bundle bundle) {
         Log.d(LOG_PREFIX, "Enter updateMeasurementType");
         ORM orm = ORM.getInstance(activity);

@@ -116,12 +116,13 @@ public class Database extends SQLiteOpenHelper {
         addPrimitive("number",       true);
         addPrimitive("text",        false);
 
-        addMeasurementType(ID_RANGE_CENTER,  10, "Mood",               -50,    50, 0, "stock");
-        addMeasurementType(ID_RANGE_NORMAL,  20, "Anxiety",              0,   100, 0, "stock");
-        addMeasurementType(ID_RANGE_NORMAL,  30, "Irritability",         0,   100, 0, "stock");
-        addMeasurementType(ID_RANGE_NORMAL,  40, "Lack of Focus",        0,   100, 0, "stock");
-        addMeasurementType(ID_RANGE_CENTER,  50, "Energy",             -50,    50, 0, "stock");
-        addMeasurementType(ID_TEXT,          60, "Note",                -1,   -1, -1, "stock");
+        addMeasurementType(ID_RANGE_CENTER,  10, "Mood",               -50,    50,  0, "stock"); //1
+        addMeasurementType(ID_RANGE_CENTER,  20, "Energy",             -50,    50,  0, "stock"); //2
+        addMeasurementType(ID_RANGE_NORMAL,  30, "Anxiety",              0,   100,  0, "stock"); //3
+        addMeasurementType(ID_RANGE_NORMAL,  40, "Irritability",         0,   100,  0, "stock"); //4
+        addMeasurementType(ID_RANGE_NORMAL,  50, "Concentration",        0,   100,  0, "stock"); //5
+        addMeasurementType(ID_NUMBER,        60, "Alcohol (units)",      0,   100,  0, "stock"); //6
+        addMeasurementType(ID_TEXT,          70, "Note",                -1,   -1,  -1, "stock"); //7
 
         // Reminders
 
@@ -142,7 +143,7 @@ public class Database extends SQLiteOpenHelper {
         reminderEventList.add(2); // Anxiety
         reminderEventList.add(3); // Irritability
         reminderEventList.add(6); // Alcohol
-        reminderEventList.add(9); // Note
+        reminderEventList.add(7); // Note
         addReminder(21, 0, reminderEventList); // 9pm
     }
 
