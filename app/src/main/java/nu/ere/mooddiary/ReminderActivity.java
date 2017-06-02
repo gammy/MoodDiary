@@ -21,18 +21,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -51,6 +57,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private int reminderID = -1;
     private ArrayList<MeasurementType> measurementTypes = null;
     private boolean nosave = false; // Debug option
+    private ImageView fantasticView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +107,7 @@ public class ReminderActivity extends ThemedDialogActivity {
         initUI();
     }
 
-    public void initUI() {
+    private void initUI() {
         Log.d(LOG_PREFIX, "Enter initUI" );
 
         setContentView(R.layout.content_reminders);
@@ -117,31 +124,9 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         renderReminderEventTypes(entryLayout);
 
-
-        /*
-    <TextView
-        android:id="@+id/reminderThanksTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="cursive"
-        android:gravity="center"
-        android:text="@string/fantastic_view"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textSize="36sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
-        */
-        TextView fantastic = new TextView(this);
-        fantastic.setText(getString(R.string.fantastic_view));
-        fantastic.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
-        fantastic.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
-        fantastic.setVisibility(View.INVISIBLE);
-        entryLayout.addView(fantastic);
+        ScrollView l = (ScrollView) findViewById(R.id.reminderScrollView);
+        fantasticView = (ImageView) findViewById(R.id.fantasticView); //;new ImageView(this);
+        ViewCompat.setElevation(fantasticView, 200); // Above save button
 
         // FIXME this never shows outside of the viewport for some fucking reason.
         // Set up the save button, which, on click, saves the event and runs an animation
@@ -152,13 +137,12 @@ public class ReminderActivity extends ThemedDialogActivity {
         if(nosave) {
             ArrayList<MeasurementType> nothing = new ArrayList<>();
             saveButton.setOnClickListener(
-                    new SaveClickListener(this, nothing, fantastic, true));
+                    new SaveClickListener(this, nothing, fantasticView, true));
         } else {
             saveButton.setOnClickListener(
-                    new SaveClickListener(this, measurementTypes, fantastic, true));
+                    new SaveClickListener(this, measurementTypes, fantasticView, true));
         }
         entryLayout.addView(saveButton);
-
     }
 
     /**
@@ -167,7 +151,7 @@ public class ReminderActivity extends ThemedDialogActivity {
      * minute primitives, and rendering everything.
      *
      */
-    public void renderReminderEventTypes(LinearLayout entryLayout) {
+    private void renderReminderEventTypes(LinearLayout entryLayout) {
         Log.d(LOG_PREFIX, "Enter renderReminderEventTypes");
         Resources resources = getResources();
 

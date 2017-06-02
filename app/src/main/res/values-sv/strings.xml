@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Stämningsdagbok</string>
     <string name="header_view">Hur mår du?</string>
-    <string name="fantastic_view">Strålande!</string>
     <string name="action_save_csv">Spara</string>
     <string name="action_save_sql">Spara</string>
     <string name="cancel">Ångra</string>
