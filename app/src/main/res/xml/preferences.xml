@@ -27,6 +27,7 @@
         android:summary="@string/summary_preference_export">
     </PreferenceScreen>
 
+    <!-- defaultValue doesn't seem to be respected (so we set it programmatically) -->
     <ListPreference
         android:key="preference_select_theme"
         android:title="@string/title_preference_select_theme"
