@@ -74,6 +74,7 @@ public class GraphActivity extends ThemedActivity {
 
         /************************************************************************************/
 
+        // Setup some nice colors
         ArrayList<Integer> colorTable = new ArrayList<>();
 
         colorTable.add(Color.rgb( 52, 122,  78)); // 1

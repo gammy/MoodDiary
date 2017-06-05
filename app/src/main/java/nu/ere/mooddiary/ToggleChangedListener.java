@@ -15,29 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package nu.ere.mooddiary;
 
-import android.app.Activity;
-import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.content.SharedPreferences;
+import android.widget.CheckBox;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
-public class MeasurementButtonClickListener implements OnClickListener {
-    public Activity activity;
-    public MeasurementType measurementType;
-    public int dialogThemeID;
+class ToggleChangeListener implements CheckBox.OnCheckedChangeListener {
 
-    public MeasurementButtonClickListener(Activity activity,
-                                          MeasurementType measurementType,
-                                          int dialogThemeID) {
-        this.activity = activity;
-        this.measurementType = measurementType;
-        this.dialogThemeID = dialogThemeID;
+    SharedPreferences.Editor prefEditor = null;
+    String prefKey = null;
+
+    public void setPreference(SharedPreferences.Editor editor,  String key) {
+        this.prefEditor = editor;
+        this.prefKey = key;
     }
 
     @Override
-    public void onClick(View v)
-    {
-        CustomDialogs.showDialog(activity, null, measurementType, dialogThemeID);
+    public void onCheckedChanged(CompoundButton button, boolean value) {
+        prefEditor.putBoolean(prefKey, value);
+        prefEditor.apply();
     }
-
-
 }

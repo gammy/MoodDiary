@@ -21,13 +21,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 // So stupid..
 public class SaveSplash implements AnimationListener {
 
     public Animation animation; // "out"
-    public TextView view;
+    public ImageView view;
     public Activity activity = null;
 
     public void onAnimationEnd(Animation animation) {

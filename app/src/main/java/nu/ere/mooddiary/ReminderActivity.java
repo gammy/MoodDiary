@@ -21,18 +21,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -50,6 +58,8 @@ public class ReminderActivity extends ThemedDialogActivity {
     private ORM orm;
     private int reminderID = -1;
     private ArrayList<MeasurementType> measurementTypes = null;
+    private boolean nosave = false; // Debug option
+    private ImageView fantasticView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +77,7 @@ public class ReminderActivity extends ThemedDialogActivity {
                 Log.d(LOG_PREFIX, "No state data from instance, and no extras passed?! :O");
                 reminderID = -1;
             } else {
+                nosave = extras.getBoolean("nosave", false);
                 reminderID = extras.getInt("reminder_id");
                 prefEditor.putInt("reminder_id", reminderID);
                 prefEditor.apply();
@@ -98,7 +109,7 @@ public class ReminderActivity extends ThemedDialogActivity {
         initUI();
     }
 
-    public void initUI() {
+    private void initUI() {
         Log.d(LOG_PREFIX, "Enter initUI" );
 
         setContentView(R.layout.content_reminders);
@@ -115,31 +126,9 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         renderReminderEventTypes(entryLayout);
 
-
-        /*
-    <TextView
-        android:id="@+id/reminderThanksTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="cursive"
-        android:gravity="center"
-        android:text="@string/fantastic_view"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textSize="36sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
-        */
-        TextView fantastic = new TextView(this);
-        fantastic.setText(getString(R.string.fantastic_view));
-        fantastic.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
-        fantastic.setTextSize(TypedValue.COMPLEX_UNIT_SP, 36);
-        fantastic.setVisibility(View.INVISIBLE);
-        entryLayout.addView(fantastic);
+        ScrollView l = (ScrollView) findViewById(R.id.reminderScrollView);
+        fantasticView = (ImageView) findViewById(R.id.fantasticView); //;new ImageView(this);
+        ViewCompat.setElevation(fantasticView, 200); // Above save button
 
         // FIXME this never shows outside of the viewport for some fucking reason.
         // Set up the save button, which, on click, saves the event and runs an animation
@@ -147,10 +136,15 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         saveButton.setText(getString(R.string.submit));
         // The saveClickListener below will terminate this activity once it's done.
-        saveButton.setOnClickListener(
-                new SaveClickListener(this, measurementTypes, fantastic, true));
+        if(nosave) {
+            ArrayList<MeasurementType> nothing = new ArrayList<>();
+            saveButton.setOnClickListener(
+                    new SaveClickListener(this, nothing, fantasticView, true));
+        } else {
+            saveButton.setOnClickListener(
+                    new SaveClickListener(this, measurementTypes, fantasticView, true));
+        }
         entryLayout.addView(saveButton);
-
     }
 
     /**
@@ -159,7 +153,7 @@ public class ReminderActivity extends ThemedDialogActivity {
      * minute primitives, and rendering everything.
      *
      */
-    public void renderReminderEventTypes(LinearLayout entryLayout) {
+    private void renderReminderEventTypes(LinearLayout entryLayout) {
         Log.d(LOG_PREFIX, "Enter renderReminderEventTypes");
         Resources resources = getResources();
 
@@ -191,7 +185,7 @@ public class ReminderActivity extends ThemedDialogActivity {
             label.setText(type.name);
 
             TableRow row = new TableRow(this);
-            // row.setBackgroundColor(Color.BLUE); // (debugging)
+            //row.setBackgroundColor(Color.BLUE); // (debugging)
             row.addView(label, rowParams);
 
             // Make the appropriate widget
@@ -268,6 +262,17 @@ public class ReminderActivity extends ThemedDialogActivity {
                     row.addView(text, rowParams);
                     break;
 
+                case "toggle":
+                    CheckBox checkBox = new CheckBox(this);
+                    type.setView(checkBox);
+                    checkBox.setChecked(sharedPrefs.getBoolean(type.name, type.dfl == 1));
+                    ToggleChangeListener toggleChangeListener = new ToggleChangeListener();
+                    toggleChangeListener.setPreference(prefEditor, type.name);
+                    checkBox.setOnCheckedChangeListener(toggleChangeListener);
+                    Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
+                            Integer.toString(type.id) + ": " + "View " + type.view.toString());
+                    row.addView(checkBox, rowParams);
+                    break;
                 default:
                     break;
 
@@ -278,22 +283,6 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         entryLayout.addView(table);
 
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        /*
-        final View view = getWindow().getDecorView();
-        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) view.getLayoutParams();
-
-        lp.gravity = Gravity.CENTER;
-
-        lp.width = 1000;
-        lp.height = 1600;
-        getWindowManager().updateViewLayout(view, lp);
-        */
     }
 
     @Override

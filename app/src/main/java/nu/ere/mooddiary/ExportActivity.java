@@ -40,24 +40,6 @@ public class ExportActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "ExportActivity";
 
     private ORM orm;
-    PreferenceScreen prefEventTypes;
-    /*
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
-    }
-
-    public static class MyPreferenceFragment extends PreferenceFragment
-    {
-        @Override
-        public void onCreate(final Bundle savedInstanceState)
-        {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.export);
-        }
-    }
-    */
 
     SharedPreferences prefs;
     SharedPreferences.Editor editor;

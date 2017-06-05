@@ -22,19 +22,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -182,6 +179,11 @@ public class Util {
                     Log.d(LOG_PREFIX, "About to read number getText on " + nView.toString());
                     value = nView.getText().toString();
                     value = Long.toString(type.min + Long.parseLong(value, 10));
+                    break;
+
+                case "toggle":
+                    CheckBox cView = (CheckBox) type.view;
+                    value = cView.isChecked() ? "1" : "0";
             }
 
             // Add

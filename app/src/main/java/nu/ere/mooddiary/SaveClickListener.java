@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class SaveClickListener implements OnClickListener {
     private static final String LOG_PREFIX = "SaveClickListener";
 
     private Activity activity;
-    private TextView view;
+    private ImageView view;
 
     private Animation in, out;
     private SaveSplash splash;
@@ -41,7 +42,7 @@ public class SaveClickListener implements OnClickListener {
 
     public SaveClickListener(Activity activity,
                              ArrayList<MeasurementType> measurementTypes,
-                             TextView view,
+                             ImageView view,
                              boolean harakiri) {
         Log.d(LOG_PREFIX, "Enter SaveClickListener");
 

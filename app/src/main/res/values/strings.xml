@@ -2,7 +2,6 @@
     <!-- Main -->
     <string name="app_name">Mood Diary</string>
     <string name="header_view">How are you?</string>
-    <string name="fantastic_view">Fantastic!</string>
 
     <!-- Main menu -->
     <string name="title_action_settings">Settings</string>
@@ -58,10 +57,10 @@
     <string name="preference_select_import">Import</string>
     <string name="preference_select_export">Export</string>
 
-    <string name="action_save_csv">Save</string>
+    <!--0<string name="action_save_csv">Save</string>-->
     <string name="summary_action_save_csv">Export the CSV to a file</string>
 
-    <string name="action_save_sql">Save</string>
+    <!--<string name="action_save_sql">Save</string>-->
     <string name="summary_action_save_sql">Export the database</string>
 
     <!-- About -->
@@ -85,6 +84,8 @@
     <string name="export_good">Exported!</string>
     <string name="summary_is_disabled">Disabled</string>
     <string name="measurement_type_state_enabled">Enabled</string>
+    <string name="action_save_csv">Save</string>
+    <string name="action_save_sql">Save</string>
 </resources>
 
 

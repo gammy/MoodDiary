@@ -139,6 +139,15 @@ public class MainActivity extends ThemedActivity {
                 startActivity(i);
                 return true;
 
+            case R.id.action_test_reminder_activity_nosave:
+                Log.d(LOG_PREFIX, "Test mode (nosave): Picking the first available reminderTime");
+                i = new Intent(MainActivity.this, ReminderActivity.class);
+                i.putExtra("nosave", true);
+                i.putExtra("reminder_id",
+                        ORM.getInstance(this).getReminderTimes().getFirstReminderTimeId());
+                startActivity(i);
+                return true;
+
             case R.id.action_test_alarm:
                 Alarms.alarmTest(this);
                 return true;

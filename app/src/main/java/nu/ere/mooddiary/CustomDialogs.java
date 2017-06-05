@@ -22,6 +22,8 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
@@ -50,6 +52,10 @@ public class CustomDialogs {
 
             case "text":
                 showTextDialog(activity, null, measurementType, dialogThemeID);
+                break;
+
+            case "toggle":
+                showToggleDialog(activity, null, measurementType, dialogThemeID);
                 break;
         }
     }
@@ -133,6 +139,7 @@ public class CustomDialogs {
 
         return(editText);
     }
+
     /**
      *
      * @param activity The calling activity (i.e `this` in your Activity)
@@ -185,5 +192,44 @@ public class CustomDialogs {
         dialog.show();
 
         return(numberPicker);
+    }
+
+    /**
+     *
+     * @param activity The calling activity (i.e `this` in your Activity)
+     * @param view
+     * @param measurementType
+     * @param dialogThemeID Theme (style) id to pass to any dialog click listeners
+     * @return CheckBox
+     */
+    public static CheckBox showToggleDialog(Activity activity,
+                                            CheckBox view,
+                                            MeasurementType measurementType,
+                                            int dialogThemeID){
+        Log.d(LOG_PREFIX, "Enter showToggleDialog");
+        Log.d(LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
+        final CheckBox checkBox =
+                new CheckBox(new ContextThemeWrapper(activity, dialogThemeID));
+        checkBox.setGravity(Gravity.END);
+
+        checkBox.setChecked(measurementType.dfl == 1);
+
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(new ContextThemeWrapper(activity, dialogThemeID));
+
+        DialogToggleClickListener listener = new DialogToggleClickListener(activity, checkBox);
+        listener.setView(view);
+        listener.setMeasurementType(measurementType);
+
+        builder.setPositiveButton(R.string.submit, listener);
+        builder.setNegativeButton(R.string.cancel, listener);
+        builder.setView(checkBox);
+
+        AlertDialog dialog = builder.create();
+
+        dialog.setTitle(measurementType.name);
+        dialog.show();
+
+        return(checkBox);
     }
 }
