@@ -63,10 +63,6 @@
     <!--<string name="action_save_sql">Save</string>-->
     <string name="summary_action_save_sql">Export the database</string>
 
-    <!-- About -->
-    <string name="action_donate">Thanks, here\'s a dollar!</string>
-    <string name="paypal_action_link" translatable="false">https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=CJT9T3PU5BRZ2&amp;lc=SE&amp;item_name=Mood%20Diary&amp;item_number=MoodDiaryApp&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted</string>
-
     <!-- Toasts -->
     <string name="toast_saved">Saved</string>
     <string name="toast_deleted">Removed</string>

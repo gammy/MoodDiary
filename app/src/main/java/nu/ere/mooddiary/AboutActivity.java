@@ -41,21 +41,9 @@ public class AboutActivity extends ThemedActivity {
         TextView versionTextView = (TextView) findViewById(R.id.versionTextView);
         versionTextView.setText("v" + versionName + "-" + Integer.toString(versionCode));
 
-        Button donateButton = (Button) findViewById(R.id.donateButton);
-
         WebView webView = (WebView) findViewById(R.id.aboutWebView);
         webView.loadUrl("file:///android_asset/about.html");
         webView.setBackgroundColor(Color.TRANSPARENT);
-
-        donateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = getResources().getString(R.string.paypal_action_link);
-                Intent browserIntent =
-                        new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(browserIntent);
-            }
-        });
     }
 
 }
