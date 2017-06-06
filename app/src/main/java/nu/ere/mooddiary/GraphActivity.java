@@ -69,8 +69,7 @@ public class GraphActivity extends ThemedActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR, -5); // Get 5 years' worth of data
-        long oneMonthAgoUnixTime = calendar.getTimeInMillis() / 1000;
-        Log.d(LOG_PREFIX, "A month ago = " + Long.toString(oneMonthAgoUnixTime));
+        long graphTimeBegin = calendar.getTimeInMillis() / 1000;
 
         /************************************************************************************/
 
@@ -125,7 +124,7 @@ public class GraphActivity extends ThemedActivity {
                          "WHERE " +
                              "type = " + Integer.toString(mType.id) + " " +
                          "AND " +
-                             "date >= " + Long.toString(oneMonthAgoUnixTime) + " " +
+                             "date >= " + Long.toString(graphTimeBegin) + " " +
                          "ORDER BY " +
                              "date ASC " +
                          "LIMIT " + Integer.toString(maxPoints);
@@ -171,50 +170,7 @@ public class GraphActivity extends ThemedActivity {
                 graph.addSeries(series);
             }
 
-            /*
-            // Add events to the series
-            while(cursor.moveToNext()) {
-                long longTime = cursor.getLong(cursor.getColumnIndex("date"));
-                Date time = new Date(longTime * 1000);
-                int value = Integer.parseInt(cursor.getString(cursor.getColumnIndex("value")));
-                //String value  = cursor.getString(cursor.getColumnIndex("value"));
-                Log.d(LOG_PREFIX, "Adding event " + mType.name
-                                + ", time " + Long.toString(longTime)
-                                + ", value " + Integer.toString(value));
-                value -= mType.min;
-                DataPoint point = new DataPoint(time, value);
-                series.appendData(point, true, maxPoints);
-            }
-            */
-
         }
-        /*
-        // Fetch `maxPoints` rows of events whose primitive is a number
-        String sql = "SELECT " +
-                         "date, " +
-                         "value, " +
-                         "type, " +
-                         "MeasurementTypes.name AS name " +
-                     "FROM " +
-                         "Events " +
-                     "LEFT OUTER JOIN " +
-                         "MeasurementTypes " +
-                     "ON " +
-                         "Events.type = MeasurementTypes.id " +
-                     "LEFT OUTER JOIN " +
-                         "EntityPrimitives " +
-                     "ON " +
-                         "MeasurementTypes.entity = EntityPrimitives.id " +
-                     "WHERE " +
-                         "EntityPrimitives.isNumber = 1 " +
-                     "AND " +
-                         "date >= " + Long.toString(oneMonthAgoUnixTime) + " " +
-                     "ORDER BY " +
-                         "date ASC " +
-                     "LIMIT " + Integer.toString(maxPoints);
-        */
-
-        /************************************************************************************/
 
         Log.d(LOG_PREFIX, "Rendering graph");
 
@@ -223,36 +179,39 @@ public class GraphActivity extends ThemedActivity {
         DateAsXAxisLabelFormatter formatter = new DateAsXAxisLabelFormatter(this, dateFormat);
         graph.getGridLabelRenderer().setLabelFormatter(formatter);
         graph.getGridLabelRenderer().setNumHorizontalLabels(6); // = 1 week :P
+        graph.getGridLabelRenderer().setNumVerticalLabels(0); // = 1 week :P
         graph.getGridLabelRenderer().setHumanRounding(false);
 
         graph.getLegendRenderer().setVisible(true);
         //graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.MIDDLE);
         graph.getLegendRenderer().setFixedPosition(10, 10);
-        graph.getLegendRenderer().setBackgroundColor(Color.argb(25, 64, 64, 64));
+        graph.getLegendRenderer().setBackgroundColor(Color.argb(192, 240, 240, 240));
 
         graph.getViewport().setScrollable(true);
         graph.getViewport().setScalable(true);
-        //graph.getViewport().setScalableY(true);
 
-        //graph.getViewport().setXAxisBoundsManual(true);
+        updateViewPort(graph);
+    }
 
-        Calendar tempcal = Calendar.getInstance();
-        tempcal.setTime(new Date());
-        calendar.add(Calendar.WEEK_OF_YEAR, -1);
+    private void updateViewPort(GraphView graph) {
+        Calendar calBegin = Calendar.getInstance();
+        calBegin.setTime(new Date());
+        calBegin.add(Calendar.WEEK_OF_YEAR, -1);
+        long viewPortBegin = calBegin.getTimeInMillis();
 
-        long viewPortStart = calendar.getTimeInMillis();
-        calendar.setTime(new Date());
-        long rightNow = calendar.getTimeInMillis();
+        Calendar calEnd = Calendar.getInstance();
+        calEnd.setTime(new Date());
+        long viewPortEnd = calEnd.getTimeInMillis();
 
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(viewPortStart);
-        graph.getViewport().setMaxX(rightNow);
+        graph.getViewport().setMinX(viewPortBegin);
+        graph.getViewport().setMaxX(viewPortEnd);
 
+        SimpleDateFormat foo = new SimpleDateFormat("MMM dd,yyyy HH:mm");
+        Date beg = new Date(viewPortBegin);
+        Date end = new Date(viewPortEnd);
 
-        //for(LineGraphSeries series: seriesList) {
-        //    Log.d(LOG_PREFIX, "Adding a series to the graph");
-        //    graph.addSeries(series);
-        //}
+        Log.d(LOG_PREFIX, String.format("Beg: %s (%d)", foo.format(beg), viewPortBegin));
+        Log.d(LOG_PREFIX, String.format("End: %s (%d)", foo.format(end), viewPortEnd));
     }
 
     private LinkedHashMap<Date, Integer> getValues(Cursor cursor, MeasurementType mType) {
