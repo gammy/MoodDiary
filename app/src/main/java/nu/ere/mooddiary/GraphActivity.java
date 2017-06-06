@@ -56,7 +56,7 @@ public class GraphActivity extends ThemedActivity {
 
         // Populate it with some data
 
-        int maxPoints = 1000;
+        int maxPoints = 50000; // Arbitrary limit
 
         /* We need to
            - figure out how to get ONE MONTH worth of data
@@ -68,7 +68,7 @@ public class GraphActivity extends ThemedActivity {
         // Get UNIX Timestamp equalling one month ago
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.MONTH, -1);
+        calendar.add(Calendar.YEAR, -5); // Get 5 years' worth of data
         long oneMonthAgoUnixTime = calendar.getTimeInMillis() / 1000;
         Log.d(LOG_PREFIX, "A month ago = " + Long.toString(oneMonthAgoUnixTime));
 
@@ -77,19 +77,22 @@ public class GraphActivity extends ThemedActivity {
         // Setup some nice colors
         ArrayList<Integer> colorTable = new ArrayList<>();
 
-        colorTable.add(Color.rgb( 52, 122,  78)); // 1
-        colorTable.add(Color.rgb(212, 110,  40)); // 2
-        colorTable.add(Color.rgb( 93,  88, 123)); // 3
-        colorTable.add(Color.rgb(121, 189, 198)); // 4
-        colorTable.add(Color.rgb(206, 188, 103)); // 5
-        colorTable.add(Color.rgb( 72,  99, 142)); // 6
-        colorTable.add(Color.rgb( 79, 250, 234)); // 7
-        colorTable.add(Color.rgb(249, 110, 104)); // 8
-        colorTable.add(Color.rgb( 93, 255,  28)); // 9
-        colorTable.add(Color.rgb(160,  69, 142)); // 10
-        colorTable.add(Color.rgb(129, 168,  55)); // 11
-        colorTable.add(Color.rgb( 64, 191, 157)); // 12
-        colorTable.add(Color.rgb(214, 219, 148)); // 13
+        colorTable.add(Color.rgb(0x63, 0x39, 0x74)); // 1
+        colorTable.add(Color.rgb(0xD9, 0x88, 0x80)); // 2
+        colorTable.add(Color.rgb(0x85, 0xC1, 0xE9)); // 3
+        colorTable.add(Color.rgb(0x1A, 0xBC, 0x9C)); // 4
+        colorTable.add(Color.rgb(0xF7, 0xDC, 0x6F)); // 5
+        colorTable.add(Color.rgb(0xA0, 0x40, 0x00)); // 6
+        colorTable.add(Color.rgb(0xCA, 0xCF, 0xD2)); // 7
+        colorTable.add(Color.rgb(0x56, 0x65, 0x73)); // 8
+        colorTable.add(Color.rgb(0x7E, 0x51, 0x09)); // 9
+        colorTable.add(Color.rgb(0xF5, 0xB7, 0xB1)); // 10
+        colorTable.add(Color.rgb(0x11, 0x78, 0x64)); // 11
+        colorTable.add(Color.rgb(0x4D, 0x56, 0x56)); // 12
+        colorTable.add(Color.rgb(0xFE, 0xF9, 0xE7)); // 13
+        colorTable.add(Color.rgb(0xE8, 0xDA, 0xEF)); // 14
+        colorTable.add(Color.rgb(0x34, 0x98, 0xDB)); // 15
+        colorTable.add(Color.rgb(0x1A, 0x52, 0x76)); // 16
 
         ArrayList<MeasurementType> mTypes = orm.getMeasurementTypes().getEnabledTypes();
 
@@ -104,7 +107,8 @@ public class GraphActivity extends ThemedActivity {
         // paint.setStrokeWidth(10);
         // paint.setPathEffect(new DashPathEffect(new float[]{8, 5}, 0));
 
-        for(MeasurementType mType: mTypes ) {
+        for(int i = 0; i < mTypes.size(); i++) {
+            MeasurementType mType = mTypes.get(i);
             Log.d(LOG_PREFIX, "Walking Measurement Types: " + mType.name);
 
             EntityPrimitive primitive = orm.getPrimitives().getByID(mType.entity);
@@ -138,7 +142,7 @@ public class GraphActivity extends ThemedActivity {
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
             series.setTitle(mType.name);
             series.setDrawDataPoints(true);
-            series.setColor(colorTable.get((mType.id) % colorTable.size()));
+            series.setColor(colorTable.get(i % (colorTable.size() - 1)));
 
             for(Map.Entry entry: values.entrySet()) {
                 Date k = (Date) entry.getKey();
@@ -215,10 +219,10 @@ public class GraphActivity extends ThemedActivity {
         Log.d(LOG_PREFIX, "Rendering graph");
 
         // set date label formatter
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE\nd/M\n" );
         DateAsXAxisLabelFormatter formatter = new DateAsXAxisLabelFormatter(this, dateFormat);
         graph.getGridLabelRenderer().setLabelFormatter(formatter);
-        graph.getGridLabelRenderer().setNumHorizontalLabels(6);
+        graph.getGridLabelRenderer().setNumHorizontalLabels(6); // = 1 week :P
         graph.getGridLabelRenderer().setHumanRounding(false);
 
         graph.getLegendRenderer().setVisible(true);
@@ -233,14 +237,17 @@ public class GraphActivity extends ThemedActivity {
         //graph.getViewport().setXAxisBoundsManual(true);
 
         Calendar tempcal = Calendar.getInstance();
-        calendar.setTime(new Date());
+        tempcal.setTime(new Date());
         calendar.add(Calendar.WEEK_OF_YEAR, -1);
-        long oneWeekAgo = calendar.getTimeInMillis();
+
+        long viewPortStart = calendar.getTimeInMillis();
         calendar.setTime(new Date());
         long rightNow = calendar.getTimeInMillis();
 
-        graph.getViewport().setMinX(oneWeekAgo);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(viewPortStart);
         graph.getViewport().setMaxX(rightNow);
+
 
         //for(LineGraphSeries series: seriesList) {
         //    Log.d(LOG_PREFIX, "Adding a series to the graph");
