@@ -227,10 +227,6 @@ public class ReminderActivity extends ThemedDialogActivity {
         seekBar.setMax(type.totalValues);
         seekBar.setProgress(type.normalDefault);
 
-        Log.d(LOG_PREFIX, "Renderer: Range: Assigning mType " +
-                Integer.toString(type.id) + ": " +
-                "View " + type.view.toString());
-
         return seekBar;
     }
 
@@ -256,9 +252,6 @@ public class ReminderActivity extends ThemedDialogActivity {
                 new MeasurementTextClickListener(this, number, type, themeID);
         number.setOnClickListener(listener);
         //TextInputEditText number = new TextInputEditText(this);
-        Log.d(LOG_PREFIX, "Renderer: Number: Assigning mType " +
-                Integer.toString(type.id) + ": " +
-                "View " + type.view.toString());
 
         return number;
     }
@@ -270,9 +263,6 @@ public class ReminderActivity extends ThemedDialogActivity {
         text.setText("");
         TextViewCompat.setTextAppearance(text,
                 android.R.style.TextAppearance_DeviceDefault_Medium);
-        Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
-                Integer.toString(type.id) + ": " + "View " + type.view.toString());
-
         return text;
     }
 
@@ -280,8 +270,6 @@ public class ReminderActivity extends ThemedDialogActivity {
         CheckBox checkBox = new CheckBox(this);
         type.setView(checkBox);
         checkBox.setChecked(type.dfl == 1);
-        Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
-                Integer.toString(type.id) + ": " + "View " + type.view.toString());
         return checkBox;
     }
 
