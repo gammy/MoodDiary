@@ -16,21 +16,18 @@
 package nu.ere.mooddiary;
 
 import android.app.Activity;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-// So stupid..
 public class SaveClickListener implements OnClickListener {
     private static final String LOG_PREFIX = "SaveClickListener";
 
@@ -38,8 +35,6 @@ public class SaveClickListener implements OnClickListener {
     private Activity activity;
     private ImageView view;
     ArrayList<MeasurementType> measurementTypes;
-
-    //private ArrayList<MeasurementType> measurementTypes = null;
 
     public SaveClickListener(Activity activity,
                              ArrayList<MeasurementType> measurementTypes,
@@ -53,7 +48,6 @@ public class SaveClickListener implements OnClickListener {
         animationSet = new AnimationSet(true);
         animationSet.addAnimation(animationBegin());
         animationSet.addAnimation(animationEnd());
-
     }
 
     @Override
