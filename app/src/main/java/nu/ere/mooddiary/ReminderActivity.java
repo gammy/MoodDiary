@@ -21,9 +21,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,14 +29,10 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -128,7 +121,7 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         ScrollView l = (ScrollView) findViewById(R.id.reminderScrollView);
         fantasticView = (ImageView) findViewById(R.id.fantasticView); //;new ImageView(this);
-        ViewCompat.setElevation(fantasticView, 200); // Above save button
+        ViewCompat.setElevation(fantasticView, 0); // Above most items
 
         // FIXME this never shows outside of the viewport for some fucking reason.
         // Set up the save button, which, on click, saves the event and runs an animation
@@ -139,10 +132,10 @@ public class ReminderActivity extends ThemedDialogActivity {
         if(nosave) {
             ArrayList<MeasurementType> nothing = new ArrayList<>();
             saveButton.setOnClickListener(
-                    new SaveClickListener(this, nothing, fantasticView, true));
+                    new SaveClickListener(this, nothing, fantasticView));
         } else {
             saveButton.setOnClickListener(
-                    new SaveClickListener(this, measurementTypes, fantasticView, true));
+                    new SaveClickListener(this, measurementTypes, fantasticView));
         }
         entryLayout.addView(saveButton);
     }
@@ -282,6 +275,7 @@ public class ReminderActivity extends ThemedDialogActivity {
         }
 
         entryLayout.addView(table);
+        ViewCompat.setElevation(entryLayout, 0);
 
     }
 

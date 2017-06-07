@@ -17,35 +17,27 @@ package nu.ere.mooddiary;
 
 import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-// So stupid..
-public class SaveSplash implements AnimationListener {
+import java.util.ArrayList;
 
-    public Animation animation; // "out"
-    public ImageView view;
+public class ReminderSaveAnimationListener implements AnimationListener {
+
     public Activity activity = null;
+    public ArrayList<MeasurementType> measurementTypes = null;
 
+    @Override
     public void onAnimationEnd(Animation animation) {
-        animation = this.animation; // Resistance is futile.
-        view.startAnimation(animation);
-        view.setVisibility(View.INVISIBLE); // "out"
-        if(activity != null) {
-            Log.d("SaveSplash", "alarm: Bye! Ueaugh");
-            ActivityCompat.finishAffinity(activity);
-        }
-
+        Util.saveEvents(activity, measurementTypes);
+        ActivityCompat.finishAffinity(activity);
     }
 
+    @Override
     public void onAnimationRepeat(Animation animation) {
     }
 
+    @Override
     public void onAnimationStart(Animation animation) {
-
     }
 }

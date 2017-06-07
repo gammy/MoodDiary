@@ -16,15 +16,17 @@
 package nu.ere.mooddiary;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -32,58 +34,81 @@ import java.util.ArrayList;
 public class SaveClickListener implements OnClickListener {
     private static final String LOG_PREFIX = "SaveClickListener";
 
+    private AnimationSet animationSet;
     private Activity activity;
     private ImageView view;
+    ArrayList<MeasurementType> measurementTypes;
 
-    private Animation in, out;
-    private SaveSplash splash;
-
-    private ArrayList<MeasurementType> measurementTypes = null;
+    //private ArrayList<MeasurementType> measurementTypes = null;
 
     public SaveClickListener(Activity activity,
                              ArrayList<MeasurementType> measurementTypes,
-                             ImageView view,
-                             boolean harakiri) {
+                             ImageView view) {
         Log.d(LOG_PREFIX, "Enter SaveClickListener");
 
-
         this.activity = activity;
-        this.view = view;
         this.measurementTypes = measurementTypes;
+        this.view = view;
 
-        out = AnimationUtils.loadAnimation(activity, R.anim.text_fade_out); // opaque to invisible
-        in  = AnimationUtils.loadAnimation(activity, R.anim.text_fade_in); // invisible to opaque
+        animationSet = new AnimationSet(true);
+        animationSet.addAnimation(animationBegin());
+        animationSet.addAnimation(animationEnd());
 
-        splash = new SaveSplash();
-        splash.animation = out;
-        splash.view = view;
-        splash.activity = harakiri ? activity : null;
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         Log.d(LOG_PREFIX, "CLICK, save!");
-        Log.d(LOG_PREFIX, "Number of types to save: " + Integer.toString(measurementTypes.size()));
+        view.startAnimation(this.animationSet);
+    }
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
+    private AnimationSet animationBegin() {
+        Animation alpha = new AlphaAnimation(0.0f, 1.0f);
+        Animation scale = new ScaleAnimation(
+                0.1f, 2.0f,
+                0.1f, 2.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        Animation translate = new TranslateAnimation(
+                0.5f, 0.5f,
+                0.5f, -140.0f);
 
-        for(int i = 0; i < measurementTypes.size(); i++) {
-            MeasurementType measurementType = measurementTypes.get(i);
-            editor.remove(measurementType.name);
+        alpha.setDuration(400);
+        scale.setDuration(650);
+        translate.setDuration(650);
 
-            Log.d(LOG_PREFIX, " mType " + Integer.toString(measurementType.id) + ", " +
-                "View " + measurementType.view.toString());
+        AnimationSet set = new AnimationSet(true);
+        set.addAnimation(alpha);
+        set.addAnimation(scale);
+        set.addAnimation(translate);
 
-        }
-        Util.saveEvents(activity, measurementTypes);
-        editor.apply();
+        return set;
+    }
 
-        in.setAnimationListener(splash);
-        view.startAnimation(in);
-        view.setVisibility(View.VISIBLE);
+    private AnimationSet animationEnd() {
 
-        //Util.resetEntries(activity);
+        Animation alpha = new AlphaAnimation(1.0f, 0.0f);
+        Animation scale = new ScaleAnimation(
+                2.0f, 1.5f,
+                2.0f, 1.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+
+        AnimationSet set = new AnimationSet(true);
+
+        alpha.setDuration(200);
+        scale.setDuration(200);
+
+        set.addAnimation(alpha);
+        set.addAnimation(scale);
+
+        ReminderSaveAnimationListener outAnimationListener = new ReminderSaveAnimationListener();
+        outAnimationListener.activity = activity;
+        outAnimationListener.measurementTypes = measurementTypes;
+
+        set.setStartOffset(650);
+        set.setAnimationListener(outAnimationListener);
+
+        return set;
     }
 }
