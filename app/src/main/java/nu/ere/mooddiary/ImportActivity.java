@@ -151,16 +151,24 @@ public class ImportActivity extends ThemedPreferenceActivity {
 
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(LOG_PREFIX, "READ_EXTERNAL_STORAGE != GRANTED");
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Log.d(LOG_PREFIX, "(Should show request permission rationale here)");
             }
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS}, // ???
-                    1 /* Code */);
+            Log.d(LOG_PREFIX, "READ_EXTERNAL_STORAGE granted, I think");
+            Log.d(LOG_PREFIX, "-------- Request permission ---------");
+            if(PermissionUtils.hasSelfPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                showDialog();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, // ???
+                        1 /* Code */);
+            }
+            Log.d(LOG_PREFIX, "-------- End Request permission ---------");
         }
 
         return true;
@@ -170,28 +178,36 @@ public class ImportActivity extends ThemedPreferenceActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case 1: {
+            case 1:
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showDialog();
                     Log.d(LOG_PREFIX, "We have read permissions");
 
-                    File mPath = new File(Environment.getExternalStorageDirectory() + "//Download//");
-                    FileSelectDialog fileDialog = new FileSelectDialog(this, mPath, ".sqlite3");
-                    fileDialog.addFileListener(new FileSelectDialog.FileSelectedListener() {
-                        public void fileSelected(File file) {
-                            Log.d(getClass().getName(), "selected file " + file.toString());
-                            filename = file.toString();
-                            importDatabase();
-                        }
-                    });
-
-                    fileDialog.showDialog();
                 } else {
                     Log.d(LOG_PREFIX, "NEIN!!!");
                 }
-            }
+                break;
+
+            default:
+                Log.d(LOG_PREFIX, "Unhandled requestCode: " + Integer.toString(requestCode));
         }
+    }
+
+    private void showDialog() {
+        File mPath = new File(Environment.getExternalStorageDirectory() + "//Download//");
+        FileSelectDialog fileDialog = new FileSelectDialog(this, mPath, ".sqlite3");
+        fileDialog.addFileListener(new FileSelectDialog.FileSelectedListener() {
+            public void fileSelected(File file) {
+                Log.d(getClass().getName(), "selected file " + file.toString());
+                filename = file.toString();
+                importDatabase();
+            }
+        });
+
+        Log.d(LOG_PREFIX, "Showing dialog");
+        fileDialog.showDialog();
     }
 
 }

@@ -170,9 +170,13 @@ public class ExportActivity extends ThemedPreferenceActivity {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             }
         } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CONTACTS},
-                    1 /* Code */);
+            if(PermissionUtils.hasSelfPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                showDialog();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        1 /* Code */);
+            }
         }
 
         return true;
@@ -187,38 +191,41 @@ public class ExportActivity extends ThemedPreferenceActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(LOG_PREFIX, "We have write permissions");
-
-                    String name = this.orm.getDatabaseName();
-
-                    String sourcePath = "//data//" + this.getPackageName() + "//databases//" + name;
-                    String targetPath = "Download" + "/" + name + ".sqlite3";
-
-                    File sd = Environment.getExternalStorageDirectory();
-                    File data = Environment.getDataDirectory();
-
-                    File currentDB = new File(data, sourcePath);
-                    File backupDB  = new File(sd,   targetPath);
-
-                    if (currentDB.exists()) {
-                        try {
-                            FileChannel src = new FileInputStream(currentDB).getChannel();
-                            FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                            dst.transferFrom(src, 0, src.size());
-                            src.close();
-                            dst.close();
-                        } catch (Exception e) {
-                            Log.d(LOG_PREFIX, e.getMessage());
-                            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    } else{
-                        Log.d(LOG_PREFIX, "FIXME: " + sourcePath + ": No such file");
-                    }
-
-                    Toast.makeText(this, getString(R.string.export_good), Toast.LENGTH_SHORT).show();
+                    showDialog();
                 } else {
                     Log.d(LOG_PREFIX, "NEIN!!!");
                 }
             }
         }
+    }
+
+    void showDialog() {
+        String name = this.orm.getDatabaseName();
+
+        String sourcePath = "//data//" + this.getPackageName() + "//databases//" + name;
+        String targetPath = "Download" + "/" + name + ".sqlite3";
+
+        File sd = Environment.getExternalStorageDirectory();
+        File data = Environment.getDataDirectory();
+
+        File currentDB = new File(data, sourcePath);
+        File backupDB  = new File(sd,   targetPath);
+
+        if (currentDB.exists()) {
+            try {
+                FileChannel src = new FileInputStream(currentDB).getChannel();
+                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+            } catch (Exception e) {
+                Log.d(LOG_PREFIX, e.getMessage());
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else{
+            Log.d(LOG_PREFIX, "FIXME: " + sourcePath + ": No such file");
+        }
+
+        Toast.makeText(this, getString(R.string.export_good), Toast.LENGTH_SHORT).show();
     }
 }
