@@ -30,6 +30,7 @@ public class ReminderSaveAnimationListener implements AnimationListener {
     @Override
     public void onAnimationEnd(Animation animation) {
         Util.saveEvents(activity, measurementTypes);
+        // FIXME: Reset measurementType View values to type defaults
         ActivityCompat.finishAffinity(activity);
     }
 

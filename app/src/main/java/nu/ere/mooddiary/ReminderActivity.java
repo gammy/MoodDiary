@@ -117,7 +117,7 @@ public class ReminderActivity extends ThemedDialogActivity {
         view.setFocusableInTouchMode(true);
         view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
-        renderReminderEventTypes(entryLayout);
+        buildViews(entryLayout);
 
         ScrollView l = (ScrollView) findViewById(R.id.reminderScrollView);
         fantasticView = (ImageView) findViewById(R.id.fantasticView); //;new ImageView(this);
@@ -146,8 +146,8 @@ public class ReminderActivity extends ThemedDialogActivity {
      * minute primitives, and rendering everything.
      *
      */
-    private void renderReminderEventTypes(LinearLayout entryLayout) {
-        Log.d(LOG_PREFIX, "Enter renderReminderEventTypes");
+    private void buildViews(LinearLayout entryLayout) {
+        Log.d(LOG_PREFIX, "Enter buildViews");
         Resources resources = getResources();
 
         // Create a table
@@ -186,86 +186,21 @@ public class ReminderActivity extends ThemedDialogActivity {
 
                 case "range_center":
                 case "range_normal":
-                    SeekBar seekBar = new SeekBar(this);
-                    Log.d(LOG_PREFIX, "Renderer: Range: Original View    : " + seekBar.toString());
-                    type.setView(seekBar);
-                    // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
-                    // the database EntityPrimitive name.
-                    int styleID = resources.getIdentifier(primitive.name,
-                            "drawable", this.getPackageName());
-                    seekBar.setProgressDrawable(
-                            ResourcesCompat.getDrawable(resources, styleID, null));
-                    seekBar.setMax(type.totalValues);
-                    seekBar.setProgress(sharedPrefs.getInt(type.name, type.normalDefault));
-
-                    SeekBarChangeListener seekBarChangeListener = new SeekBarChangeListener();
-                    seekBarChangeListener.setPreference(prefEditor, type.name);
-                    seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
-                    Log.d(LOG_PREFIX, "Renderer: Range: Assigning mType " +
-                            Integer.toString(type.id) + ": " +
-                            "View " + type.view.toString());
-
-                    row.addView(seekBar, rowParams);
+                    row.addView(buildRange(type, primitive), rowParams);
                     break;
 
                 case "number":
-                    TextView number = new TextView(this);
-                    type.setView(number);
-                    Log.d(LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
-
-                    /* Can't find an easier way to do this - insane */
-                    int[] attrs = new int[] { R.attr.editTextBackground};
-                    TypedArray ta = this.obtainStyledAttributes(attrs);
-                    Drawable drawableFromTheme = ta.getDrawable(0);
-                    ta.recycle();
-                    number.setBackgroundDrawable(drawableFromTheme);
-
-                    number.setGravity(Gravity.CENTER_HORIZONTAL);
-                    TextViewCompat.setTextAppearance(number,
-                            android.R.style.TextAppearance_DeviceDefault_Medium);
-                    //number.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
-
-                    number.setText(Integer.toString(
-                            sharedPrefs.getInt(type.name,
-                                               type.normalDefault)));
-                    MeasurementTextClickListener listener =
-                            new MeasurementTextClickListener(this, number, type, themeID);
-                    number.setOnClickListener(listener);
-                    //TextInputEditText number = new TextInputEditText(this);
-                    Log.d(LOG_PREFIX, "Renderer: Number: Assigning mType " +
-                            Integer.toString(type.id) + ": " +
-                            "View " + type.view.toString());
-
-                    row.addView(number, rowParams);
+                    row.addView(buildNumber(type), rowParams);
                     break;
 
                 case "text":
-                    TextInputEditText text = new TextInputEditText(this);
-                    type.setView(text);
-                    Log.d(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
-                    //measurementType.setView(text);
-                    text.setText(sharedPrefs.getString(type.name, ""));
-                    TextChangedListener textChangedListener = new TextChangedListener();
-                    textChangedListener.setPreference(prefEditor, type.name);
-                    text.addTextChangedListener(textChangedListener);
-                    TextViewCompat.setTextAppearance(text,
-                            android.R.style.TextAppearance_DeviceDefault_Medium);
-                    Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
-                            Integer.toString(type.id) + ": " + "View " + type.view.toString());
-                    row.addView(text, rowParams);
+                    row.addView(buildText(type), rowParams);
                     break;
 
                 case "toggle":
-                    CheckBox checkBox = new CheckBox(this);
-                    type.setView(checkBox);
-                    checkBox.setChecked(sharedPrefs.getBoolean(type.name, type.dfl == 1));
-                    ToggleChangeListener toggleChangeListener = new ToggleChangeListener();
-                    toggleChangeListener.setPreference(prefEditor, type.name);
-                    checkBox.setOnCheckedChangeListener(toggleChangeListener);
-                    Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
-                            Integer.toString(type.id) + ": " + "View " + type.view.toString());
-                    row.addView(checkBox, rowParams);
+                    row.addView(buildToggle(type), rowParams);
                     break;
+
                 default:
                     break;
 
@@ -276,7 +211,90 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         entryLayout.addView(table);
         ViewCompat.setElevation(entryLayout, 0);
+    }
 
+    private SeekBar buildRange(MeasurementType type, EntityPrimitive primitive) {
+        Resources resources = getResources();
+        SeekBar seekBar = new SeekBar(this);
+        Log.d(LOG_PREFIX, "Renderer: Range: Original View    : " + seekBar.toString());
+        type.setView(seekBar);
+        // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
+        // the database EntityPrimitive name.
+        int styleID = resources.getIdentifier(primitive.name,
+                "drawable", this.getPackageName());
+        seekBar.setProgressDrawable(
+                ResourcesCompat.getDrawable(resources, styleID, null));
+        seekBar.setMax(type.totalValues);
+        seekBar.setProgress(sharedPrefs.getInt(type.name, type.normalDefault));
+
+        SeekBarChangeListener seekBarChangeListener = new SeekBarChangeListener();
+        seekBarChangeListener.setPreference(prefEditor, type.name);
+        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
+        Log.d(LOG_PREFIX, "Renderer: Range: Assigning mType " +
+                Integer.toString(type.id) + ": " +
+                "View " + type.view.toString());
+
+        return seekBar;
+    }
+
+    private TextView buildNumber(MeasurementType type) {
+        TextView number = new TextView(this);
+        type.setView(number);
+        Log.d(LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
+
+                    /* Can't find an easier way to do this - insane */
+        int[] attrs = new int[] { R.attr.editTextBackground};
+        TypedArray ta = this.obtainStyledAttributes(attrs);
+        Drawable drawableFromTheme = ta.getDrawable(0);
+        ta.recycle();
+        number.setBackgroundDrawable(drawableFromTheme);
+
+        number.setGravity(Gravity.CENTER_HORIZONTAL);
+        TextViewCompat.setTextAppearance(number,
+                android.R.style.TextAppearance_DeviceDefault_Medium);
+        //number.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
+
+        number.setText(Integer.toString(
+                sharedPrefs.getInt(type.name,
+                        type.normalDefault)));
+        MeasurementTextClickListener listener =
+                new MeasurementTextClickListener(this, number, type, themeID);
+        number.setOnClickListener(listener);
+        //TextInputEditText number = new TextInputEditText(this);
+        Log.d(LOG_PREFIX, "Renderer: Number: Assigning mType " +
+                Integer.toString(type.id) + ": " +
+                "View " + type.view.toString());
+
+        return number;
+    }
+
+    private TextView buildText(MeasurementType type) {
+        TextInputEditText text = new TextInputEditText(this);
+        type.setView(text);
+        Log.d(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
+        //measurementType.setView(text);
+        text.setText(sharedPrefs.getString(type.name, ""));
+        TextChangedListener textChangedListener = new TextChangedListener();
+        textChangedListener.setPreference(prefEditor, type.name);
+        text.addTextChangedListener(textChangedListener);
+        TextViewCompat.setTextAppearance(text,
+                android.R.style.TextAppearance_DeviceDefault_Medium);
+        Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
+                Integer.toString(type.id) + ": " + "View " + type.view.toString());
+
+        return text;
+    }
+
+    private CheckBox buildToggle(MeasurementType type) {
+        CheckBox checkBox = new CheckBox(this);
+        type.setView(checkBox);
+        checkBox.setChecked(sharedPrefs.getBoolean(type.name, type.dfl == 1));
+        ToggleChangeListener toggleChangeListener = new ToggleChangeListener();
+        toggleChangeListener.setPreference(prefEditor, type.name);
+        checkBox.setOnCheckedChangeListener(toggleChangeListener);
+        Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
+                Integer.toString(type.id) + ": " + "View " + type.view.toString());
+        return checkBox;
     }
 
     @Override
