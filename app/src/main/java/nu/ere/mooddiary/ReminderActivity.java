@@ -225,11 +225,8 @@ public class ReminderActivity extends ThemedDialogActivity {
         seekBar.setProgressDrawable(
                 ResourcesCompat.getDrawable(resources, styleID, null));
         seekBar.setMax(type.totalValues);
-        seekBar.setProgress(sharedPrefs.getInt(type.name, type.normalDefault));
+        seekBar.setProgress(type.normalDefault);
 
-        SeekBarChangeListener seekBarChangeListener = new SeekBarChangeListener();
-        seekBarChangeListener.setPreference(prefEditor, type.name);
-        seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
         Log.d(LOG_PREFIX, "Renderer: Range: Assigning mType " +
                 Integer.toString(type.id) + ": " +
                 "View " + type.view.toString());
@@ -254,9 +251,7 @@ public class ReminderActivity extends ThemedDialogActivity {
                 android.R.style.TextAppearance_DeviceDefault_Medium);
         //number.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
 
-        number.setText(Integer.toString(
-                sharedPrefs.getInt(type.name,
-                        type.normalDefault)));
+        number.setText(Integer.toString(type.normalDefault));
         MeasurementTextClickListener listener =
                 new MeasurementTextClickListener(this, number, type, themeID);
         number.setOnClickListener(listener);
@@ -272,11 +267,7 @@ public class ReminderActivity extends ThemedDialogActivity {
         TextInputEditText text = new TextInputEditText(this);
         type.setView(text);
         Log.d(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
-        //measurementType.setView(text);
-        text.setText(sharedPrefs.getString(type.name, ""));
-        TextChangedListener textChangedListener = new TextChangedListener();
-        textChangedListener.setPreference(prefEditor, type.name);
-        text.addTextChangedListener(textChangedListener);
+        text.setText("");
         TextViewCompat.setTextAppearance(text,
                 android.R.style.TextAppearance_DeviceDefault_Medium);
         Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
@@ -288,10 +279,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private CheckBox buildToggle(MeasurementType type) {
         CheckBox checkBox = new CheckBox(this);
         type.setView(checkBox);
-        checkBox.setChecked(sharedPrefs.getBoolean(type.name, type.dfl == 1));
-        ToggleChangeListener toggleChangeListener = new ToggleChangeListener();
-        toggleChangeListener.setPreference(prefEditor, type.name);
-        checkBox.setOnCheckedChangeListener(toggleChangeListener);
+        checkBox.setChecked(type.dfl == 1);
         Log.d(LOG_PREFIX, "Renderer: Text: Assigning mType " +
                 Integer.toString(type.id) + ": " + "View " + type.view.toString());
         return checkBox;
