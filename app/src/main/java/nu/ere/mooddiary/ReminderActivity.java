@@ -235,7 +235,7 @@ public class ReminderActivity extends ThemedDialogActivity {
         type.setView(number);
         Log.d(LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
 
-                    /* Can't find an easier way to do this - insane */
+        /* Can't find an easier way to do this - insane */
         int[] attrs = new int[] { R.attr.editTextBackground};
         TypedArray ta = this.obtainStyledAttributes(attrs);
         Drawable drawableFromTheme = ta.getDrawable(0);
@@ -243,15 +243,14 @@ public class ReminderActivity extends ThemedDialogActivity {
         number.setBackgroundDrawable(drawableFromTheme);
 
         number.setGravity(Gravity.CENTER_HORIZONTAL);
-        TextViewCompat.setTextAppearance(number,
-                android.R.style.TextAppearance_DeviceDefault_Medium);
+        TextViewCompat.setTextAppearance(
+                number, android.R.style.TextAppearance_DeviceDefault_Medium);
         //number.setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
 
-        number.setText(Integer.toString(type.normalDefault));
+        number.setText(Integer.toString(type.dfl));
         MeasurementTextClickListener listener =
                 new MeasurementTextClickListener(this, number, type, themeID);
         number.setOnClickListener(listener);
-        //TextInputEditText number = new TextInputEditText(this);
 
         return number;
     }

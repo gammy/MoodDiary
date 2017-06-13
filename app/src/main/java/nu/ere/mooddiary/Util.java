@@ -178,7 +178,7 @@ public class Util {
                     TextView nView = (TextView) type.view;
                     Log.d(LOG_PREFIX, "About to read number getText on " + nView.toString());
                     value = nView.getText().toString();
-                    value = Long.toString(type.min + Long.parseLong(value, 10));
+                    value = Long.toString(Long.parseLong(value, 10));
                     break;
 
                 case "toggle":

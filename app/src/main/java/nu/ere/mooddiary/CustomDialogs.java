@@ -29,6 +29,8 @@ import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class CustomDialogs {
     private static final String LOG_PREFIX = "CustomDialog";
 
@@ -150,22 +152,37 @@ public class CustomDialogs {
      */
     public static NumberPicker showNumberDialog(Activity activity,
                                                 TextView view,
-                                                MeasurementType measurementType,
+                                                final MeasurementType measurementType,
                                                 int dialogThemeID){
         Log.d(LOG_PREFIX, "Enter showNumberDialog");
         Log.d(LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
         final NumberPicker numberPicker =
                 new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
 
+        // The NumberPicker only likes values from 0 and up. We can work around this for negative
+        // values by displaying an array of strings with whatever we like. The alternative is to
+        // override the NumberPicker formatter but I can't get that to work properly. So fuck it.
+        String[] printValues = new String[measurementType.totalValues + 1];
+        for(int i = 0; i < measurementType.totalValues + 1; i++) {
+            printValues[i] = String.format("%d", i + measurementType.min);
+        }
+
         numberPicker.setMinValue(0);
         numberPicker.setMaxValue(measurementType.totalValues);
-        // This is stupid: The code assumes that the caller view is a number or somesuch,
-        // to set the correct 'default' (startup) value of the number box. But in the MainActivity
-        // the caller view is a button, and has nothing to do with any default value; the button
-        // has the *name* of the measurement type..
+
+        int value = measurementType.dfl - measurementType.min;
         if(view != null) {
-            numberPicker.setValue(Integer.parseInt(view.getText().toString())); // FIXME regression with abstraction of TextView
+            // Set the previously set (non-default) value in the view
+            //value = Integer.parseInt(view.getText().toString()) - measurementType.min
+            Log.d(LOG_PREFIX, "Previous Value string from view: " + view.getText().toString());
+            value = Integer.parseInt(view.getText().toString()) - measurementType.min;
+            Log.d(LOG_PREFIX, "Setting Value to: " + Integer.toString(value));
         }
+
+        Log.d(LOG_PREFIX, "Value = " + value);
+        numberPicker.setValue(value);
+
+        numberPicker.setDisplayedValues(printValues);
         numberPicker.setWrapSelectorWheel(false);
 
         // FIXME numberPicker styling (font size) regression

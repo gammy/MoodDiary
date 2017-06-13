@@ -41,7 +41,8 @@ class DialogNumberClickListener implements DialogInterface.OnClickListener {
         Log.d(LOG_PREFIX, "Enter onClick");
         Log.d(LOG_PREFIX, "Which = " + Integer.toString(which));
 
-        String value = Integer.toString(numberPicker.getValue());
+        String value = Integer.toString(numberPicker.getValue() + measurementType.min);
+        Log.d(LOG_PREFIX, "Value = " + value);
 
         switch (which)
         {
