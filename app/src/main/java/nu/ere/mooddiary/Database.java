@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class Database extends SQLiteOpenHelper {
     private static final String LOG_PREFIX = "Database";
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
     private static final String DB_NAME = "moodDiary";
     public static SQLiteDatabase db;
 
@@ -118,14 +118,14 @@ public class Database extends SQLiteOpenHelper {
         addPrimitive("text",        false);
         addPrimitive("toggle",       true);
 
-        addMeasurementType(ID_RANGE_CENTER,  10, "Mood",               -50,    50,  0, "stock"); //1
-        addMeasurementType(ID_RANGE_CENTER,  20, "Energy",             -50,    50,  0, "stock"); //2
-        addMeasurementType(ID_RANGE_NORMAL,  30, "Anxiety",              0,   100,  0, "stock"); //3
-        addMeasurementType(ID_RANGE_NORMAL,  40, "Irritability",         0,   100,  0, "stock"); //4
-        addMeasurementType(ID_RANGE_NORMAL,  50, "Concentration",        0,   100,  0, "stock"); //5
-        addMeasurementType(ID_NUMBER,        60, "Alcohol (units)",      0,   100,  0, "stock"); //6
-        addMeasurementType(ID_TEXT,          70, "Note",                -1,   -1,  -1, "stock"); //7
-        addMeasurementType(ID_TOGGLE,        80, "Medication",           0,    1,   0, "stock"); //8
+        addMeasurementType(ID_RANGE_CENTER,  10, "Mood",             -3,  3,  0, "stock"); //1
+        addMeasurementType(ID_RANGE_CENTER,  20, "Energy",           -3,  3,  0, "stock"); //2
+        addMeasurementType(ID_RANGE_NORMAL,  30, "Anxiety",           0,  4,  0, "stock"); //3
+        addMeasurementType(ID_RANGE_NORMAL,  40, "Irritability",      0,  4,  0, "stock"); //4
+        addMeasurementType(ID_RANGE_NORMAL,  50, "Concentration",     0,  4,  0, "stock"); //5
+        addMeasurementType(ID_NUMBER,        60, "Alcohol (units)",   0,  4,  0, "stock"); //6
+        addMeasurementType(ID_TEXT,          70, "Note",             -1, -1, -1, "stock"); //7
+        addMeasurementType(ID_TOGGLE,        80, "Medication",        0,  1,  0, "stock"); //8
 
         // Reminders
 
@@ -173,6 +173,17 @@ public class Database extends SQLiteOpenHelper {
             db.execSQL("DELETE FROM ReminderTimes");
         } else if(oldVersion == 5 && newVersion == 6) {
             db.execSQL("INSERT INTO EntityPrimitives (name, isNumber) VALUES (\"toggle\", 1)");
+        } else if(oldVersion == 6 && newVersion == 7) {
+            // -50 to 50 -> -3 to 3
+            db.execSQL("UPDATE Events SET value = value / ((-50 - 50) / (-3 - 3)) WHERE type " +
+                "IN(SELECT id FROM MeasurementTypes WHERE minValue = -50 AND maxValue = 50)");
+            db.execSQL("UPDATE MeasurementTypes SET minValue = -3, maxValue = 3 WHERE " +
+                "minValue = -50 AND maxValue = 50");
+            // 0 to 100 -> 0 to 4
+            db.execSQL("UPDATE Events SET value = value / ((0 - 100) / (0 - 4)) WHERE type " +
+                "IN(SELECT id FROM MeasurementTypes WHERE minValue = 0 AND maxValue = 100)");
+            db.execSQL("UPDATE MeasurementTypes SET minValue = 0, maxValue = 4 WHERE " +
+                "minValue = 0 AND maxValue = 100");
         }
     }
 
