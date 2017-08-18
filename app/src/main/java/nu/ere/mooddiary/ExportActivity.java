@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,11 +36,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class ExportActivity extends ThemedPreferenceActivity {
     private static final String LOG_PREFIX = "ExportActivity";
 
     private ORM orm;
+    private Calendar cal = null;
 
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
@@ -99,6 +106,22 @@ public class ExportActivity extends ThemedPreferenceActivity {
         datePrefBeg.setTitle(getString(R.string.title_date_from));
         datesCategory.addPreference(datePrefBeg);
 
+        DateFormat dateFormat;
+        // Set date to 6 months ago
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MONTH, -6);
+
+        cal = new GregorianCalendar();
+        cal.set(Calendar.MONTH, calendar.get(Calendar.MONTH));
+        datePrefBeg.setCalendar(cal);
+        dateFormat = new SimpleDateFormat();
+        dateFormat.setTimeZone(cal.getTimeZone());
+        datePrefBeg.setDate(dateFormat.toString());
+
+        datePrefBeg.setSummary(DateUtils.formatDateTime(
+                this, cal.getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR));
+
         // Date end widget
         DatePreference datePrefEnd = new DatePreference(this, null);
         datePrefEnd.setKey("csv_edit_time_end");
@@ -106,6 +129,16 @@ public class ExportActivity extends ThemedPreferenceActivity {
         datePrefEnd.setNegativeButtonText(R.string.cancel);
         datePrefEnd.setTitle(getString(R.string.title_date_to));
         datesCategory.addPreference(datePrefEnd);
+
+        // Set picker to today
+        cal = new GregorianCalendar();
+        datePrefEnd.setCalendar(cal);
+        dateFormat = new SimpleDateFormat();
+        dateFormat.setTimeZone(cal.getTimeZone());
+        datePrefEnd.setDate(dateFormat.toString());
+
+        datePrefEnd.setSummary(DateUtils.formatDateTime(
+                this, cal.getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR));
 
         // minute list
         createEventTypePreferences(typesCategory);

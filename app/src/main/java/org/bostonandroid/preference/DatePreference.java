@@ -47,6 +47,7 @@ public class DatePreference extends DialogPreference implements
   private String dateString;
   private String changedValueCanBeNull;
   private DatePicker datePicker;
+  private Calendar calendar = null;
 
   public DatePreference(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
@@ -205,8 +206,20 @@ public class DatePreference extends DialogPreference implements
    * 
    * @return the Calendar set to the default date
    */
-  public static Calendar defaultCalendar() {
-    return new GregorianCalendar(1970, 0, 1);
+  public Calendar defaultCalendar() {
+    return this.getCalendar(); //new GregorianCalendar(1970, 0, 1, 0, 0);
+    //return new GregorianCalendar(1970, 0, 1);
+  }
+
+  public Calendar getCalendar() {
+    if(this.calendar == null) {
+      this.calendar = new GregorianCalendar(1970, 0, 1, 0, 0);
+    }
+    return this.calendar;
+  }
+  public void setCalendar(Calendar calendar) {
+    this.calendar = calendar;
+
   }
 
   /**
@@ -214,7 +227,7 @@ public class DatePreference extends DialogPreference implements
    * 
    * @return a String representation of the default date
    */
-  public static String defaultCalendarString() {
+  public String defaultCalendarString() {
     return formatter().format(defaultCalendar().getTime());
   }
 
@@ -247,15 +260,15 @@ public class DatePreference extends DialogPreference implements
    *          the name of the preference to get the date from
    * @return a Calendar that the user has selected
    */
-  public static Calendar getDateFor(SharedPreferences preferences, String field) {
-    Date date = stringToDate(preferences.getString(field,
+  public Calendar getDateFor(SharedPreferences preferences, String field) {
+    Date date = this.stringToDate(preferences.getString(field,
         defaultCalendarString()));
     Calendar cal = Calendar.getInstance();
     cal.setTime(date);
     return cal;
   }
 
-  private static Date stringToDate(String dateString) {
+  private Date stringToDate(String dateString) {
     try {
       return formatter().parse(dateString);
     } catch (ParseException e) {
