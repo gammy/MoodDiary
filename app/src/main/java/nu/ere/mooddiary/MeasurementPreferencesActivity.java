@@ -362,28 +362,38 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
             return false;
         }
 
-        if(! isNumeric(min)) {
-            Log.d(LOG_PREFIX, "Invalid number: Minimum");
-            Toast.makeText(this, "Invalid number: Minimum", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        // Some primitive types
+        if(editMode != PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
+            Log.d(LOG_PREFIX, "testValues(): editMode == TYPE_CHANGE, skipping min,max,def sanity check");
+            if (!isNumeric(min)) {
+                Log.d(LOG_PREFIX, "Invalid number: Minimum");
+                Toast.makeText(this, "Invalid number: Minimum", Toast.LENGTH_SHORT).show();
+                return false;
+            }
 
-        if(! isNumeric(max)) {
-            Log.d(LOG_PREFIX, "Invalid number: Maximum");
-            Toast.makeText(this, "Invalid number: Maximum", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+            if (!isNumeric(max)) {
+                Log.d(LOG_PREFIX, "Invalid number: Maximum");
+                Toast.makeText(this, "Invalid number: Maximum", Toast.LENGTH_SHORT).show();
+                return false;
+            }
 
-        if(! isNumeric(dfl)) {
-            Log.d(LOG_PREFIX, "Invalid number: Default");
-            Toast.makeText(this, "Invalid number: Default", Toast.LENGTH_SHORT).show();
-            return false;
+            if (!isNumeric(dfl)) {
+                Log.d(LOG_PREFIX, "Invalid number: Default");
+                Toast.makeText(this, "Invalid number: Default", Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
 
         // is min less than max?
         int valMin = Integer.parseInt(min);
         int valMax = Integer.parseInt(max);
         int valDfl = Integer.parseInt(dfl);
+
+        //
+        if(valMax == -1 &&
+           valMin == -1) {
+            return true;
+        }
 
         if(valMax - valMin <= 0) {
             Log.d(LOG_PREFIX, "Maximum must be more than minimum!");
