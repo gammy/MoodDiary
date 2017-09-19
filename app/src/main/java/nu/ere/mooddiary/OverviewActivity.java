@@ -52,6 +52,11 @@ public class OverviewActivity extends ThemedActivity {
         long entryCount = s.simpleQueryForLong();
         s.releaseReference();
 
+        long eventTypeCount = orm.getMeasurementTypes().types.size();
+        long reminderCount = orm.getReminderTimes().reminderTimes.size();
+        long entityPrimitiveCount = orm.getPrimitives().entities.size();
+
+        /*
         s = db.compileStatement("SELECT COUNT(*) FROM MeasurementTypes");
         long eventTypeCount = s.simpleQueryForLong();
         s.releaseReference();
@@ -63,6 +68,7 @@ public class OverviewActivity extends ThemedActivity {
         s = db.compileStatement("SELECT COUNT(*) FROM ReminderTimes");
         long reminderCount = s.simpleQueryForLong();
         s.releaseReference();
+        */
 
         String text =
                 Long.toString(entryCount) + " entries\n" +
