@@ -51,11 +51,8 @@ public class GraphActivity extends ThemedActivity {
         Log.d(LOG_PREFIX, "Enter initUI");
 
         setContentView(R.layout.coordinator_graph);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.graphToolbar);
-        setSupportActionBar(toolbar);
 
         // Populate it with some data
-
         int maxPoints = 50000; // Arbitrary limit
 
         /* We need to
@@ -175,12 +172,15 @@ public class GraphActivity extends ThemedActivity {
         Log.d(LOG_PREFIX, "Rendering graph");
 
         // set date label formatter
+        // TODO: Add some kind of handler to catch if the graph scale changed,
+        //       and dynamically update the below properties to fit the scale?
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEE\nd/M\n" );
         DateAsXAxisLabelFormatter formatter = new DateAsXAxisLabelFormatter(this, dateFormat);
         graph.getGridLabelRenderer().setLabelFormatter(formatter);
         graph.getGridLabelRenderer().setNumHorizontalLabels(6); // = 1 week :P
-        graph.getGridLabelRenderer().setNumVerticalLabels(0); // = 1 week :P
+        graph.getGridLabelRenderer().setNumVerticalLabels(0);
         graph.getGridLabelRenderer().setHumanRounding(false);
+        graph.getGridLabelRenderer().setTextSize(16);
 
         graph.getLegendRenderer().setVisible(true);
         //graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.MIDDLE);

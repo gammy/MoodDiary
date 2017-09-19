@@ -24,9 +24,9 @@ public class AlarmInstallerActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_PREFIX, "Create");
+        Util.appendLog(LOG_PREFIX, "onCreate");
         super.onCreate(savedInstanceState);
-        Log.d(LOG_PREFIX, "Installing alarms");
+        Util.appendLog(LOG_PREFIX, "Installing alarms");
         Alarms.installAlarms(this);
         ActivityCompat.finishAffinity(this);
     }

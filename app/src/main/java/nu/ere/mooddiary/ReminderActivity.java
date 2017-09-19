@@ -56,7 +56,7 @@ public class ReminderActivity extends ThemedDialogActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_PREFIX, "Create");
+        Util.appendLog(LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
 
@@ -67,7 +67,7 @@ public class ReminderActivity extends ThemedDialogActivity {
             Intent intent = getIntent();
             Bundle extras = intent.getExtras();
             if(extras == null) {
-                Log.d(LOG_PREFIX, "No state data from instance, and no extras passed?! :O");
+                Util.appendLog(LOG_PREFIX, "No state data from instance, and no extras passed?! :O");
                 reminderID = -1;
             } else {
                 nosave = extras.getBoolean("nosave", false);
@@ -79,7 +79,7 @@ public class ReminderActivity extends ThemedDialogActivity {
             reminderID = sharedPrefs.getInt("reminder_id", -1);
         }
 
-        Log.d(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
+        Util.appendLog(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
 
         if(reminderID == -1) {
             throw new NoSuchElementException("Caller didn't provide a reminderid");
@@ -88,11 +88,11 @@ public class ReminderActivity extends ThemedDialogActivity {
         //Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_LONG).show();
         ArrayList<MeasurementType> mTmp = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
         measurementTypes = new ArrayList<>();
-        Log.d(LOG_PREFIX, "Starting measurement type walk");
+        Util.appendLog(LOG_PREFIX, "Starting measurement type walk");
         for(MeasurementType type: mTmp) {
-            Log.d(LOG_PREFIX, String.format("  Type %s enabled = %d", type.name, type.enabled));
+            Util.appendLog(LOG_PREFIX, String.format("  Type %s enabled = %d", type.name, type.enabled));
             if(type.enabled == 1) {
-                Log.d(LOG_PREFIX, String.format("    Added %s", type.name));
+                Util.appendLog(LOG_PREFIX, String.format("    Added %s", type.name));
                 measurementTypes.add(type);
             }
         }
@@ -103,7 +103,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     }
 
     private void initUI() {
-        Log.d(LOG_PREFIX, "Enter initUI" );
+        Util.appendLog(LOG_PREFIX, "Enter initUI" );
 
         setContentView(R.layout.content_reminders);
 
@@ -147,7 +147,7 @@ public class ReminderActivity extends ThemedDialogActivity {
      *
      */
     private void buildViews(LinearLayout entryLayout) {
-        Log.d(LOG_PREFIX, "Enter buildViews");
+        Util.appendLog(LOG_PREFIX, "Enter buildViews");
         Resources resources = getResources();
 
         // Create a table
@@ -168,7 +168,7 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         for(MeasurementType type: measurementTypes) {
             EntityPrimitive primitive = type.getPrimitive(orm.getPrimitives());
-            Log.d(LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
+            Util.appendLog(LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
 
             // Make a label
             TextView label = new TextView(this);
@@ -216,7 +216,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private SeekBar buildRange(MeasurementType type, EntityPrimitive primitive) {
         Resources resources = getResources();
         SeekBar seekBar = new SeekBar(this);
-        Log.d(LOG_PREFIX, "Renderer: Range: Original View    : " + seekBar.toString());
+        Util.appendLog(LOG_PREFIX, "Renderer: Range: Original View    : " + seekBar.toString());
         type.setView(seekBar);
         // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
         // the database EntityPrimitive name.
@@ -233,7 +233,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private TextView buildNumber(MeasurementType type) {
         TextView number = new TextView(this);
         type.setView(number);
-        Log.d(LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
+        Util.appendLog(LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
 
         /* Can't find an easier way to do this - insane */
         int[] attrs = new int[] { R.attr.editTextBackground};
@@ -258,7 +258,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private TextView buildText(MeasurementType type) {
         TextInputEditText text = new TextInputEditText(this);
         type.setView(text);
-        Log.d(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
+        Util.appendLog(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
         text.setText("");
         TextViewCompat.setTextAppearance(text,
                 android.R.style.TextAppearance_DeviceDefault_Medium);
@@ -275,9 +275,8 @@ public class ReminderActivity extends ThemedDialogActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(LOG_PREFIX, "Enter onDestroy");
-
-        Log.d(LOG_PREFIX, "Cancelling notification");
+        Util.appendLog(LOG_PREFIX, "Enter onDestroy");
+        Util.appendLog(LOG_PREFIX, "Cancelling notification");
         // Sets an ID for the notification
         int mNotificationId = 1;
         // Gets an instance of the NotificationManager service

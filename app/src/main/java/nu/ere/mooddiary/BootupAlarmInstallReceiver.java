@@ -24,13 +24,16 @@ public class BootupAlarmInstallReceiver extends BroadcastReceiver {
     private static final String LOG_PREFIX = "BootupAlarmInst..";
 
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOG_PREFIX, "Enter onReceive");
+        Util.appendLog(LOG_PREFIX, "Enter onReceive");
 
         //Intent aIntent = new Intent(context.getApplicationContext(), AlarmInstallerActivity.class);
         Intent aIntent = new Intent();
 
         aIntent.setClassName("nu.ere.mooddiary", "nu.ere.mooddiary.AlarmInstallerActivity");
         aIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        Util.appendLog(LOG_PREFIX, "Starting a new activity (FLAG_ACTIVITY_NEW_TASK): "
+                + aIntent.getClass().getName());
 
 //        aIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
 //                       | Intent.FLAG_ACTIVITY_CLEAR_TOP

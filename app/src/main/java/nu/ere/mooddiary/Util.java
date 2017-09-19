@@ -23,6 +23,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.DateUtils;
@@ -32,8 +33,14 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -306,5 +313,41 @@ public class Util {
         orm.reload(activity);
 
         return(true);
+    }
+
+    // https://stackoverflow.com/questions/1756296/android-writing-logs-to-text-file
+    public static void appendLog(String logPrefix, String text) {
+        Log.d(logPrefix, text);
+
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm: ");
+
+        String targetPath = "Download" + "/MoodDiary.log";
+        File sd = Environment.getExternalStorageDirectory();
+        File logFile  = new File(sd,   targetPath);
+
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            //BufferedWriter for performance, true to set append to file flag
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(dateFormat.format(currentTime));
+            buf.append(logPrefix + ": ");
+            buf.append(text);
+            buf.newLine();
+            buf.close();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
