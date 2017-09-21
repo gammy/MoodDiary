@@ -60,7 +60,7 @@ public class FileSelectDialog {
      * @return file dialog
      */
     public Dialog createFileDialog() {
-        Log.d(TAG, "Enter createFileDialog");
+        Util.log(Util.LOGLEVEL_1, TAG, "Enter createFileDialog");
         Dialog dialog = null;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
@@ -69,15 +69,15 @@ public class FileSelectDialog {
         if (selectDirectoryOption) {
             builder.setPositiveButton("Select directory", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    Log.d(TAG, "setItems click: positive: which = " + Integer.toString(which));
-                    Log.d(TAG, currentPath.getPath());
+                    Util.log(Util.LOGLEVEL_3, TAG, "setItems click: positive: which = " + Integer.toString(which));
+                    Util.log(Util.LOGLEVEL_2, TAG, currentPath.getPath());
                     fireDirectorySelectedEvent(currentPath);
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    Log.d(TAG, "setItems click: negative: which = " + Integer.toString(which));
-                    Log.d(TAG, currentPath.getPath());
+                    Util.log(Util.LOGLEVEL_3, TAG, "setItems click: negative: which = " + Integer.toString(which));
+                    Util.log(Util.LOGLEVEL_2, TAG, currentPath.getPath());
                     activity.finish();
                 }
             });
@@ -85,7 +85,7 @@ public class FileSelectDialog {
 
         builder.setItems(fileList, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "setItems click: which = " + Integer.toString(which));
+                Util.log(Util.LOGLEVEL_3, TAG, "setItems click: which = " + Integer.toString(which));
                 String fileChosen = fileList[which];
                 File chosenFile = getChosenFile(fileChosen);
                 if (chosenFile.isDirectory()) {
@@ -131,7 +131,7 @@ public class FileSelectDialog {
     }
 
     private void fireFileSelectedEvent(final File file) {
-        Log.d(TAG, "enter FireFileSelectedEvent");
+        Util.log(Util.LOGLEVEL_1, TAG, "enter FireFileSelectedEvent");
         fileListenerList.fireEvent(new ListenerList.FireHandler<FileSelectedListener>() {
             public void fireEvent(FileSelectedListener listener) {
                 listener.fileSelected(file);
@@ -140,7 +140,7 @@ public class FileSelectDialog {
     }
 
     private void fireDirectorySelectedEvent(final File directory) {
-        Log.d(TAG, "enter FireDirectorySelectedEvent");
+        Util.log(Util.LOGLEVEL_1, TAG, "enter FireDirectorySelectedEvent");
         dirListenerList.fireEvent(new ListenerList.FireHandler<DirectorySelectedListener>() {
             public void fireEvent(DirectorySelectedListener listener) {
                 listener.directorySelected(directory);
@@ -149,7 +149,7 @@ public class FileSelectDialog {
     }
 
     private void loadFileList(File path) {
-        Log.d(TAG, "Enter loadFileList");
+        Util.log(Util.LOGLEVEL_1, TAG, "Enter loadFileList");
 
         this.currentPath = path;
         List<String> r = new ArrayList<>();
@@ -159,7 +159,7 @@ public class FileSelectDialog {
             }
             FilenameFilter filter = new FilenameFilter() {
                 public boolean accept(File dir, String filename) {
-                    Log.d("?", "Enter inner accept()");
+                    Util.log(Util.LOGLEVEL_3, "?", "Enter inner accept()");
                     File sel = new File(dir, filename);
                     if (! sel.canRead()) {
                         return false;
@@ -187,7 +187,7 @@ public class FileSelectDialog {
     }
 
     private File getChosenFile(String fileChosen) {
-        Log.d(TAG, "Enter getChosenFile");
+        Util.log(Util.LOGLEVEL_1, TAG, "Enter getChosenFile");
 
         if (fileChosen.equals(PARENT_DIR)) {
             return currentPath.getParentFile();
@@ -198,7 +198,7 @@ public class FileSelectDialog {
     }
 
     private void setFileEndsWith(String fileEndsWith) {
-        Log.d(TAG, "Enter setFileEndsWith");
+        Util.log(Util.LOGLEVEL_1, TAG, "Enter setFileEndsWith");
         this.fileEndsWith = fileEndsWith != null ? fileEndsWith.toLowerCase() : fileEndsWith;
     }
 }
@@ -215,7 +215,7 @@ class ListenerList<L> {
                                                                  }
 
     public void fireEvent(FireHandler<L> fireHandler) {
-        Log.d("?", "Enter fireEvent");
+        Util.log(Util.LOGLEVEL_2, "?", "Enter fireEvent");
         List<L> copy = new ArrayList<L>(listenerList);
         for (L l : copy) {
             fireHandler.fireEvent(l);
@@ -223,12 +223,12 @@ class ListenerList<L> {
     }
 
     public void remove(L listener) {
-        Log.d("?", "Enter remove");
+        Util.log(Util.LOGLEVEL_2, "?", "Enter remove");
         listenerList.remove(listener);
     }
 
     public List<L> getListenerList() {
-        Log.d("?", "Enter getListenerList");
+        Util.log(Util.LOGLEVEL_2, "?", "Enter getListenerList");
         return listenerList;
     }
 }

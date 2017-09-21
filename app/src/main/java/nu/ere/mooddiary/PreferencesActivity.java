@@ -80,7 +80,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
     // "Level 2"
     public void createMeasurementTypePreferences() {
-        Log.d(LOG_PREFIX, "Enter createMeasurementTypePreferences");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter createMeasurementTypePreferences");
 
         MeasurementTypes measurementTypes = orm.getMeasurementTypes();
 
@@ -97,7 +97,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         // Make a list of existing measurement types - each entry can be clicked to open up a new/edit submenu
 
         for(MeasurementType mType: measurementTypes.types) {
-            Log.d(LOG_PREFIX, "Load old type id: " + Integer.toString(mType.id));
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Load old type id: " + Integer.toString(mType.id));
 
             Preference oldType = new Preference(this);
 
@@ -115,7 +115,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                             in.putExtra(BundleExtraKey.MEASUREMENT_TYPE_MODE,
                                     PreferenceEditMode.MEASUREMENT_TYPE_CHANGE);
                             in.putExtra(BundleExtraKey.MEASUREMENT_TYPE_ID, this.measurementTypeId);
-                            Log.d(LOG_PREFIX,
+                            Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
                                     "Sending mTypeId: " + Integer.toString(this.measurementTypeId));
                             startActivityForResult(in, PreferenceEditMode.MEASUREMENT_TYPE_CHANGE);
                             return true;
@@ -146,7 +146,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
     // "Level 2"
     public void createReminderPreferences() {
-        Log.d(LOG_PREFIX, "Enter createReminderPreferences");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter createReminderPreferences");
 
         // Create categories
         PreferenceCategory oldCategory = new PreferenceCategory(this);
@@ -162,7 +162,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
         ArrayList<ReminderTime> sortedReminders = orm.getReminderTimes().getSorted();
         //ArrayList<ReminderTime> sortedReminders = orm.getReminderTimes().reminderTimes;
         for(ReminderTime reminder: sortedReminders) {
-            Log.d(LOG_PREFIX, "Load old reminderTimeId: " + Integer.toString(reminder.id));
+            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Load old reminderTimeId: " + Integer.toString(reminder.id));
 
             Preference oldReminder = new Preference(this);
              // oldReminder.setKey("junk_old_reminder_" + Integer.toString(i)); // FIXME
@@ -177,7 +177,7 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
                     in.putExtra(BundleExtraKey.REMINDER_MODE,
                             PreferenceEditMode.REMINDER_CHANGE);
                     in.putExtra(BundleExtraKey.REMINDER_TIME_ID, this.reminderTimeId);
-                    Log.d(LOG_PREFIX,
+                    Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
                             "Sending reminderTimeId: " + Integer.toString(this.reminderTimeId));
                     startActivityForResult(in, PreferenceEditMode.REMINDER_CHANGE);
                     return true;
@@ -208,51 +208,47 @@ public class PreferencesActivity extends ThemedPreferenceActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(LOG_PREFIX, "Enter onActivityResult");
-        Log.d(LOG_PREFIX, "requestCode " + Integer.toString(requestCode) +
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onActivityResult");
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "requestCode " + Integer.toString(requestCode) +
                 ", resultCode " + Integer.toString(resultCode));
 
         if (resultCode != RESULT_OK) {
-            Log.d(LOG_PREFIX, "Bad resultCode: do nothing");
+            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Bad resultCode: do nothing");
             Toast.makeText(this,
                     this.getString(R.string.toast_cancelled), Toast.LENGTH_SHORT).show();
             return;
         }
 
         Bundle bundle = data.getExtras();
-        Log.d(LOG_PREFIX, "Received bundle!");
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Received bundle!");
 
         switch (requestCode) {
             case PreferenceEditMode.REMINDER_CREATE:
-                Log.d(LOG_PREFIX, "CREATE reminder");
                 Util.addReminder(this, bundle);
                 prefReminders.removeAll(); // For redraw
                 createReminderPreferences();
                 break;
 
             case PreferenceEditMode.REMINDER_CHANGE:
-                Log.d(LOG_PREFIX, "UPDATE reminder");
                 Util.updateReminder(this, bundle);
                 prefReminders.removeAll(); // For redraw
                 createReminderPreferences();
                 break;
 
             case PreferenceEditMode.MEASUREMENT_TYPE_CREATE:
-                Log.d(LOG_PREFIX, "CREATE measurement type");
                 Util.addMeasurementType(this, bundle);
                 prefMeasurementTypes.removeAll(); // For redraw
                 createMeasurementTypePreferences();
                 break;
 
             case PreferenceEditMode.MEASUREMENT_TYPE_CHANGE:
-                Log.d(LOG_PREFIX, "UPDATE measurement type");
                 Util.updateMeasurementType(this, bundle);
                 prefMeasurementTypes.removeAll(); // For redraw
                 createMeasurementTypePreferences();
                 break;
 
             default:
-                Log.d(LOG_PREFIX, "Unknown request: " + Integer.toString(requestCode));
+                Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Unknown request: " + Integer.toString(requestCode));
                 break;
         }
     }

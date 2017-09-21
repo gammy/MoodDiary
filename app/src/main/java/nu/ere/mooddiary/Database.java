@@ -36,7 +36,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Util.appendLog(LOG_PREFIX, "Enter onCreate" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate" );
 
         this.db = db;
 
@@ -152,7 +152,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Util.appendLog(LOG_PREFIX, String.format("Enter onUpgrade (%d -> %d)", oldVersion, newVersion));
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, String.format("Enter onUpgrade (%d -> %d)", oldVersion, newVersion));
 
         if(oldVersion == 2 && newVersion == 3) {
             // DANGER WILL ROBINSON!
@@ -202,11 +202,13 @@ public class Database extends SQLiteOpenHelper {
      * ...// - Save widget data down to the entrylist
      */
     public void addPrimitive(String name, boolean isNumber) {
-        Util.appendLog(LOG_PREFIX, "INSERT INTO EntityPrimitives (name, isNumber) VALUES (?, ?)");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter addPrimitive");
         String sql = "INSERT INTO EntityPrimitives (name, isNumber) VALUES (?, ?)";
         SQLiteStatement statement = db.compileStatement(sql);
         statement.bindString(1, name);
         statement.bindLong(  2, isNumber ? 1 : 0);
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+            String.format("%s: %s, %d", sql, isNumber ? 1 : 0));
         statement.executeInsert();
     }
 
@@ -224,7 +226,7 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addMeasurementType(int entity, int order,
                                    String name, int min, int max, int dfl, String meta) {
-        Util.appendLog(LOG_PREFIX, "Enter addMeasurementType" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter addMeasurementType" );
 
         String sql = "INSERT INTO " +
                          "MeasurementTypes " +
@@ -248,6 +250,9 @@ public class Database extends SQLiteOpenHelper {
         statement.bindLong(  6, (long) dfl);
         statement.bindString(7, meta);
 
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+            String.format("%s: %d, %d, %s, %d, %d, %d, %s", sql,
+                    entity, order, name, min, max, dfl, meta));
         statement.executeInsert();
     }
 
@@ -261,13 +266,13 @@ public class Database extends SQLiteOpenHelper {
      * @param enabled
      */
     public void changeMeasurementType(int mTypeId, String newName, int order, int enabled) {
-        Util.appendLog(LOG_PREFIX, "Enter changeMeasurementType" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter changeMeasurementType" );
 
-        Util.appendLog(LOG_PREFIX, "UPDATE MeasurementTypes SET "
-                + "name = " + newName  + ", "
-                + "listOrder = " + Integer.toString(order) + ", "
-                + "enabled = " + Integer.toString(enabled) + " "
-                + "WHERE id = " + Integer.toString(mTypeId));
+        //Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "UPDATE MeasurementTypes SET "
+        //        + "name = " + newName  + ", "
+        //        + "listOrder = " + Integer.toString(order) + ", "
+        //        + "enabled = " + Integer.toString(enabled) + " "
+        //        + "WHERE id = " + Integer.toString(mTypeId));
 
         String sql = "UPDATE MeasurementTypes SET name = ?, listOrder = ?, enabled = ? WHERE id = ?";
         SQLiteStatement statement = db.compileStatement(sql);
@@ -275,6 +280,8 @@ public class Database extends SQLiteOpenHelper {
         statement.bindLong(  2, order);
         statement.bindLong(  3, enabled);
         statement.bindLong(  4, mTypeId);
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+            String.format("%s: %s, %d, %d, %d", sql, newName, order, enabled, mTypeId));
         statement.executeUpdateDelete();
         statement.close();
     }
@@ -285,13 +292,14 @@ public class Database extends SQLiteOpenHelper {
      * @param mTypeId
      */
     public void deleteMeasurementType(int mTypeId) {
-        Util.appendLog(LOG_PREFIX, "Enter deleteMeasurementType" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter deleteMeasurementType" );
         SQLiteStatement statement;
 
         // Delete measurement
         String sql = "DELETE FROM MeasurementTypes WHERE id = ?";
         statement = db.compileStatement(sql);
         statement.bindLong(1, mTypeId);
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, String.format("%s: %d", sql, mTypeId));
         statement.executeUpdateDelete();
         statement.close();
 
@@ -299,6 +307,7 @@ public class Database extends SQLiteOpenHelper {
         sql = "DELETE FROM reminderGroups WHERE type = ?";
         statement = db.compileStatement(sql);
         statement.bindLong(1, mTypeId);
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, String.format("%s: %d", sql, mTypeId));
         statement.executeUpdateDelete();
         statement.close();
 
@@ -314,7 +323,7 @@ public class Database extends SQLiteOpenHelper {
      */
     public void addEntries(ArrayList<Entry> entryList,
                           boolean useFirstTimestamp) { // Groups event times by first t
-        Util.appendLog(LOG_PREFIX, "Enter addEvents" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter addEvents" );
 
         String sql = "INSERT INTO Events (date, type, value) VALUES (?, ?, ?)";
 
@@ -332,12 +341,10 @@ public class Database extends SQLiteOpenHelper {
 
             statement.bindLong(  2, entry.eventType);
             statement.bindString(3, entry.value);
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+                    String.format("%s: %d, %s", sql, entry.eventType, entry.value));
 
             statement.executeInsert();
-            Util.appendLog(LOG_PREFIX,
-                    "INSERT INTO Events: " + Long.toString(entry.time) + ", " +
-                    Integer.toString(entry.eventType) + ", " +
-                    entry.value);
         }
 
         db.setTransactionSuccessful();
@@ -352,7 +359,7 @@ public class Database extends SQLiteOpenHelper {
      * @param typeIDs A simple arraylist of eventTypeID integers
      */
     public void addReminder(int hour, int minute, ArrayList<Integer> typeIDs) {
-        Util.appendLog(LOG_PREFIX, "Enter addReminder" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter addReminder" );
         Cursor cursor;
         String sql;
         SQLiteStatement statement;
@@ -364,12 +371,13 @@ public class Database extends SQLiteOpenHelper {
             newReminderGroup = cursor.getInt(0);
             newReminderGroup += 1;
         }
-        Util.appendLog(LOG_PREFIX, "addReminder: newReminderGroup: " + Integer.toString(newReminderGroup));
 
         db.beginTransaction();
 
         // Insert new ReminderTime
         sql = "INSERT INTO ReminderTimes (reminderGroup, hour, minute) VALUES (?, ?, ?)";
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+                String.format("%s: %d, %d, %d", sql, newReminderGroup, hour, minute));
         statement = db.compileStatement(sql);
         statement.bindLong(1, newReminderGroup);
         statement.bindLong(2, hour);
@@ -383,9 +391,10 @@ public class Database extends SQLiteOpenHelper {
 
         for(int i = 0; i < typeIDs.size(); i++) {
             int eventTypeID = typeIDs.get(i);
-            Util.appendLog(LOG_PREFIX, "addReminder: INSERT type: " + Integer.toString(eventTypeID));
             statement.bindLong(1, newReminderGroup);
             statement.bindLong(2, eventTypeID);
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "TEST");
+           //         String.format("%s: %d, %d", sql, newReminderGroup, eventTypeID));
             statement.executeInsert();
         }
         statement.close();
@@ -405,33 +414,36 @@ public class Database extends SQLiteOpenHelper {
      * @param typeIDs A simple arraylist of eventTypeID integers
      */
     public void changeReminder(int reminderTimeId, int hour, int minute, ArrayList<Integer> typeIDs) {
-        Util.appendLog(LOG_PREFIX, "Enter changeReminder" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter changeReminder" );
         Cursor cursor;
         String sql;
         SQLiteStatement statement;
 
         db.beginTransaction();
 
-        Util.appendLog(LOG_PREFIX, "SELECT reminderGroup FROM ReminderTimes WHERE id = " +
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "SELECT reminderGroup FROM ReminderTimes WHERE id = " +
                 Integer.toString(reminderTimeId));
 
         cursor = db.rawQuery("SELECT reminderGroup FROM ReminderTimes WHERE id = " +
                 Integer.toString(reminderTimeId), null);
         cursor.moveToFirst();
         int oldReminderGroup = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
-        Util.appendLog(LOG_PREFIX, "Result reminderGroup = " + Integer.toString(oldReminderGroup));
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Result reminderGroup = " + Integer.toString(oldReminderGroup));
 
-        Util.appendLog(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderGroup = " +
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderGroup = " +
                 Integer.toString(oldReminderGroup));
         db.delete("ReminderGroups", "reminderGroup = ?", new String[]
                 {Integer.toString(oldReminderGroup)});
 
-        Util.appendLog(LOG_PREFIX, "INSERT INTO ReminderTimes (reminderGroup, hour, minute) VALUES (" +
-                Integer.toString(oldReminderGroup) + ", " +
-                Integer.toString(hour) + ", " +
-                Integer.toString(minute) + ")");
+        // FIXME what's the below log message doing here?!
+        // Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "INSERT INTO ReminderTimes (reminderGroup, hour, minute) VALUES (" +
+        //         Integer.toString(oldReminderGroup) + ", " +
+        //         Integer.toString(hour) + ", " +
+        //         Integer.toString(minute) + ")");
 
         sql = "UPDATE ReminderTimes SET reminderGroup = ?, hour = ?, minute = ? WHERE id = ?";
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+            String.format("%s: %d, %d, %d, %d", sql, oldReminderGroup, hour, minute, reminderTimeId));
         statement = db.compileStatement(sql);
         statement.bindLong(1, oldReminderGroup);
         statement.bindLong(2, hour);
@@ -446,12 +458,10 @@ public class Database extends SQLiteOpenHelper {
 
         for(int i = 0; i < typeIDs.size(); i++) {
             int eventTypeID = typeIDs.get(i);
-            Util.appendLog(LOG_PREFIX, "addReminder: INSERT INTO ReminderGroups (reminderGroup, type)" +
-                    "VALUES (" +
-                    Integer.toString(oldReminderGroup) + ", " +
-                    Integer.toString(eventTypeID) + ")");
             statement.bindLong(1, oldReminderGroup);
             statement.bindLong(2, eventTypeID);
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+                String.format("%s: %d, %d", sql, oldReminderGroup, eventTypeID));
             statement.executeInsert();
         }
         statement.close();
@@ -467,15 +477,15 @@ public class Database extends SQLiteOpenHelper {
      * @param reminderTimeId
      */
     public void deleteReminder(int reminderTimeId) {
-        Util.appendLog(LOG_PREFIX, "Enter deleteReminder");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter deleteReminder");
         db.beginTransaction();
 
-        Util.appendLog(LOG_PREFIX, "DELETE FROM ReminderTimes WHERE id = " +
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "DELETE FROM ReminderTimes WHERE id = " +
                 Integer.toString(reminderTimeId));
         db.delete("ReminderTimes", "id = ?", new String[]
                 {Integer.toString(reminderTimeId)});
 
-        Util.appendLog(LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderGroup = " +
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "DELETE FROM ReminderGroups WHERE reminderGroup = " +
                 Integer.toString(reminderTimeId));
         db.delete("ReminderGroups", "reminderGroup = ?", new String[] {
                 Integer.toString(reminderTimeId)});
@@ -485,22 +495,22 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void testReminders() {
-        Util.appendLog(LOG_PREFIX, "Enter testReminders" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter testReminders" );
 
         Cursor cursor;
 
         cursor = db.rawQuery("SELECT id, reminderGroup, hour, minute FROM ReminderTimes", null);
-        Util.appendLog(LOG_PREFIX, "testReminders: rawquery OK");
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "testReminders: rawquery OK");
 
         // Walk through each reminder and collate the associated measurementTypes
         while(cursor.moveToNext()) {
-            Util.appendLog(LOG_PREFIX, "testReminders: looping ReminderTimes");
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "testReminders: looping ReminderTimes");
 
             int id     = cursor.getInt(cursor.getColumnIndex("id"));
             int group  = cursor.getInt(cursor.getColumnIndex("reminderGroup"));
             int hour   = cursor.getInt(cursor.getColumnIndex("hour"));
             int minute = cursor.getInt(cursor.getColumnIndex("minute"));
-            Util.appendLog(LOG_PREFIX,
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
                     "Reminder id" + Integer.toString(id) + ", " +
                     "group " + Integer.toString(group) + ", " +
                     "time = " + Integer.toString(hour) + ":" + Integer.toString(minute));
@@ -515,7 +525,7 @@ public class Database extends SQLiteOpenHelper {
             // Get all reminder types associated with this reminder
             while (rCursor.moveToNext()) {
                 int eventTypeID = rCursor.getInt(rCursor.getColumnIndex("type"));
-                Util.appendLog(LOG_PREFIX, "   associated measurement type: " + Integer.toString(eventTypeID));
+                Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "   associated measurement type: " + Integer.toString(eventTypeID));
                 // MeasurementType measurementType = orm.getMeasurementTypes().getByID(eventTypeID);
                 //reminderEventTypes.add(measurementType);
             }
@@ -524,6 +534,6 @@ public class Database extends SQLiteOpenHelper {
             // Reminder reminder = new Reminder(id, hour, minute, reminderEventTypes);
         }
         cursor.close();
-        Util.appendLog(LOG_PREFIX, "Leave testReminders");
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Leave testReminders");
     }
 }

@@ -34,7 +34,7 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_PREFIX, "Create");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
         initUI();
         Alarms.installAlarms(this);
@@ -43,13 +43,13 @@ public class MainActivity extends ThemedActivity {
     // If the user adds a new measurement type, we need to re-render the buttons.
     @Override
     protected void onRestart() {
-        Log.d(LOG_PREFIX, "Enter onRestart");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onRestart");
         super.onRestart();
         initUI();
     }
 
     public void initUI() {
-        Log.d(LOG_PREFIX, "Enter initUI" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter initUI" );
 
         setContentView(R.layout.coordinator_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.mainToolbar);
@@ -70,7 +70,7 @@ public class MainActivity extends ThemedActivity {
      * @param layout The layout resource to be used as main container where all Views are created
      */
     public void renderEventSelect(int layout) {
-        Log.d(LOG_PREFIX, "Enter renderEventSelect");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter renderEventSelect");
         ORM orm = ORM.getInstance(this);
 
         // Get our main (scrollable) view, where we are to programmatically add our EntryTypes
@@ -132,7 +132,7 @@ public class MainActivity extends ThemedActivity {
                 return true;
 
             case R.id.action_test_reminder_activity:
-                Log.d(LOG_PREFIX, "Test mode: Picking the first available reminderTime");
+                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Test mode: Picking the first available reminderTime");
                 i = new Intent(MainActivity.this, ReminderActivity.class);
                 i.putExtra("reminder_id",
                         ORM.getInstance(this).getReminderTimes().getFirstReminderTimeId());
@@ -140,7 +140,7 @@ public class MainActivity extends ThemedActivity {
                 return true;
 
             case R.id.action_test_reminder_activity_nosave:
-                Log.d(LOG_PREFIX, "Test mode (nosave): Picking the first available reminderTime");
+                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Test mode (nosave): Picking the first available reminderTime");
                 i = new Intent(MainActivity.this, ReminderActivity.class);
                 i.putExtra("nosave", true);
                 i.putExtra("reminder_id",

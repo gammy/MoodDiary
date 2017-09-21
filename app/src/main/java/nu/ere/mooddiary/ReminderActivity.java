@@ -28,7 +28,6 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.TextViewCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -56,7 +55,7 @@ public class ReminderActivity extends ThemedDialogActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Util.appendLog(LOG_PREFIX, "Create");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Create");
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
 
@@ -67,7 +66,7 @@ public class ReminderActivity extends ThemedDialogActivity {
             Intent intent = getIntent();
             Bundle extras = intent.getExtras();
             if(extras == null) {
-                Util.appendLog(LOG_PREFIX, "No state data from instance, and no extras passed?! :O");
+                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "No state data from instance, and no extras passed?! :O");
                 reminderID = -1;
             } else {
                 nosave = extras.getBoolean("nosave", false);
@@ -79,21 +78,22 @@ public class ReminderActivity extends ThemedDialogActivity {
             reminderID = sharedPrefs.getInt("reminder_id", -1);
         }
 
-        Util.appendLog(LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
 
         if(reminderID == -1) {
-            throw new NoSuchElementException("Caller didn't provide a reminderid");
+            throw new NoSuchElementException("Caller didn't provide a reminderID");
         }
 
         //Toast.makeText(this, "ID: " + Integer.toString(reminderID), Toast.LENGTH_LONG).show();
         ArrayList<MeasurementType> mTmp = orm.getReminderTimes().getTypesByReminderTimeID(reminderID);
         measurementTypes = new ArrayList<>();
-        Util.appendLog(LOG_PREFIX, "Starting measurement type walk");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Starting measurement type walk");
         for(MeasurementType type: mTmp) {
-            Util.appendLog(LOG_PREFIX, String.format("  Type %s enabled = %d", type.name, type.enabled));
             if(type.enabled == 1) {
-                Util.appendLog(LOG_PREFIX, String.format("    Added %s", type.name));
+                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, String.format("    Added %s", type.name));
                 measurementTypes.add(type);
+            } else {
+                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, String.format("  Type %s disabled", type.name));
             }
         }
 
@@ -103,7 +103,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     }
 
     private void initUI() {
-        Util.appendLog(LOG_PREFIX, "Enter initUI" );
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter initUI" );
 
         setContentView(R.layout.content_reminders);
 
@@ -147,7 +147,7 @@ public class ReminderActivity extends ThemedDialogActivity {
      *
      */
     private void buildViews(LinearLayout entryLayout) {
-        Util.appendLog(LOG_PREFIX, "Enter buildViews");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter buildViews");
         Resources resources = getResources();
 
         // Create a table
@@ -168,7 +168,7 @@ public class ReminderActivity extends ThemedDialogActivity {
 
         for(MeasurementType type: measurementTypes) {
             EntityPrimitive primitive = type.getPrimitive(orm.getPrimitives());
-            Util.appendLog(LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Renderer: primitive to render: " + primitive.name);
 
             // Make a label
             TextView label = new TextView(this);
@@ -216,7 +216,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private SeekBar buildRange(MeasurementType type, EntityPrimitive primitive) {
         Resources resources = getResources();
         SeekBar seekBar = new SeekBar(this);
-        Util.appendLog(LOG_PREFIX, "Renderer: Range: Original View    : " + seekBar.toString());
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Renderer: Range: Original View    : " + seekBar.toString());
         type.setView(seekBar);
         // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
         // the database EntityPrimitive name.
@@ -233,7 +233,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private TextView buildNumber(MeasurementType type) {
         TextView number = new TextView(this);
         type.setView(number);
-        Util.appendLog(LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Renderer: Number: Original View    : " + number.toString());
 
         /* Can't find an easier way to do this - insane */
         int[] attrs = new int[] { R.attr.editTextBackground};
@@ -258,7 +258,7 @@ public class ReminderActivity extends ThemedDialogActivity {
     private TextView buildText(MeasurementType type) {
         TextInputEditText text = new TextInputEditText(this);
         type.setView(text);
-        Util.appendLog(LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Renderer: Text: Original View    : " + text.toString());
         text.setText("");
         TextViewCompat.setTextAppearance(text,
                 android.R.style.TextAppearance_DeviceDefault_Medium);
@@ -275,8 +275,8 @@ public class ReminderActivity extends ThemedDialogActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Util.appendLog(LOG_PREFIX, "Enter onDestroy");
-        Util.appendLog(LOG_PREFIX, "Cancelling notification");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onDestroy");
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Cancelling this notification");
         // Sets an ID for the notification
         int mNotificationId = 1;
         // Gets an instance of the NotificationManager service

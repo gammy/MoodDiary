@@ -17,16 +17,14 @@ package nu.ere.mooddiary;
 
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 public class AlarmInstallerActivity extends ThemedActivity {
     private static final String LOG_PREFIX = "AlarmInstallerActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Util.appendLog(LOG_PREFIX, "onCreate");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
-        Util.appendLog(LOG_PREFIX, "Installing alarms");
         Alarms.installAlarms(this);
         ActivityCompat.finishAffinity(this);
     }

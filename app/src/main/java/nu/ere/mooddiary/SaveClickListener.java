@@ -39,7 +39,7 @@ public class SaveClickListener implements OnClickListener {
     public SaveClickListener(Activity activity,
                              ArrayList<MeasurementType> measurementTypes,
                              ImageView view) {
-        Log.d(LOG_PREFIX, "Enter SaveClickListener");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter SaveClickListener");
 
         this.activity = activity;
         this.measurementTypes = measurementTypes;
@@ -52,7 +52,7 @@ public class SaveClickListener implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.d(LOG_PREFIX, "CLICK, save!");
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "CLICK, save!");
         view.startAnimation(this.animationSet);
     }
 

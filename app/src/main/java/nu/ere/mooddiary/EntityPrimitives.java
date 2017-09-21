@@ -26,13 +26,13 @@ public final class EntityPrimitives {
     private SQLiteDatabase db = null;
 
     public EntityPrimitives(SQLiteDatabase db){
-        Log.d(LOG_PREFIX, "Enter EntityPrimitives");
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Enter EntityPrimitives");
         this.db = db;
         reload();
     }
 
     public void reload() {
-        Log.d(LOG_PREFIX, "Enter reload");
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Enter reload");
         entities = new ArrayList<>();
 
         Cursor cursor = db.rawQuery("SELECT id, name, isNumber, enabled FROM EntityPrimitives", null);
@@ -46,13 +46,13 @@ public final class EntityPrimitives {
                     cursor.getInt(cursor.getColumnIndex("enabled"))
             );
             entities.add(primitive);
-            Log.d(LOG_PREFIX, "Add primitive: " + cursor.getString(1));
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Add primitive: " + cursor.getString(1));
             added++;
         }
 
         cursor.close();
 
-        Log.d(LOG_PREFIX, "Primitives added: " + Integer.toString(added));
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Primitives added: " + Integer.toString(added));
     }
 
     public EntityPrimitive getByID(int id) {

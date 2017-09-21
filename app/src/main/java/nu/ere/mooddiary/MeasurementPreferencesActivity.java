@@ -61,7 +61,7 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
      * Default value: 0            (numberbox)
      */
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_PREFIX, "Enter onCreate");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
         orm = orm.getInstance(this);
 
@@ -73,14 +73,14 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
                 throw new NoSuchElementException(Integer.toString(editMode) + ": Invalid mode");
 
             case PreferenceEditMode.MEASUREMENT_TYPE_CREATE:
-                Log.d(LOG_PREFIX, "Our mission: CREATE measurement type");
+                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Our mission: CREATE measurement type");
                 break;
 
             case PreferenceEditMode.MEASUREMENT_TYPE_CHANGE:
             case PreferenceEditMode.MEASUREMENT_TYPE_DELETE:
-                Log.d(LOG_PREFIX, "Our mission: EDIT / DELETE measurement type");
+                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Our mission: EDIT / DELETE measurement type");
                 oldID = intent.getIntExtra(BundleExtraKey.MEASUREMENT_TYPE_ID, -1);
-                Log.d(LOG_PREFIX, "oldID: " + Integer.toString(oldID));
+                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "oldID: " + Integer.toString(oldID));
                 if(oldID == -1) {
                     throw new NoSuchElementException(Integer.toString(oldID) + ": An existing" +
                         "measurement type id needs to be passed to this intent in this mode");
@@ -189,7 +189,7 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
             delButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Log.d(LOG_PREFIX, "Enter onPreferenceClick pre-delete bundle");
+                    Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Enter onPreferenceClick pre-delete bundle");
                     Intent rIntent = getIntent();
                     bundle.putInt(BundleExtraKey.MEASUREMENT_TYPE_MODE,
                             PreferenceEditMode.MEASUREMENT_TYPE_DELETE);
@@ -209,7 +209,7 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
         saveButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Log.d(LOG_PREFIX, "Enter onPreferenceClick pre-bundle");
+                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Enter onPreferenceClick pre-bundle");
 
                 String strOrder = prefOrder.getSummary().toString();
                 String strMinimum = prefMin.getSummary().toString();
@@ -343,42 +343,44 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
     }
 
     public boolean testValues(String name, int valType, String order, String min, String max, String dfl) {
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter testValues");
+
 
         if(name == null || name == "") {
-            Log.d(LOG_PREFIX, "Cannot be empty: Name");
+            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Cannot be empty: Name");
             Toast.makeText(this, "Cannot be empty: Name", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if(valType == -1) {
-            Log.d(LOG_PREFIX, "Programming error: entity: -1");
+            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Programming error: entity: -1");
             Toast.makeText(this, "Programming error entity: -1", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if(! isNumeric(order)) {
-            Log.d(LOG_PREFIX, "Invalid number: Order");
+            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Invalid number: Order");
             Toast.makeText(this, "Invalid number: Order", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Some primitive types
         if(editMode != PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
-            Log.d(LOG_PREFIX, "testValues(): editMode == TYPE_CHANGE, skipping min,max,def sanity check");
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "testValues(): editMode == TYPE_CHANGE, skipping min,max,def sanity check");
             if (!isNumeric(min)) {
-                Log.d(LOG_PREFIX, "Invalid number: Minimum");
+                Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Invalid number: Minimum");
                 Toast.makeText(this, "Invalid number: Minimum", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             if (!isNumeric(max)) {
-                Log.d(LOG_PREFIX, "Invalid number: Maximum");
+                Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Invalid number: Maximum");
                 Toast.makeText(this, "Invalid number: Maximum", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             if (!isNumeric(dfl)) {
-                Log.d(LOG_PREFIX, "Invalid number: Default");
+                Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Invalid number: Default");
                 Toast.makeText(this, "Invalid number: Default", Toast.LENGTH_SHORT).show();
                 return false;
             }
@@ -396,14 +398,14 @@ public class MeasurementPreferencesActivity extends ThemedPreferenceActivity {
         }
 
         if(valMax - valMin <= 0) {
-            Log.d(LOG_PREFIX, "Maximum must be more than minimum!");
+            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Maximum must be more than minimum!");
             Toast.makeText(this, "Maximum must be more than minimum!", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         // Is the default within the range?
         if(valDfl < valMin || valDfl > valMax) {
-            Log.d(LOG_PREFIX, "Default must be within minimum and maximum!");
+            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Default must be within minimum and maximum!");
             Toast.makeText(this,
                     "Default must be within minimum and maximum!", Toast.LENGTH_SHORT).show();
             return false;

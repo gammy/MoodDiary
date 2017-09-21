@@ -29,7 +29,7 @@ public class MeasurementTypes {
     public ArrayList<MeasurementType> types;
 
     public MeasurementTypes(SQLiteDatabase db){
-        Log.d(LOG_PREFIX, "Enter MeasurementTypes");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter MeasurementTypes");
         types = new ArrayList<>();
 
         Cursor cursor = db.rawQuery(
@@ -61,7 +61,7 @@ public class MeasurementTypes {
                     cursor.getInt(cursor.getColumnIndex("enabled"))
             );
             types.add(type);
-            Log.d(LOG_PREFIX, "Add type: " + type.name +
+            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Add type: " + type.name +
                     "(id " + Long.toString(type.id) + ", " +
                     "order " + Long.toString(type.order) + ") " +
                     (type.enabled == 1 ? "" : " - disabled"));
@@ -70,7 +70,7 @@ public class MeasurementTypes {
 
         cursor.close();
 
-        Log.d(LOG_PREFIX, "Types added: " + Integer.toString(added));
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Types added: " + Integer.toString(added));
     }
 
     public MeasurementType getByID(long id) {

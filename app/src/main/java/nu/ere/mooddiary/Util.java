@@ -53,6 +53,7 @@ public class Util {
      * @param activity Calling activity
      */
     public static void raiseNotification(Activity activity) {
+        log(LOGLEVEL_1, LOG_PREFIX, "Enter raiseNotification");
         Intent resultIntent = new Intent(activity, ReminderActivity.class);
         // Because clicking the notification opens a new ("special") activity, there's
         // no need to create an artificial back stack.
@@ -103,7 +104,7 @@ public class Util {
         calendar.set(Calendar.SECOND, 0);
 
         /*
-        Log.d(LOG_PREFIX, "toHumanTime: Alarm set for: " +
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "toHumanTime: Alarm set for: " +
                 String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)) + ":" +
                 String.valueOf(calendar.get(Calendar.MINUTE)) + ":" +
                 String.valueOf(calendar.get(Calendar.SECOND))
@@ -111,9 +112,9 @@ public class Util {
         */
 
         long millis = calendar.getTimeInMillis();
-        // Log.d(LOG_PREFIX, "in milliseconds: " + Long.toString(millis));
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "in milliseconds: " + Long.toString(millis));
         String timeString = DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_TIME);
-        //Log.d(LOG_PREFIX, "Human: " + timeString);
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Human: " + timeString);
 
         return timeString;
     }
@@ -139,16 +140,16 @@ public class Util {
      * @param types  Arraylist of measurement types
      */
     public static void saveEvents(Activity activity, ArrayList<MeasurementType> types) {
-        Log.d(LOG_PREFIX, "Enter saveEvents");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter saveEvents");
         ORM orm = ORM.getInstance(activity);
 
         for(MeasurementType type: types) {
-            Log.d(LOG_PREFIX, " mType " + Integer.toString(type.id) + ", " +
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, " mType " + Integer.toString(type.id) + ", " +
                     "View " + type.view.toString());
 
         }
 
-        Log.d(LOG_PREFIX, "COMMENCING VIEW PARSE LOOP");
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "COMMENCING VIEW PARSE LOOP");
 
         ArrayList<Entry> entries = new ArrayList<>();
 
@@ -156,9 +157,9 @@ public class Util {
         for(MeasurementType type: types) {
             String value;
 
-            Log.d(LOG_PREFIX, "Get entity name");
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Get entity name");
             String entity_name = type.getPrimitive(orm.getPrimitives()).name;
-            Log.d(LOG_PREFIX, "Got it: " + entity_name);
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Got it: " + entity_name);
 
             // Parse
             switch(entity_name) {
@@ -169,7 +170,6 @@ public class Util {
                 case "range_normal":
 //                    value = ""; // TODO
                     SeekBar sBar = (SeekBar) type.view;
-                    Log.d(LOG_PREFIX, "About to read range getProgress on " + sBar.toString());
                     int progress = sBar.getProgress();
                     value = Long.toString(type.min + progress);
                     //value = "0";
@@ -177,13 +177,11 @@ public class Util {
 
                 case "text":
                     TextInputEditText tView = (TextInputEditText) type.view;
-                    Log.d(LOG_PREFIX, "About to read text getText on " + tView.toString());
                     value = tView.getText().toString();
                     break;
 
                 case "number":
                     TextView nView = (TextView) type.view;
-                    Log.d(LOG_PREFIX, "About to read number getText on " + nView.toString());
                     value = nView.getText().toString();
                     value = Long.toString(Long.parseLong(value, 10));
                     break;
@@ -208,7 +206,7 @@ public class Util {
      * @return boolean always true
      */
     public static boolean addReminder(PreferencesActivity activity, Bundle bundle) {
-        Log.d(LOG_PREFIX, "Enter addReminder");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter addReminder");
         ORM orm = ORM.getInstance(activity);
 
         int hour   = bundle.getInt(BundleExtraKey.REMINDER_HOUR);
@@ -231,7 +229,7 @@ public class Util {
      * @return boolean always true
      */
     public static boolean updateReminder(PreferencesActivity activity, Bundle bundle) {
-        Log.d(LOG_PREFIX, "Enter updateReminder");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter updateReminder");
         ORM orm = ORM.getInstance(activity);
 
         int reminderTimeId = bundle.getInt(BundleExtraKey.REMINDER_TIME_ID);
@@ -241,12 +239,12 @@ public class Util {
         int changeMode = bundle.getInt(BundleExtraKey.REMINDER_MODE);
 
         if(changeMode == PreferenceEditMode.REMINDER_CHANGE) {
-            Log.d(LOG_PREFIX, "About to update reminderTimeId " + Integer.toString(reminderTimeId));
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "About to update reminderTimeId " + Integer.toString(reminderTimeId));
             ArrayList<Integer> types = bundle.getIntegerArrayList(BundleExtraKey.REMINDER_TYPES);
             Toast.makeText(activity, activity.getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
             orm.changeReminder(reminderTimeId, hour, minute, types);
         } else if(changeMode == PreferenceEditMode.REMINDER_DELETE) {
-            Log.d(LOG_PREFIX, "About to DELETE reminderTimeId " + Integer.toString(reminderTimeId));
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "About to DELETE reminderTimeId " + Integer.toString(reminderTimeId));
             Toast.makeText(activity, activity.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show();
             orm.deleteReminder(reminderTimeId);
         }
@@ -265,7 +263,7 @@ public class Util {
      * @return boolean always true
      */
     public static boolean addMeasurementType(PreferencesActivity activity, Bundle bundle) {
-        Log.d(LOG_PREFIX, "Enter addMeasurementType");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter addMeasurementType");
         ORM orm = ORM.getInstance(activity);
 
         String name = bundle.getString(BundleExtraKey.MEASUREMENT_TYPE_NAME);
@@ -290,7 +288,7 @@ public class Util {
      * @return boolean always true
      */
     public static boolean updateMeasurementType(PreferencesActivity activity, Bundle bundle) {
-        Log.d(LOG_PREFIX, "Enter updateMeasurementType");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter updateMeasurementType");
         ORM orm = ORM.getInstance(activity);
 
         int mTypeId    = bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_ID);
@@ -301,11 +299,11 @@ public class Util {
         int enabled =    bundle.getInt(BundleExtraKey.MEASUREMENT_TYPE_ENABLED);
 
         if(changeMode == PreferenceEditMode.MEASUREMENT_TYPE_CHANGE) {
-            Log.d(LOG_PREFIX, "About to update measurementTypeId " + Integer.toString(mTypeId));
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "About to update measurementTypeId " + Integer.toString(mTypeId));
             Toast.makeText(activity, activity.getString(R.string.toast_saved), Toast.LENGTH_SHORT).show();
             orm.changeMeasurementType(mTypeId, name, order, enabled);
         } else if(changeMode == PreferenceEditMode.MEASUREMENT_TYPE_DELETE) {
-            Log.d(LOG_PREFIX, "About to DELETE mTypeId " + Integer.toString(mTypeId));
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "About to DELETE mTypeId " + Integer.toString(mTypeId));
             Toast.makeText(activity, activity.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show();
             orm.deleteMeasurementType(mTypeId);
         }
@@ -315,12 +313,32 @@ public class Util {
         return(true);
     }
 
-    // https://stackoverflow.com/questions/1756296/android-writing-logs-to-text-file
-    public static void appendLog(String logPrefix, String text) {
+    public static final int LOGLEVEL_QUIET = 0;
+    public static final int LOGLEVEL_1 = 1;
+    public static final int LOGLEVEL_2 = 2;
+    public static final int LOGLEVEL_3 = 3;
+
+    private static final int CURRENT_LOGLEVEL = LOGLEVEL_3;
+
+    /**
+     * Add a message to the logfile
+     * Based on https://stackoverflow.com/questions/1756296/android-writing-logs-to-text-file
+     *
+     * Example: log(LOGLEVEL_INFO, "Renderer", "Copying memory to framebuffer");
+     *
+     * @param logLevel The minimum log level required to store the message
+     * @param logPrefix A string which is automatically prepended to the message, separated by ': '
+     * @param text The message to save
+     */
+    public static void log(Integer logLevel, String logPrefix, String text) {
         Log.d(logPrefix, text);
 
+        if(CURRENT_LOGLEVEL < logLevel) {
+            return;
+        }
+
         Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM d HH:mm: ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YY HH:mm: ");
 
         String targetPath = "Download" + "/MoodDiary.log";
         File sd = Environment.getExternalStorageDirectory();

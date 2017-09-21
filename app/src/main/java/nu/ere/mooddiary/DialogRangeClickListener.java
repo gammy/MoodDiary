@@ -34,8 +34,8 @@ class DialogRangeClickListener implements DialogInterface.OnClickListener {
     }
 
     public void onClick(DialogInterface dialog, int which) {
-        Log.d(LOG_PREFIX, "Enter onClick");
-        Log.d(LOG_PREFIX, "Which = " + Integer.toString(which));
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Enter onClick");
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Which = " + Integer.toString(which));
 
         int v = measurementType.min + seekBar.getProgress();
         String value = Integer.toString(v);
@@ -63,9 +63,9 @@ class DialogRangeClickListener implements DialogInterface.OnClickListener {
     }
 
     private void setViewText(SeekBar view, String text) {
-        Log.d(LOG_PREFIX, "setViewText: STUB"); // FIXME or WONTFIX
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "setViewText: STUB"); // FIXME or WONTFIX
         if(view == null) {
-            Log.d(LOG_PREFIX, "setViewText: view is null"); // FIXME or WONTFIX
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "setViewText: view is null"); // FIXME or WONTFIX
             return;
         }
 

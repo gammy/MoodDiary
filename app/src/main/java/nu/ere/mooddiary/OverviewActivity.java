@@ -30,7 +30,7 @@ public class OverviewActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_PREFIX, "Create");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter Create");
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -41,7 +41,7 @@ public class OverviewActivity extends ThemedActivity {
     }
 
     private void loadInfo() {
-        Log.d(LOG_PREFIX, "Enter loadInfo");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter loadInfo");
 
         TextView view = (TextView) findViewById(R.id.overviewText);
         SQLiteDatabase db = orm.db;

@@ -30,7 +30,7 @@ public class AboutActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_PREFIX, "Create");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.content_about);

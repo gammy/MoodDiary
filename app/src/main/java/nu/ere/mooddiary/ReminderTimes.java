@@ -34,17 +34,17 @@ public final class ReminderTimes {
     private ORM orm = null;
 
     public ReminderTimes(ORM orm) {
-        Log.d(LOG_PREFIX, "Enter ReminderTimes");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter ReminderTimes");
         this.orm = orm;
         reload();
     }
 
     public void reload() {
-        Log.d(LOG_PREFIX, "Enter reload");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter reload");
 
         // Populate ReminderTimes
         Cursor cursor;
-        Log.d(LOG_PREFIX, "SELECT id, reminderGroup, hour, minute FROM ReminderTimes");
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "SELECT id, reminderGroup, hour, minute FROM ReminderTimes");
         cursor = orm.db.rawQuery("SELECT id, reminderGroup, hour, minute FROM ReminderTimes", null);
 
         reminderTimes = new ArrayList<>();
@@ -59,7 +59,7 @@ public final class ReminderTimes {
             ReminderTime reminderTime = new ReminderTime(id, group, hour, minute);
             reminderTimes.add(reminderTime);
 
-            Log.d(LOG_PREFIX,
+            Util.log(Util.LOGLEVEL_2, LOG_PREFIX,
                     "  ReminderTime " + Integer.toString(id) + ", " +
                             "group " + Integer.toString(group) + ", " +
                             "time = " + Integer.toString(hour) + ":" + Integer.toString(minute));
@@ -78,12 +78,14 @@ public final class ReminderTimes {
                 return (r);
             }
         }
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Unable to find an ReminderTime with id " +
+                Long.toString(id));
         throw new NoSuchElementException("Unable to find an ReminderTime with id " +
                 Long.toString(id));
     }
 
     public ArrayList<MeasurementType> getTypesByReminderTimeID(int reminderTimeID) {
-        Log.d(LOG_PREFIX, "Enter getTypesByReminderTimeID");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter getTypesByReminderTimeID");
         ArrayList<MeasurementType> reminderMeasurementTypes = new ArrayList<>();
 
         Cursor cursor;
@@ -122,7 +124,7 @@ public final class ReminderTimes {
         // Get all measurement types associated with this reminder
         while (cursor.moveToNext()) {
             int measurementTypeId = cursor.getInt(cursor.getColumnIndex("type"));
-            Log.d(LOG_PREFIX, "  associated type: " + Integer.toString(measurementTypeId));
+            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "  associated type: " + Integer.toString(measurementTypeId));
             MeasurementType measurementType = orm.getMeasurementTypes().getByID(measurementTypeId);
             reminderMeasurementTypes.add(measurementType);
         }
@@ -133,31 +135,31 @@ public final class ReminderTimes {
     }
 
     public int getFirstReminderGroupId() {
-        Log.d(LOG_PREFIX, "Enter getFirstReminderGroupId");
-        Log.d(LOG_PREFIX, "SELECT MIN (reminderGroup) FROM ReminderTimes");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter getFirstReminderGroupId");
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "SELECT MIN (reminderGroup) FROM ReminderTimes");
         Cursor cursor =
                 orm.db.rawQuery("SELECT MIN (reminderGroup) AS first FROM ReminderTimes", null);
         cursor.moveToFirst();
         int id = cursor.getInt(cursor.getColumnIndex("first"));
-        Log.d(LOG_PREFIX, "id: " + Integer.toString(id));
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "id: " + Integer.toString(id));
         cursor.close();
         return id;
     }
 
     public int getFirstReminderTimeId() {
-        Log.d(LOG_PREFIX, "Enter getFirstReminderTimeId");
-        Log.d(LOG_PREFIX, "SELECT MIN (id) FROM ReminderTimes");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter getFirstReminderTimeId");
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "SELECT MIN (id) FROM ReminderTimes");
         Cursor cursor =
                 orm.db.rawQuery("SELECT MIN (id) AS first FROM ReminderTimes", null);
         cursor.moveToFirst();
         int id = cursor.getInt(cursor.getColumnIndex("first"));
-        Log.d(LOG_PREFIX, "id: " + Integer.toString(id));
+        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "id: " + Integer.toString(id));
         cursor.close();
         return id;
     }
 
     public ArrayList<ReminderTime> getSorted() {
-        Log.d(LOG_PREFIX, "Enter getSorted");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter getSorted");
 
         ArrayList<ReminderTime> list = orm.getReminderTimes().reminderTimes;
 
@@ -172,7 +174,7 @@ public final class ReminderTimes {
                     o1Date = fmt.parse(String.format("%02d:%02d", o1.hour, o1.minute));
                     o2Date = fmt.parse(String.format("%02d:%02d", o2.hour, o2.minute));
                 } catch(Exception e) {
-                    Log.d(LOG_PREFIX, "Dateparser sez NO. Boooooooooooooom");
+                    Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Dateparser sez NO. Boooooooooooooom");
                 }
 
                 return o1Date.compareTo(o2Date);
@@ -181,7 +183,7 @@ public final class ReminderTimes {
 
         for(ReminderTime r: reminderTimes) {
             String timeText = String.format("%02d:%02d", r.hour, r.minute);
-            Log.d(LOG_PREFIX, "  reminder " + Integer.toString(r.id) + ": " + timeText);
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "  reminder " + Integer.toString(r.id) + ": " + timeText);
         }
 
         return(list);
