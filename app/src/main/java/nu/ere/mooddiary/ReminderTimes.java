@@ -94,9 +94,13 @@ public final class ReminderTimes {
 
         /* First get reminder *TIME* ID from ReminderTimes, *THEN* look for that */
         sql = "SELECT reminderGroup FROM ReminderTimes WHERE id = ?";
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, String.format("%s: %d", sql, reminderTimeID));
         cursor = orm.db.rawQuery(sql, new String[]{iStr});
         cursor.moveToFirst();
         if (cursor.getCount() == 0) {
+            Util.log(Util.LOGLEVEL_1, LOG_PREFIX,
+                "Error: Found no reminderGroup in ReminderTimes for id " +
+                    Integer.toString(reminderTimeID));
             throw new IndexOutOfBoundsException(
                     "Found no reminderGroup in ReminderTimes for id " +
                             Integer.toString(reminderTimeID));
@@ -119,10 +123,12 @@ public final class ReminderTimes {
                 "ORDER BY " +
                 "MeasurementTypes.listOrder ASC";
 
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, String.format("%s: %d", sql, reminderGroup));
         cursor = orm.db.rawQuery(sql, new String[]{gStr});
 
         // Get all measurement types associated with this reminder
         while (cursor.moveToNext()) {
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "moveToNext()");
             int measurementTypeId = cursor.getInt(cursor.getColumnIndex("type"));
             Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "  associated type: " + Integer.toString(measurementTypeId));
             MeasurementType measurementType = orm.getMeasurementTypes().getByID(measurementTypeId);
@@ -131,6 +137,7 @@ public final class ReminderTimes {
 
         cursor.close();
 
+        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Leave getTypesByReminderTimeID");
         return (reminderMeasurementTypes);
     }
 

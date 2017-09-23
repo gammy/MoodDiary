@@ -43,22 +43,22 @@ public class Database extends SQLiteOpenHelper {
         // ReminderGroups and ReminderTimes relate to entry scheduling (from the app)
         db.execSQL(
                 "CREATE TABLE ReminderGroups " +
-                    "(" +
-                        "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "reminderGroup INTEGER NOT NULL, " +
-                        "type          INTEGER NOT NULL, " +
-                        "FOREIGN KEY(type) REFERENCES MeasurementTypes(id)" +
-                    ")"
+                "(" +
+                    "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "reminderGroup INTEGER NOT NULL, " +
+                    "type          INTEGER NOT NULL, " +
+                    "FOREIGN KEY(type) REFERENCES MeasurementTypes(id)" +
+                ")"
         );
 
         db.execSQL(
                 "CREATE TABLE ReminderTimes " +
-                    "(" +
-                        "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "reminderGroup INTEGER NOT NULL, " + // Not unique
-                        "hour          INTEGER NOT NULL, " +
-                        "minute        INTEGER NOT NULL " +
-                    ")"
+                "(" +
+                    "id            INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "reminderGroup INTEGER NOT NULL, " + // Not unique
+                    "hour          INTEGER NOT NULL, " +
+                    "minute        INTEGER NOT NULL " +
+                ")"
         );
 
         // Primitives
@@ -341,8 +341,13 @@ public class Database extends SQLiteOpenHelper {
 
             statement.bindLong(  2, entry.eventType);
             statement.bindString(3, entry.value);
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
-                    String.format("%s: %d, %s", sql, entry.eventType, entry.value));
+            if(useFirstTimestamp) {
+                Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+                    String.format("%s: %d, %s", sql, entry.eventType, entry.value, entryList.get(0).time));
+            } else {
+                Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+                    String.format("%s: %d, %s", sql, entry.eventType, entry.value, entry.time));
+            }
 
             statement.executeInsert();
         }

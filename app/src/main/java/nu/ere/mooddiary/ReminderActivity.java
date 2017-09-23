@@ -81,6 +81,7 @@ public class ReminderActivity extends ThemedDialogActivity {
         Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
 
         if(reminderID == -1) {
+            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Error: Caller didn't provide a reminderID");
             throw new NoSuchElementException("Caller didn't provide a reminderID");
         }
 
