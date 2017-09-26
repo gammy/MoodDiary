@@ -63,22 +63,25 @@ public class ReminderActivity extends ThemedDialogActivity {
         prefEditor = sharedPrefs.edit();
 
         if (savedInstanceState == null) {
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "This is *not* a saved instance");
             Intent intent = getIntent();
             Bundle extras = intent.getExtras();
             if(extras == null) {
                 Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "No state data from instance, and no extras passed?! :O");
                 reminderID = -1;
             } else {
+                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Saved instance has extras");
                 nosave = extras.getBoolean("nosave", false);
                 reminderID = extras.getInt("reminder_id");
                 prefEditor.putInt("reminder_id", reminderID);
                 prefEditor.apply();
             }
         } else {
+            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "This *is* a saved instance");
             reminderID = sharedPrefs.getInt("reminder_id", -1);
         }
 
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Reminder ID: " + Integer.toString(reminderID));
 
         if(reminderID == -1) {
             Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Error: Caller didn't provide a reminderID");
