@@ -34,7 +34,7 @@ public class MainActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Create");
+        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter Create");
         super.onCreate(savedInstanceState);
         initUI();
         Alarms.installAlarms(this);
