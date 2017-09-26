@@ -208,7 +208,7 @@ public class Database extends SQLiteOpenHelper {
         statement.bindString(1, name);
         statement.bindLong(  2, isNumber ? 1 : 0);
         Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
-            String.format("%s: %s, %d", sql, isNumber ? 1 : 0));
+            String.format("%s: %s, %d", sql, name, isNumber ? 1 : 0));
         statement.executeInsert();
     }
 
