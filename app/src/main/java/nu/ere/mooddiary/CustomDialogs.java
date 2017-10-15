@@ -67,7 +67,7 @@ public class CustomDialogs {
                                                 MeasurementType measurementType,
                                                 int dialogThemeID,
                                                 EntityPrimitive primitive) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter showNormalRangeDialog");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter showNormalRangeDialog");
         final SeekBar seekBar = new SeekBar(new ContextThemeWrapper(activity, dialogThemeID));
 
         // This is stupid: The code assumes that the caller view is a number or somesuch,
@@ -97,9 +97,9 @@ public class CustomDialogs {
         // The drawable resource name (i.e 'res/drawable/range_center.xml') matches
         // the database EntityPrimitive name.
         Resources resources = activity.getResources();
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "primitive: " + primitive.name);
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "primitive: " + primitive.name);
         int styleID = resources.getIdentifier(primitive.name, "drawable", activity.getPackageName());
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "styleID: " + Integer.toString(styleID));
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "styleID: " + Integer.toString(styleID));
         seekBar.setProgressDrawable(ResourcesCompat.getDrawable(resources, styleID, null));
         seekBar.setMax(measurementType.totalValues);
         seekBar.setProgress(measurementType.normalDefault);
@@ -111,7 +111,7 @@ public class CustomDialogs {
                                           EditText view,
                                           MeasurementType measurementType,
                                           int dialogThemeID) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter showTextDialog");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter showTextDialog");
         final EditText editText =
                 new EditText(new ContextThemeWrapper(activity, dialogThemeID));
 
@@ -154,8 +154,8 @@ public class CustomDialogs {
                                                 TextView view,
                                                 final MeasurementType measurementType,
                                                 int dialogThemeID){
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter showNumberDialog");
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter showNumberDialog");
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
         final NumberPicker numberPicker =
                 new NumberPicker(new ContextThemeWrapper(activity, dialogThemeID));
 
@@ -174,12 +174,12 @@ public class CustomDialogs {
         if(view != null) {
             // Set the previously set (non-default) value in the view
             //value = Integer.parseInt(view.getText().toString()) - measurementType.min
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Previous Value string from view: " + view.getText().toString());
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Previous Value string from view: " + view.getText().toString());
             value = Integer.parseInt(view.getText().toString()) - measurementType.min;
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Setting Value to: " + Integer.toString(value));
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Setting Value to: " + Integer.toString(value));
         }
 
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Value = " + value);
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Value = " + value);
         numberPicker.setValue(value);
 
         numberPicker.setDisplayedValues(printValues);
@@ -223,8 +223,8 @@ public class CustomDialogs {
                                             CheckBox view,
                                             MeasurementType measurementType,
                                             int dialogThemeID){
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter showToggleDialog");
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter showToggleDialog");
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "dialogThemeID: " + Integer.toString(dialogThemeID));
         final CheckBox checkBox =
                 new CheckBox(new ContextThemeWrapper(activity, dialogThemeID));
         checkBox.setGravity(Gravity.END);

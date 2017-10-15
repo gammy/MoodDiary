@@ -38,11 +38,11 @@ class DialogNumberClickListener implements DialogInterface.OnClickListener {
     }
 
     public void onClick(DialogInterface dialog, int which) {
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Enter onClick");
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Which = " + Integer.toString(which));
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Enter onClick");
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Which = " + Integer.toString(which));
 
         String value = Integer.toString(numberPicker.getValue() + measurementType.min);
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Value = " + value);
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Value = " + value);
 
         switch (which)
         {

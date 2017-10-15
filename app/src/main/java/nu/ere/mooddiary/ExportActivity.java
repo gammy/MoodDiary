@@ -55,7 +55,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
                      prefSQL;
 
     public void onCreate(Bundle savedInstanceState) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
 
@@ -73,7 +73,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
     }
 
     public void createSQLPreferences() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter createSQLPreferences");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter createSQLPreferences");
         prefSQL.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -83,7 +83,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
     }
 
     public void createCSVPreferences() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter createCSVPreferences");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter createCSVPreferences");
 
         // Create categories
         PreferenceCategory typesCategory = new PreferenceCategory(this);
@@ -161,11 +161,11 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
     // Function copied near-verbatim from PreferencesActivity :(
     public void createEventTypePreferences(PreferenceCategory screen) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter createMeasurementTypePreferences");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter createMeasurementTypePreferences");
 
         MeasurementTypes measurementTypes = orm.getMeasurementTypes();
 
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "mType count: " + Integer.toString(measurementTypes.types.size()));
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "mType count: " + Integer.toString(measurementTypes.types.size()));
         for(int i = 0; i < measurementTypes.types.size(); i++) {
             MeasurementType e = measurementTypes.types.get(i);
             CheckBoxPreference cb = new CheckBoxPreference(this);
@@ -178,7 +178,7 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
     // Based on http://stackoverflow.com/a/19093736/417115
     public boolean exportDatabase() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter exportDatabase");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter exportDatabase");
 
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -186,12 +186,12 @@ public class ExportActivity extends ThemedPreferenceActivity {
 
         // http://stackoverflow.com/a/6942735/417115
         String state = Environment.getExternalStorageState();
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "sdcard state: " + state);
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "sdcard state: " + state);
 
         if(Environment.MEDIA_MOUNTED.equals(state)) {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "sdcard mounted and writable");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "sdcard mounted and writable");
         } else if(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "sdcard mounted readonly");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "sdcard mounted readonly");
         }
 
         // Here, thisActivity is the current activity
@@ -223,10 +223,10 @@ public class ExportActivity extends ThemedPreferenceActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "We have write permissions");
+                    Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "We have write permissions");
                     showDialog();
                 } else {
-                    Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "NEIN!!!");
+                    Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "NEIN!!!");
                 }
             }
         }
@@ -252,11 +252,11 @@ public class ExportActivity extends ThemedPreferenceActivity {
                 src.close();
                 dst.close();
             } catch (Exception e) {
-                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, e.getMessage());
+                Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, e.getMessage());
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else{
-            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "FIXME: " + sourcePath + ": No such file");
+            Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "FIXME: " + sourcePath + ": No such file");
         }
 
         Toast.makeText(this, getString(R.string.export_good), Toast.LENGTH_SHORT).show();

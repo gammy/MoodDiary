@@ -34,7 +34,7 @@ public final class ORM extends Database {
 
     public ORM(Context context) {
         super(context);
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter Create");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter Create");
         db = getWritableDatabase();
         Toast.makeText(context, "New ORM instance", Toast.LENGTH_SHORT).show();
 
@@ -45,19 +45,19 @@ public final class ORM extends Database {
     }
 
     public static synchronized ORM getInstance(Context context) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter getInstance");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter getInstance");
         if(instance == null) {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "creating new instance");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "creating new instance");
            instance = new ORM(context.getApplicationContext());
         } else {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "reusing old instance");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "reusing old instance");
         }
         return instance;
     }
 
     /****************************************/
     public static void reload(Context context) {
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Force reload");
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Force reload");
         db.close();
         db.releaseReference();
         instance = null;
@@ -69,7 +69,7 @@ public final class ORM extends Database {
     public static ReminderTimes getReminderTimes() {return reminders;}
 
     protected static synchronized void loadObjects() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter loadObjects");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter loadObjects");
 
         entityPrimitives = new EntityPrimitives(db);
         measurementTypes = new MeasurementTypes(db);

@@ -33,7 +33,7 @@ public class Alarms {
     private static final String LOG_PREFIX = "Alarms";
 
     public static void clearAlarms(Activity activity) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter clearAlarms");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter clearAlarms");
         ORM orm = ORM.getInstance(activity);
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(ALARM_SERVICE);
 
@@ -55,14 +55,14 @@ public class Alarms {
                     PendingIntent.getActivity(activity, i , // id
                             reminderIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "  Cancelling alarm id " + Integer.toString(i));
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "  Cancelling alarm id " + Integer.toString(i));
             alarmManager.cancel(pendingIntent);
         }
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, Long.toString(reminderTimes.size()) + " alarms cancelled");
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, Long.toString(reminderTimes.size()) + " alarms cancelled");
     }
 
     public static void installAlarms(Activity activity) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter installAlarms");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter installAlarms");
 
         clearAlarms(activity);
         ORM orm = ORM.getInstance(activity);
@@ -71,15 +71,15 @@ public class Alarms {
         ArrayList<ReminderTime> reminderTimes = orm.getReminderTimes().reminderTimes;
 
         java.util.Date pDate = new java.util.Date();
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Time now : " + pDate.toString());
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "Time now : " + pDate.toString());
 
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Installing alarms");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Installing alarms");
 
         for(int i = 0; i < reminderTimes.size(); i++) {
             ReminderTime reminderTime = reminderTimes.get(i);
 
             Intent reminderIntent = new Intent(activity, ReminderActivity.class);
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "  reminderTimeId "
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "  reminderTimeId "
                     + Integer.toString(reminderTime.id)
                     + " (alarm id " + Integer.toString(i) + ")");
             reminderIntent.putExtra("reminder_id", reminderTime.id);
@@ -95,10 +95,10 @@ public class Alarms {
             // Adjust if the time's already passed
             if (System.currentTimeMillis() > calendar.getTimeInMillis()) {
                 calendar.add(Calendar.DAY_OF_MONTH, 1); // Tomorrow
-                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "  Time has already passed: setting alarm for tomorrow");
+                Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "  Time has already passed: setting alarm for tomorrow");
             }
 
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "  Create intent: FLAG_UPDATE_CURRENT");
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "  Create intent: FLAG_UPDATE_CURRENT");
             // Set up the alarm
             PendingIntent pendingIntent =
                     PendingIntent.getActivity(activity, i /* Alarm ID */,
@@ -110,24 +110,24 @@ public class Alarms {
             //        AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
 
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "  On KITKAT or newer, using setExact()");
+                Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "  On KITKAT or newer, using setExact()");
                 alarmManager.setExact(
                         AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
             } else{
-                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "  On older than KITKAT, using set()");
+                Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "  On older than KITKAT, using set()");
                 alarmManager.set(
                         AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
             }
 
             pDate = new java.util.Date(calendar.getTimeInMillis());
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "  Alarm SET: " + pDate.toString());
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "  Alarm SET: " + pDate.toString());
         }
 
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, Long.toString(reminderTimes.size()) + " alarms installed");
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, Long.toString(reminderTimes.size()) + " alarms installed");
     }
 
     public static void alarmTest(Activity activity) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter installAlarms" );
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter installAlarms" );
         ORM orm = ORM.getInstance(activity);
 
         Intent reminderIntent = new Intent(activity, ReminderActivity.class);
@@ -143,7 +143,7 @@ public class Alarms {
         Calendar now = Calendar.getInstance();
         now.setTime(new java.util.Date());
 
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "alarm: Current time is : " +
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "alarm: Current time is : " +
                 String.valueOf(now.get(Calendar.HOUR_OF_DAY)) + ":" +
                 String.valueOf(now.get(Calendar.MINUTE)) + ":" +
                 String.valueOf(now.get(Calendar.SECOND))
@@ -151,7 +151,7 @@ public class Alarms {
 
         now.add(Calendar.SECOND, 10);
 
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "alarm: Setting alarm to: " +
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "alarm: Setting alarm to: " +
                 String.valueOf(now.get(Calendar.HOUR_OF_DAY)) + ":" +
                 String.valueOf(now.get(Calendar.MINUTE)) + ":" +
                 String.valueOf(now.get(Calendar.SECOND))
@@ -162,14 +162,14 @@ public class Alarms {
         calendar.set(Calendar.SECOND, now.get(Calendar.SECOND));
         Toast.makeText(activity, "Alarm test in progress (10 seconds)",
                 Toast.LENGTH_LONG).show();
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Alarm test in progress (10 seconds)");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Alarm test in progress (10 seconds)");
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "   On KITKAT or newer, using setExact()");
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "   On KITKAT or newer, using setExact()");
             alarmManager.setExact(
                     AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),pendingIntent);
         } else{
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "   On older than KITKAT, using set()");
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "   On older than KITKAT, using set()");
             alarmManager.set(
                     AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }

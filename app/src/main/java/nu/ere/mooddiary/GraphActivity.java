@@ -41,14 +41,14 @@ public class GraphActivity extends ThemedActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
         orm = ORM.getInstance(this);
         initUI();
     }
 
     public void initUI() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter initUI");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter initUI");
 
         setContentView(R.layout.coordinator_graph);
 
@@ -105,11 +105,11 @@ public class GraphActivity extends ThemedActivity {
 
         for(int i = 0; i < mTypes.size(); i++) {
             MeasurementType mType = mTypes.get(i);
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Walking Measurement Types: " + mType.name);
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Walking Measurement Types: " + mType.name);
 
             EntityPrimitive primitive = orm.getPrimitives().getByID(mType.entity);
             if(primitive.isNumber == 0) {
-                Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "This type is not a number: Skipping");
+                Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "This type is not a number: Skipping");
                 continue;
             }
 
@@ -125,7 +125,7 @@ public class GraphActivity extends ThemedActivity {
                          "ORDER BY " +
                              "date ASC " +
                          "LIMIT " + Integer.toString(maxPoints);
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, sql);
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, sql);
 
             Cursor cursor = orm.db.rawQuery(sql, null);
 
@@ -133,7 +133,7 @@ public class GraphActivity extends ThemedActivity {
             cursor.close();
             LinkedHashMap<String, Integer> counts = getMinMaxAvg(values);
 
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Creating new series for " + mType.name);
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "Creating new series for " + mType.name);
 
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
             series.setTitle(mType.name);
@@ -148,7 +148,7 @@ public class GraphActivity extends ThemedActivity {
             }
 
             if(mType.min < 0) {
-                Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+                Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX,
                         String.format("minimum(%d) < 0: Making BarGraph", counts.get("minimum")));
                 graph.getSecondScale().setMinY(mType.min);
                 graph.getSecondScale().setMaxY(mType.max);
@@ -157,7 +157,7 @@ public class GraphActivity extends ThemedActivity {
                 graph.getSecondScale().addSeries(series);
                 //series.setCustomPaint(paint); // Never works unfortunately
             } else {
-                Util.log(Util.LOGLEVEL_3, LOG_PREFIX,
+                Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX,
                         String.format("minimum(%d) >= 0: Making LineGraph", counts.get("minimum")));
                 //series.setDrawBackground(true);
                 series.setThickness(8);
@@ -169,7 +169,7 @@ public class GraphActivity extends ThemedActivity {
 
         }
 
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Rendering graph");
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "Rendering graph");
 
         // set date label formatter
         // TODO: Add some kind of handler to catch if the graph scale changed,
@@ -210,19 +210,19 @@ public class GraphActivity extends ThemedActivity {
         Date beg = new Date(viewPortBegin);
         Date end = new Date(viewPortEnd);
 
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, String.format("Beg: %s (%d)", foo.format(beg), viewPortBegin));
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX, String.format("End: %s (%d)", foo.format(end), viewPortEnd));
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, String.format("Beg: %s (%d)", foo.format(beg), viewPortBegin));
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, String.format("End: %s (%d)", foo.format(end), viewPortEnd));
     }
 
     private LinkedHashMap<Date, Integer> getValues(Cursor cursor, MeasurementType mType) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter getValues");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter getValues");
         LinkedHashMap<Date, Integer> list = new LinkedHashMap<>();
 
         while(cursor.moveToNext()) {
             long longTime = cursor.getLong(cursor.getColumnIndex("date"));
             Date time = new Date(longTime * 1000);
             Integer value = Integer.parseInt(cursor.getString(cursor.getColumnIndex("value")));
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "Adding event " + mType.name
+            Log.d(LOG_PREFIX, "Adding event " + mType.name
                     + ", time " + Long.toString(longTime)
                     + ", value " + Integer.toString(value));
             list.put(time, value);
@@ -231,7 +231,7 @@ public class GraphActivity extends ThemedActivity {
     }
 
     private LinkedHashMap<String, Integer> getMinMaxAvg(LinkedHashMap<Date, Integer> values) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter getMinMaxAvg");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter getMinMaxAvg");
 
         int minimum = 0;
         int maximum = 0;
@@ -257,7 +257,7 @@ public class GraphActivity extends ThemedActivity {
         minMaxAvg.put("maximum", maximum);
         minMaxAvg.put("average", average);
 
-        Util.log(Util.LOGLEVEL_2, LOG_PREFIX,
+        Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX,
                 String.format("Minimum: %d, Maximum: %d, Average: %d", minimum, maximum, average));
 
         return(minMaxAvg);

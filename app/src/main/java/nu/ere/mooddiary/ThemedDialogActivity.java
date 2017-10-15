@@ -33,12 +33,12 @@ public class ThemedDialogActivity extends AppCompatActivity {
     }
 
     private void setTheme() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter setTheme");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter setTheme");
 
         String theme = null;
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         if(sharedPrefs == null) {
-            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Unexpected: There is no sharedPreference object");
+            Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Unexpected: There is no sharedPreference object");
         } else {
             theme = sharedPrefs.getString("preference_select_theme", null);
         }
@@ -61,9 +61,9 @@ public class ThemedDialogActivity extends AppCompatActivity {
                 break;
         }
 
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Theme: " + theme + " (rID " + Integer.toString(themeID) +")");
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Theme: " + theme + " (rID " + Integer.toString(themeID) +")");
         super.setTheme(themeID);
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Theme set by Android: " + super.getTheme());
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Theme set by Android: " + super.getTheme());
     }
 }
 

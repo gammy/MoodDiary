@@ -48,7 +48,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
     private int oldID = -1;
 
     public void onCreate(Bundle savedInstanceState) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
         orm = orm.getInstance(this);
 
@@ -61,14 +61,14 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
                 throw new NoSuchElementException(Integer.toString(editMode) + ": Invalid mode");
 
             case PreferenceEditMode.REMINDER_CREATE:
-                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Our mission: CREATE reminder");
+                Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Our mission: CREATE reminder");
                 break;
 
             case PreferenceEditMode.REMINDER_CHANGE:
             case PreferenceEditMode.REMINDER_DELETE:
-                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Our mission: EDIT / DELETE reminder");
+                Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Our mission: EDIT / DELETE reminder");
                 oldID = intent.getIntExtra(BundleExtraKey.REMINDER_TIME_ID, -1);
-                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "oldID: " + Integer.toString(oldID));
+                Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "oldID: " + Integer.toString(oldID));
                 if(oldID == -1) {
                     throw new NoSuchElementException(Integer.toString(oldID) + ": An existing" +
                         "reminderTimeId needs to be passed to this intent in this mode");
@@ -170,7 +170,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
             delButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onPreferenceClick pre-delete bundle");
+                    Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter onPreferenceClick pre-delete bundle");
                     Intent rIntent = getIntent();
                     bundle.putInt(BundleExtraKey.REMINDER_MODE, PreferenceEditMode.REMINDER_DELETE);
                     bundle.putInt(BundleExtraKey.REMINDER_TIME_ID, oldID);
@@ -189,7 +189,7 @@ public class ReminderPreferencesActivity extends ThemedPreferenceActivity {
         saveButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onPreferenceClick pre-bundle");
+                Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter onPreferenceClick pre-bundle");
                 Intent rIntent = getIntent();
 
                 bundle.putInt(BundleExtraKey.REMINDER_TIME_ID, oldID);

@@ -40,17 +40,17 @@ public class ImportActivity extends ThemedPreferenceActivity {
     private String filename = null;
 
     public void onCreate(Bundle savedInstanceState) {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter onCreate");
         super.onCreate(savedInstanceState);
 
         start();
     }
 
     public void importDatabase() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter importDatabase");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter importDatabase");
 
         if(filename == null) {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "filename is NULL, cancel");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "filename is NULL, cancel");
             finish();
         }
 
@@ -80,13 +80,13 @@ public class ImportActivity extends ThemedPreferenceActivity {
         try {
             FileChannel src = new FileInputStream(newDB).getChannel();
             FileChannel dst = new FileOutputStream(oldDB).getChannel();
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, sourcePath + " -> " + targetPath);
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, sourcePath + " -> " + targetPath);
             long fuck = dst.transferFrom(src, 0, src.size());
             src.close();
             dst.close();
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, Long.toString(fuck) + " bytes copied");
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, Long.toString(fuck) + " bytes copied");
         } catch (Exception e) {
-            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, e.getMessage());
+            Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, e.getMessage());
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -98,7 +98,7 @@ public class ImportActivity extends ThemedPreferenceActivity {
     }
 
     public boolean verifyDatabase() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter verifyDatabase");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter verifyDatabase");
         SQLiteDatabase db = null;
         String[] tables = {
                 "android_metadata",
@@ -113,7 +113,7 @@ public class ImportActivity extends ThemedPreferenceActivity {
         try {
             db = SQLiteDatabase.openDatabase(filename, null, SQLiteDatabase.OPEN_READONLY);
             for (String table: tables) {
-                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Checking table: " + table);
+                Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Checking table: " + table);
                 Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + table, null);
                 cursor.moveToFirst();
                 cursor.getColumnCount();
@@ -121,19 +121,19 @@ public class ImportActivity extends ThemedPreferenceActivity {
             }
             db.close();
         } catch(SQLiteException e) {
-            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "EXCEPTION!");
-            Util.log(Util.LOGLEVEL_1, LOG_PREFIX, e.getMessage());
+            Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "EXCEPTION!");
+            Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, e.getMessage());
             //database does't exist yet.
             return false;
         }
 
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Database verified");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Database verified");
         return true;
     }
 
     // Based on http://stackoverflow.com/a/19093736/417115
     public boolean start() {
-        Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Enter exportDatabase");
+        Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Enter exportDatabase");
 
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -141,26 +141,26 @@ public class ImportActivity extends ThemedPreferenceActivity {
 
         // http://stackoverflow.com/a/6942735/417115
         String state = Environment.getExternalStorageState();
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "sdcard state: " + state);
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "sdcard state: " + state);
 
         if(Environment.MEDIA_MOUNTED.equals(state)) {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "sdcard mounted and writable");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "sdcard mounted and writable");
         } else if(Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "sdcard mounted readonly");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "sdcard mounted readonly");
         }
 
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "READ_EXTERNAL_STORAGE != GRANTED");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "READ_EXTERNAL_STORAGE != GRANTED");
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "(Should show request permission rationale here)");
+                Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "(Should show request permission rationale here)");
             }
         } else {
-            Util.log(Util.LOGLEVEL_2, LOG_PREFIX, "READ_EXTERNAL_STORAGE granted, I think");
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "-------- Request permission ---------");
+            Logger.log(Logger.LOGLEVEL_2, LOG_PREFIX, "READ_EXTERNAL_STORAGE granted, I think");
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "-------- Request permission ---------");
             if(PermissionUtils.hasSelfPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 showDialog();
             } else {
@@ -168,7 +168,7 @@ public class ImportActivity extends ThemedPreferenceActivity {
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, // ???
                         1 /* Code */);
             }
-            Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "-------- End Request permission ---------");
+            Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "-------- End Request permission ---------");
         }
 
         return true;
@@ -183,15 +183,15 @@ public class ImportActivity extends ThemedPreferenceActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showDialog();
-                    Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "We have read permissions");
+                    Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "We have read permissions");
 
                 } else {
-                    Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "NEIN!!!");
+                    Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "NEIN!!!");
                 }
                 break;
 
             default:
-                Util.log(Util.LOGLEVEL_1, LOG_PREFIX, "Unhandled requestCode: " + Integer.toString(requestCode));
+                Logger.log(Logger.LOGLEVEL_1, LOG_PREFIX, "Unhandled requestCode: " + Integer.toString(requestCode));
         }
     }
 
@@ -200,13 +200,13 @@ public class ImportActivity extends ThemedPreferenceActivity {
         FileSelectDialog fileDialog = new FileSelectDialog(this, mPath, ".sqlite3");
         fileDialog.addFileListener(new FileSelectDialog.FileSelectedListener() {
             public void fileSelected(File file) {
-                Util.log(Util.LOGLEVEL_1, getClass().getName(), "selected file " + file.toString());
+                Logger.log(Logger.LOGLEVEL_1, getClass().getName(), "selected file " + file.toString());
                 filename = file.toString();
                 importDatabase();
             }
         });
 
-        Util.log(Util.LOGLEVEL_3, LOG_PREFIX, "Showing dialog");
+        Logger.log(Logger.LOGLEVEL_3, LOG_PREFIX, "Showing dialog");
         fileDialog.showDialog();
     }
 
